@@ -169,7 +169,9 @@
 
 <script>
     window.addEventListener('load', function(){
-        Velocity(document.getElementsByTagName('webgl')[0], { translateX: 408 }, { duration: 500 });
+        setTimeout(function(){
+            Velocity(document.getElementsByTagName('webgl')[0], { translateX: 408 }, { duration: 500 });
+        }, 500);
     });
 </script>
 </body>
