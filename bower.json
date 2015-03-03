@@ -1,0 +1,21 @@
+{
+  "name": "HTMLGL",
+  "version": "0.0.0",
+  "authors": [
+    "PixelsCommander <denis.radin@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "pixi": "~2.2.5",
+    "html2canvas": "~0.4.1",
+    "velocity": "~1.2.2",
+    "imagesloaded": "~3.1.8"
+  }
+}
