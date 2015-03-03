@@ -24,6 +24,4 @@ License
 -------
 MIT: http://mit-license.org/
 
-Copyright 2014 Denis Radin aka [PixelsCommander](http://pixelscommander.com)
-
-Inspired by Christopher Chedeau`s [react-xtags](http://github.com/vjeux/react-xtags/)
+Copyright 2015 Denis Radin aka [PixelsCommander](http://pixelscommander.com)
