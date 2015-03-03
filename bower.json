@@ -14,8 +14,6 @@
   ],
   "dependencies": {
     "pixi": "~2.2.5",
-    "html2canvas": "~0.4.1",
-    "velocity": "~1.2.2",
     "imagesloaded": "~3.1.8"
   }
 }
