@@ -4,9 +4,9 @@ HTML GL - get as many FPS as you want by rendering your app in WebGL
 60 FPS animations and responsive interaction is a top priprity problem of cross-platform Web development. Since desktop browsers are mostly fine with managing animations, mobile and embedded devices still provide bad user experience.
 The biggest reason for animations to be janky is that "DOM is slow". It is true since DOM is quite complex model and every change of DOM create a ripple of events or chain reaction over whole document.
 
-HTML GL solves the problem of slow DOM by creating WebGL representations of DOM nodes and hiding actual DOM after. WebGL elements representations are very effective from resources consuming perspective since they are GPU accelerated textures which are very easy to transform and paint.
+HTML GL solves the slow DOM problem by making snapshots of DOM elements, creating their WebGL representations based on these snapshots and hiding actual DOM after. As a result DOM elements become simple facades to their WebGL represenations which are very effective from resources consuming perspective since they are GPU accelerated textures and are very cheap to transform or animate.
 
-No DOM + WebGL GPU rendering = highest FPS possible for Web
+No DOM + WebGL GPU rendering = highest FPS possible for Web platform
 -------------------------------------------------------
 
 <img alt="HTML GL flow diagram" src="http://pixelscommander.com/polygon/htmlgl/htmlgl-flow-diagram.png"/>
