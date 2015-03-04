@@ -6,7 +6,7 @@ The biggest reason for animations to be janky is that "DOM is slow". It is true 
 
 HTML GL solves "the slow DOM problem" by making snapshots of DOM elements, creating their WebGL representations based on these snapshots and hiding actual DOM after. As a result DOM elements become simple facades to their WebGL represenations (GPU accelerated textures) which are very effective from resources consuming perspective and are very cheap to transform or animate.
 
-No DOM + WebGL GPU rendering = highest FPS possible for Web platform
+No DOM + WebGL rendering = highest FPS possible for Web platform
 -------------------------------------------------------
 
 <img alt="HTML GL flow diagram" src="http://pixelscommander.com/polygon/htmlgl/htmlgl-flow-diagram.png"/>
