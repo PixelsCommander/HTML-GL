@@ -14,7 +14,7 @@
     p.findAllElements = function () {
         var elements = document.getElementsByTagName('webgl');
         for (var i = 0; i < elements.length; i++) {
-            this.elements.push(new RasterizedElement(elements[i], this.stage));
+            this.elements.push(new GLElement(elements[i], this.stage));
         }
     }
 
