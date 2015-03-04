@@ -51,7 +51,7 @@ body {
   height: 100%;
   background: url("../../pic/bgs/Descendants.png") no-repeat #000000;
 }
-webgl {
+html-gl {
   display: block;
 }
 h1 {

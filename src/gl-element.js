@@ -5,28 +5,21 @@
  */
 
 (function (w) {
+    var p = Object.create(HTMLElement.prototype);
 
-    Element.prototype.style = {};
-
-    var GLElement = function (element, stage) {
-        this.element = element;
-        this.element.renderer = 'webgl';
-        this.CSSText = '';
-        this.transformString = '';
+    p.createdCallback = function () {
+        w.HTMLGL.elements.push(this);
+        this.renderer = 'webgl';
         this.transformObject = {};
         this.boundingRect = {};
         this.image = {};
-        this.stage = stage;
         this.sprite = {};
         this.texture = {};
         this.bindCallbacks();
         this.init();
     }
 
-    var p = GLElement.prototype;
-
     p.init = function () {
-        this.hideDOM();
         this.updateTexture();
         this.initObservers();
         this.patchStyleGLTransform();
@@ -34,9 +27,10 @@
 
     p.updateTexture = function () {
         var self = this;
-        imagesLoaded(this.element, function () {
+        imagesLoaded(self, function () {
+            console.log('Images loaded');
             self.updateBoundingRect();
-            self.image = html2canvas(self.element, {
+            self.image = html2canvas(self, {
                 onrendered: self.applyNewTexture,
                 width: self.boundingRect.width,
                 height: self.boundingRect.height
@@ -48,9 +42,13 @@
         this.image = textureCanvas;
         this.texture = PIXI.Texture.fromCanvas(this.image);
 
-        if (!this.sprite.texture) {
-            this.sprite = new PIXI.Sprite(this.texture);
-            this.stage.addChild(this.sprite);
+        if (!this.haveSprite()) {
+            if (w.HTMLGL.stage) {
+                this.sprite = new PIXI.Sprite(this.texture);
+                console.log('Adding to stage');
+                w.HTMLGL.stage.addChild(this.sprite);
+                this.hideDOM();
+            }
         } else {
             this.sprite.setTexture(this.texture);
         }
@@ -75,7 +73,7 @@
     }
 
     p.updateBoundingRect = function () {
-        this.boundingRect = this.element.getBoundingClientRect();
+        this.boundingRect = this.getBoundingClientRect();
     }
 
     p.initObservers = function () {
@@ -83,7 +81,7 @@
         var self = this;
         var observer = new MutationObserver(function (mutations) {
             if (mutations[0].attributeName === 'style') {
-                self.transformObject = self.getTransformObjectFromString(self.element.style.transform);
+                self.transformObject = self.getTransformObjectFromString(self.style.transform);
                 self.updateSpriteTransform();
             } else {
                 self.updateTexture();
@@ -98,14 +96,14 @@
             attributeFilter: ['style']
         };
 
-        observer.observe(this.element, config);
+        observer.observe(this, config);
     }
 
     p.patchStyleGLTransform = function () {
         var self = this;
-        self.element.styleGl = {};
+        self.styleGl = {};
 
-        getterSetter(this.element.styleGl, 'transform',
+        getterSetter(this.styleGl, 'transform',
             function () {
                 return self.transformObject;
             },
@@ -127,12 +125,18 @@
     }
 
     p.hideDOM = function () {
-        this.element.style.visibility = 'hidden';
+        this.style.visibility = 'hidden';
     }
 
     p.bindCallbacks = function () {
         this.applyNewTexture = this.applyNewTexture.bind(this);
     }
 
-    w.GLElement = GLElement;
+    p.haveSprite = function() {
+        return this.sprite.stage;
+    }
+
+    w.GLElement = document.registerElement('html-gl', {
+        prototype: p
+    });
 })(window);
