@@ -1,10 +1,10 @@
 HTML GL - render your HTML/CSS via WebGL, framework agnostic
 =====================================================================
 
-60 FPS animations and responsive interaction is a top priprity problem of cross-platform Web development. Since desktop browsers are mostly fine with managing animations, mobile and embedded devices still provide bad user experience.
-The biggest reason for animations to be janky is that "DOM is slow". It is true since DOM is quite complex model and every change of DOM create a ripple of events or chain reaction over whole document.
+60 FPS animations and responsive interactions are top priority problems of cross-platform Web development. Since desktop browsers are mostly fine with handling animations, mobile and embedded devices still provide bad user experience.
+The biggest reason for animations to be janky is that "DOM is slow". It is true since DOM is quite complex model and every DOM change create a ripple of events or chain reaction over whole document.
 
-HTML GL solves "the slow DOM problem" by making snapshots of DOM elements, creating their WebGL representations based on these snapshots and hiding actual DOM after. As a result DOM elements become simple facades to their WebGL represenations (GPU accelerated textures) which are very effective from resources consuming perspective and are very cheap to transform or animate.
+HTML GL solves "the slow DOM problem" by creating WebGL representations of DOM elements and hiding actual DOM after. As a result DOM elements become simple facades to their WebGL represenations (GPU accelerated textures) which are very effective from resources consuming perspective and are very cheap to transform or animate.
 
 No DOM + WebGL rendering = highest FPS possible for Web platform
 -------------------------------------------------------
