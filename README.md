@@ -1,4 +1,4 @@
-<img alt="HTML GL" src="http://pixelscommander.com/polygon/htmlgl/figures/logo-red.png"/>
+<img alt="HTML GL" src="http://pixelscommander.com/polygon/htmlgl/figures/logo-gray.png"/>
 
 Render HTML/CSS via WebGL, framework agnostic
 =====================================================================
