@@ -3,6 +3,12 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>HTML GL demo</title>
+    <script src="./js/vendor/velocity.js"></script>
+    <script src="./js/vendor/html2canvas.js"></script>
+    <script src="../bower_components/pixi/bin/pixi.dev.js"></script>
+    <script src="../src/gl-context.js"></script>
+    <script src="../src/images-loaded.js"></script>
+    <script src="../src/gl-element.js"></script>
 </head>
 <body>
 <h1>HTML GL demo</h1>
@@ -16,15 +22,8 @@
     TODO
 </h2>
 <ul>
-    <li>Rerender only if content changed in order to decrease CPU/GPU load</li>
     <li>Add retina support in order to avoid blurry content</li>
 </ul>
-<script src="./js/vendor/velocity.js"></script>
-<script src="./js/vendor/html2canvas.js"></script>
-<script src="../bower_components/pixi/bin/pixi.dev.js"></script>
-<script src="../src/gl-context.js"></script>
-<script src="../src/images-loaded.js"></script>
-<script src="../src/gl-element.js"></script>
 <script>
     window.changeNodeContent = function () {
         document.getElementsByTagName('html-gl')[0].textContent = 'Animation was smooth, was not it? This is a new content. It is still visible in dev tools, affects HTML layout and is rendered via WebGL.';
@@ -32,8 +31,8 @@
 
     window.changeNodeTransform = function () {
         var element = document.getElementsByTagName('html-gl')[0];
-        element.style.webkitTransform = 'scaleX(2) rotateZ(75deg) translateX(400px) translateY(100px)';
-        element.style.transform = 'scaleY(2) rotateZ(75deg) translateX(400px) translateY(100px)';
+        element.style.webkitTransform = 'translateX(400px) translateY(100px)';
+        element.style.transform = 'translateX(400px) translateY(100px)';
     }
 
     window.animate = function () {

@@ -8421,11 +8421,17 @@ Velocity, however, doesn't make this distinction. Thus, converting to or from th
 will produce an inaccurate conversion value. The same issue exists with the cx/cy attributes of SVG circles and ellipses. */
 (function (w) {
     w.HTMLGL = {
+        context: undefined,
         stage: undefined,
         elements: []
     };
 
     var HTMLGL = function () {
+        w.HTMLGL.context = this;
+
+        this.createStage();
+        this.addListenerers();
+
         if (!document.body) {
             document.addEventListener("DOMContentLoaded", this.init.bind(this));
         } else {
@@ -8436,36 +8442,73 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
     var p = HTMLGL.prototype;
 
     p.init = function () {
-        this.createContext();
-        w.HTMLGL.elements.forEach(function (element) {
-            if (!element.haveSprite()) {
-                element.applyNewTexture(element.image);
-            }
-        });
+        this.createViewer();
+        this.resizeViewer();
+        this.appendViewer();
     }
 
-    p.createContext = function () {
-        var width = w.innerWidth,
-            height = w.innerHeight;
-
-        w.HTMLGL.stage = this.stage = new PIXI.Stage(0xFFFFFF);
-        this.renderer = PIXI.autoDetectRenderer(width, height, {transparent: true});
-        this.renderer.view.style.position = 'absolute';
-        this.renderer.view.style.top = '0px';
-        this.renderer.view.style.left = '0px';
-
-        document.body.appendChild(this.renderer.view);
-        this.renderer.view.style['pointer-events'] = 'none';
-
-        requestAnimFrame(this.animate.bind(this));
+    p.addListenerers = function () {
+        w.addEventListener('scroll', this.onScroll.bind(this));
+        w.addEventListener('resize', this.resizeViewer.bind(this));
     }
 
-    p.animate = function () {
-        requestAnimFrame(this.animate.bind(this));
+    p.onScroll = function (event) {
+        var scrollOffset = {};
+
+        if (window.pageYOffset != undefined) {
+            scrollOffset = {
+                left: pageXOffset,
+                top: pageYOffset
+            };
+        } else {
+            var sx, sy, d = document, r = d.documentElement, b = d.body;
+            sx = r.scrollLeft || b.scrollLeft || 0;
+            sy = r.scrollTop || b.scrollTop || 0;
+            scrollOffset = {
+                left: sx,
+                top: sy
+            };
+        }
+        this.document.x = -scrollOffset.left;
+        this.document.y = -scrollOffset.top;
+
+        this.stage.changed = true;
+    }
+
+    p.redraw = function () {
+        requestAnimFrame(this.redraw.bind(this));
+
         if (this.stage.changed) {
             this.renderer.render(this.stage);
             this.stage.changed = false;
         }
+    }
+
+    p.createViewer = function () {
+        this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
+        this.renderer.view.style.position = 'fixed';
+        this.renderer.view.style.top = '0px';
+        this.renderer.view.style.left = '0px';
+        this.renderer.view.style['pointer-events'] = 'none';
+    }
+
+    p.resizeViewer = function () {
+        var width = w.innerWidth,
+            height = w.innerHeight;
+
+        this.renderer.resize(width, height);
+        this.stage.changed = true;
+    }
+
+    p.appendViewer = function () {
+        document.body.appendChild(this.renderer.view);
+        requestAnimFrame(this.redraw.bind(this));
+    }
+
+    p.createStage = function () {
+        w.HTMLGL.stage = this.stage = new PIXI.Stage(0xFFFFFF);
+        w.HTMLGL.document = this.document = new PIXI.DisplayObjectContainer();
+        this.stage.addChild(w.HTMLGL.document);
     }
 
     new HTMLGL();
@@ -8539,6 +8582,10 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
  */
 
 (function (w) {
+    var style = document.createElement('style');
+    style.innerText = 'html-gl { display: inline-block;}';
+    document.getElementsByTagName('head')[0].appendChild(style);
+
     var CUSTOM_ELEMENT_TAG_NAME = 'html-gl',
         p = Object.create(HTMLElement.prototype);
 
@@ -8551,6 +8598,8 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
             this.image = {};
             this.sprite = {};
             this.texture = {};
+            this.halfWidth = 0;
+            this.halfHeight = 0;
             this.bindCallbacks();
             this.init();
         }
@@ -8579,15 +8628,12 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
         this.texture = PIXI.Texture.fromCanvas(this.image);
 
         if (!this.haveSprite()) {
-            if (w.HTMLGL.stage) {
-                this.sprite = new PIXI.Sprite(this.texture);
-                w.HTMLGL.stage.addChild(this.sprite);
-                this.hideDOM();
-            }
+            this.createSprite(this.texture);
         } else {
             this.sprite.setTexture(this.texture);
         }
 
+        this.updatePivot();
         this.updateSpriteTransform();
         this.markStageAsChanged();
     }
@@ -8600,8 +8646,8 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
             rotate = (parseFloat(this.transformObject.rotateZ) / 180) * Math.PI || 0;
 
         if (this.sprite && this.sprite.position) {
-            this.sprite.position.x = this.boundingRect.left + translateX;
-            this.sprite.position.y = this.boundingRect.top + translateY;
+            this.sprite.position.x = this.boundingRect.left + translateX + this.halfWidth;
+            this.sprite.position.y = this.boundingRect.top + translateY + this.halfHeight;
             this.sprite.scale.x = scaleX;
             this.sprite.scale.y = scaleY;
             this.sprite.rotation = rotate;
@@ -8611,6 +8657,19 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
 
     p.updateBoundingRect = function () {
         this.boundingRect = this.getBoundingClientRect();
+    }
+
+    p.updatePivot = function () {
+        this.halfWidth = this.sprite.width / 2;
+        this.halfHeight = this.sprite.height / 2;
+        this.sprite.pivot.x = this.halfWidth;
+        this.sprite.pivot.y = this.halfHeight;
+    }
+
+    p.createSprite = function (texture) {
+        this.sprite = new PIXI.Sprite(texture);
+        w.HTMLGL.document.addChild(this.sprite);
+        this.hideDOM();
     }
 
     p.initObservers = function () {

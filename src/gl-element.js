@@ -5,6 +5,10 @@
  */
 
 (function (w) {
+    var style = document.createElement('style');
+    style.innerText = 'html-gl { display: inline-block;}';
+    document.getElementsByTagName('head')[0].appendChild(style);
+
     var CUSTOM_ELEMENT_TAG_NAME = 'html-gl',
         p = Object.create(HTMLElement.prototype);
 
@@ -17,6 +21,8 @@
             this.image = {};
             this.sprite = {};
             this.texture = {};
+            this.halfWidth = 0;
+            this.halfHeight = 0;
             this.bindCallbacks();
             this.init();
         }
@@ -45,15 +51,12 @@
         this.texture = PIXI.Texture.fromCanvas(this.image);
 
         if (!this.haveSprite()) {
-            if (w.HTMLGL.stage) {
-                this.sprite = new PIXI.Sprite(this.texture);
-                w.HTMLGL.stage.addChild(this.sprite);
-                this.hideDOM();
-            }
+            this.createSprite(this.texture);
         } else {
             this.sprite.setTexture(this.texture);
         }
 
+        this.updatePivot();
         this.updateSpriteTransform();
         this.markStageAsChanged();
     }
@@ -66,8 +69,8 @@
             rotate = (parseFloat(this.transformObject.rotateZ) / 180) * Math.PI || 0;
 
         if (this.sprite && this.sprite.position) {
-            this.sprite.position.x = this.boundingRect.left + translateX;
-            this.sprite.position.y = this.boundingRect.top + translateY;
+            this.sprite.position.x = this.boundingRect.left + translateX + this.halfWidth;
+            this.sprite.position.y = this.boundingRect.top + translateY + this.halfHeight;
             this.sprite.scale.x = scaleX;
             this.sprite.scale.y = scaleY;
             this.sprite.rotation = rotate;
@@ -77,6 +80,19 @@
 
     p.updateBoundingRect = function () {
         this.boundingRect = this.getBoundingClientRect();
+    }
+
+    p.updatePivot = function () {
+        this.halfWidth = this.sprite.width / 2;
+        this.halfHeight = this.sprite.height / 2;
+        this.sprite.pivot.x = this.halfWidth;
+        this.sprite.pivot.y = this.halfHeight;
+    }
+
+    p.createSprite = function (texture) {
+        this.sprite = new PIXI.Sprite(texture);
+        w.HTMLGL.document.addChild(this.sprite);
+        this.hideDOM();
     }
 
     p.initObservers = function () {

@@ -40,7 +40,6 @@
   src: url(../fonts/DAWN-UPCDiBd.ttf) format('truetype');
 }
 body {
-  overflow: hidden;
   box-sizing: border-box;
   padding: 30px 93px 0 93px;
   margin: 0;
