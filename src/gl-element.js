@@ -6,8 +6,6 @@
 
 (function (w) {
 
-    Element.prototype.style = {};
-
     var GLElement = function (element, stage) {
         this.element = element;
         this.element.renderer = 'webgl';
