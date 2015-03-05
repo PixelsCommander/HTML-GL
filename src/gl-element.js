@@ -45,11 +45,9 @@
         this.texture = PIXI.Texture.fromCanvas(this.image);
 
         if (!this.haveSprite()) {
-            if (w.HTMLGL.stage) {
-                this.sprite = new PIXI.Sprite(this.texture);
-                w.HTMLGL.stage.addChild(this.sprite);
-                this.hideDOM();
-            }
+            this.sprite = new PIXI.Sprite(this.texture);
+            w.HTMLGL.document.addChild(this.sprite);
+            this.hideDOM();
         } else {
             this.sprite.setTexture(this.texture);
         }

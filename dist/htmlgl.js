@@ -8421,51 +8421,81 @@ Velocity, however, doesn't make this distinction. Thus, converting to or from th
 will produce an inaccurate conversion value. The same issue exists with the cx/cy attributes of SVG circles and ellipses. */
 (function (w) {
     w.HTMLGL = {
+        context: undefined,
         stage: undefined,
         elements: []
     };
 
     var HTMLGL = function () {
+        w.HTMLGL.context = this;
+
+        this.createStage();
+        this.addScrollListener();
+
         if (!document.body) {
-            document.addEventListener("DOMContentLoaded", this.init.bind(this));
+            document.addEventListener("DOMContentLoaded", this.createViewer.bind(this));
         } else {
-            this.init();
+            this.createViewer();
         }
     }
 
     var p = HTMLGL.prototype;
 
-    p.init = function () {
-        this.createContext();
-        w.HTMLGL.elements.forEach(function (element) {
-            if (!element.haveSprite()) {
-                element.applyNewTexture(element.image);
-            }
-        });
+    p.addScrollListener = function () {
+        w.addEventListener('scroll', this.onScroll.bind(this));
     }
 
-    p.createContext = function () {
+    p.onScroll = function (event) {
+        var scrollOffset = {};
+
+        if (window.pageYOffset != undefined) {
+            scrollOffset = {
+                left: pageXOffset,
+                top: pageYOffset
+            };
+        } else {
+            var sx, sy, d = document, r = d.documentElement, b = d.body;
+            sx = r.scrollLeft || b.scrollLeft || 0;
+            sy = r.scrollTop || b.scrollTop || 0;
+            scrollOffset = {
+                left: sx,
+                top: sy
+            };
+        }
+        this.document.x = -scrollOffset.left;
+        this.document.y = -scrollOffset.top;
+
+        this.stage.changed = true;
+    }
+
+    p.redraw = function () {
+        requestAnimFrame(this.redraw.bind(this));
+
+        if (this.stage.changed) {
+            this.renderer.render(this.stage);
+            this.stage.changed = false;
+        }
+    }
+
+    p.createViewer = function () {
         var width = w.innerWidth,
             height = w.innerHeight;
 
-        w.HTMLGL.stage = this.stage = new PIXI.Stage(0xFFFFFF);
         this.renderer = PIXI.autoDetectRenderer(width, height, {transparent: true});
-        this.renderer.view.style.position = 'absolute';
+        this.renderer.view.style.position = 'fixed';
         this.renderer.view.style.top = '0px';
         this.renderer.view.style.left = '0px';
 
         document.body.appendChild(this.renderer.view);
         this.renderer.view.style['pointer-events'] = 'none';
 
-        requestAnimFrame(this.animate.bind(this));
+        requestAnimFrame(this.redraw.bind(this));
     }
 
-    p.animate = function () {
-        requestAnimFrame(this.animate.bind(this));
-        if (this.stage.changed) {
-            this.renderer.render(this.stage);
-            this.stage.changed = false;
-        }
+    p.createStage = function () {
+        w.HTMLGL.stage = this.stage = new PIXI.Stage(0xFFFFFF);
+        w.HTMLGL.document = this.document = new PIXI.DisplayObjectContainer();
+        this.stage.addChild(w.HTMLGL.document);
     }
 
     new HTMLGL();
@@ -8579,11 +8609,9 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
         this.texture = PIXI.Texture.fromCanvas(this.image);
 
         if (!this.haveSprite()) {
-            if (w.HTMLGL.stage) {
-                this.sprite = new PIXI.Sprite(this.texture);
-                w.HTMLGL.stage.addChild(this.sprite);
-                this.hideDOM();
-            }
+            this.sprite = new PIXI.Sprite(this.texture);
+            w.HTMLGL.document.addChild(this.sprite);
+            this.hideDOM();
         } else {
             this.sprite.setTexture(this.texture);
         }
