@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>HTML GL demo</title>
+    <style>
+        html-gl {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<h1>HTML GL demo</h1>
+<html-gl>
+    This layer is rendered as a <h1>DOM</h1> <span style="color: red;">because</span> <b>HTML GL</b> is disabled
+</html-gl>
+<button onclick="window.animate()">Animate WebGL layer</button>
+<button onclick="window.changeNodeContent()">Change layer content</button>
+<button onclick="window.changeNodeTransform()">Simply change layer`s style.transform</button>
+<h2>
+    TODO
+</h2>
+<ul>
+    <li>Switch to WebGL for more performant animations</li>
+</ul>
+<script src="./js/vendor/velocity.js"></script>
+<script>
+    window.changeNodeContent = function () {
+        document.getElementsByTagName('html-gl')[0].textContent = 'DOM is a bit slower, but still ok on desktop. However for mobile WebGL.';
+    }
+
+    window.changeNodeTransform = function () {
+        var element = document.getElementsByTagName('html-gl')[0];
+        element.style.webkitTransform = 'scaleX(2) rotateZ(75deg) translateX(400px) translateY(100px)';
+        element.style.transform = 'scaleX(2) rotateZ(75deg) translateX(400px) translateY(100px)';
+    }
+
+    window.animate = function () {
+        var element = document.getElementsByTagName('html-gl')[0];
+
+        Velocity(element, {
+            translateX: 100,
+            translateY: 100,
+            translateZ: 0,
+            scaleX: 4,
+            scaleY: 4,
+            rotateZ: "360deg"
+        }, {duration: 1000})
+        .then(function () {
+            Velocity(element, {
+                translateX: 0,
+                translateY: 0,
+                translateZ: 0,
+                scaleX: 1,
+                scaleY: 1,
+                rotateZ: "0"
+            }, {duration: 1000});
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,29 +1,34 @@
 (function (w) {
-    var HTMLGL = function (w) {
-        this.elements = [];
-        this.init();
+    w.HTMLGL = {
+        stage: undefined,
+        elements: []
+    };
+
+    var HTMLGL = function () {
+        if (!document.body) {
+            document.addEventListener("DOMContentLoaded", this.init.bind(this));
+        } else {
+            this.init();
+        }
     }
 
     var p = HTMLGL.prototype;
 
     p.init = function () {
         this.createContext();
-        this.findAllElements();
-    }
-
-    p.findAllElements = function () {
-        var elements = document.getElementsByTagName('webgl');
-        for (var i = 0; i < elements.length; i++) {
-            this.elements.push(new GLElement(elements[i], this.stage));
-        }
+        w.HTMLGL.elements.forEach(function (element) {
+            if (!element.haveSprite()) {
+                element.applyNewTexture(element.image);
+            }
+        });
     }
 
     p.createContext = function () {
         var width = w.innerWidth,
             height = w.innerHeight;
 
-        this.stage = new PIXI.Stage(0xFFFFFF);
-        this.renderer = PIXI.autoDetectRenderer(width, height, {transparent:true});
+        w.HTMLGL.stage = this.stage = new PIXI.Stage(0xFFFFFF);
+        this.renderer = PIXI.autoDetectRenderer(width, height, {transparent: true});
         this.renderer.view.style.position = 'absolute';
         this.renderer.view.style.top = '0px';
         this.renderer.view.style.left = '0px';
@@ -34,26 +39,22 @@
         requestAnimFrame(this.animate.bind(this));
     }
 
-    p.animate = function(){
+    p.animate = function () {
         requestAnimFrame(this.animate.bind(this));
         this.renderer.render(this.stage);
     }
 
-    w.HTMLGL = HTMLGL;
-
     new HTMLGL();
 })(window);
 
-function getterSetter(variableParent, variableName, getterFunction, setterFunction){
-    if (Object.defineProperty)
-    {
+function getterSetter(variableParent, variableName, getterFunction, setterFunction) {
+    if (Object.defineProperty) {
         Object.defineProperty(variableParent, variableName, {
             get: getterFunction,
             set: setterFunction
         });
     }
-    else if (document.__defineGetter__)
-    {
+    else if (document.__defineGetter__) {
         variableParent.__defineGetter__(variableName, getterFunction);
         variableParent.__defineSetter__(variableName, setterFunction);
     }
