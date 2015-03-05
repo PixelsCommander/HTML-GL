@@ -8,6 +8,7 @@
             display: inline-block;
         }
     </style>
+    <script src="./js/vendor/velocity.js"></script>
 </head>
 <body>
 <h1>HTML GL demo</h1>
@@ -23,16 +24,15 @@
 <ul>
     <li>Switch to WebGL for more performant animations</li>
 </ul>
-<script src="./js/vendor/velocity.js"></script>
 <script>
     window.changeNodeContent = function () {
-        document.getElementsByTagName('html-gl')[0].textContent = 'DOM is a bit slower, but still ok on desktop. However for mobile WebGL.';
+        document.getElementsByTagName('html-gl')[0].textContent = 'DOM is a bit slower, but still ok on desktop. However for mobile WebGL is a way better.';
     }
 
     window.changeNodeTransform = function () {
         var element = document.getElementsByTagName('html-gl')[0];
-        element.style.webkitTransform = 'scaleX(2) rotateZ(75deg) translateX(400px) translateY(100px)';
-        element.style.transform = 'scaleX(2) rotateZ(75deg) translateX(400px) translateY(100px)';
+        element.style.webkitTransform = 'translateX(400px) translateY(100px)';
+        element.style.transform = 'translateX(400px) translateY(100px)';
     }
 
     window.animate = function () {
