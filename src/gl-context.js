@@ -41,7 +41,10 @@
 
     p.animate = function () {
         requestAnimFrame(this.animate.bind(this));
-        this.renderer.render(this.stage);
+        if (this.stage.changed) {
+            this.renderer.render(this.stage);
+            this.stage.changed = false;
+        }
     }
 
     new HTMLGL();

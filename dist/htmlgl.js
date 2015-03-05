@@ -8462,7 +8462,10 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
 
     p.animate = function () {
         requestAnimFrame(this.animate.bind(this));
-        this.renderer.render(this.stage);
+        if (this.stage.changed) {
+            this.renderer.render(this.stage);
+            this.stage.changed = false;
+        }
     }
 
     new HTMLGL();
@@ -8586,6 +8589,7 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
         }
 
         this.updateSpriteTransform();
+        this.markStageAsChanged();
     }
 
     p.updateSpriteTransform = function () {
@@ -8602,6 +8606,7 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
             this.sprite.scale.y = scaleY;
             this.sprite.rotation = rotate;
         }
+        this.markStageAsChanged();
     }
 
     p.updateBoundingRect = function () {
@@ -8666,6 +8671,12 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
 
     p.haveSprite = function() {
         return this.sprite.stage;
+    }
+
+    p.markStageAsChanged = function() {
+        if (w.HTMLGL.stage && !w.HTMLGL.stage.changed) {
+            w.HTMLGL.stage.changed = true;
+        }
     }
 
     w.GLElement = document.registerElement(CUSTOM_ELEMENT_TAG_NAME, {

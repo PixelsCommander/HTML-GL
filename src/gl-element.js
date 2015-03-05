@@ -55,6 +55,7 @@
         }
 
         this.updateSpriteTransform();
+        this.markStageAsChanged();
     }
 
     p.updateSpriteTransform = function () {
@@ -71,6 +72,7 @@
             this.sprite.scale.y = scaleY;
             this.sprite.rotation = rotate;
         }
+        this.markStageAsChanged();
     }
 
     p.updateBoundingRect = function () {
@@ -135,6 +137,12 @@
 
     p.haveSprite = function() {
         return this.sprite.stage;
+    }
+
+    p.markStageAsChanged = function() {
+        if (w.HTMLGL.stage && !w.HTMLGL.stage.changed) {
+            w.HTMLGL.stage.changed = true;
+        }
     }
 
     w.GLElement = document.registerElement(CUSTOM_ELEMENT_TAG_NAME, {
