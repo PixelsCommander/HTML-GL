@@ -24,7 +24,6 @@
     var p = GLElement.prototype;
 
     p.init = function () {
-        this.hideDOM();
         this.updateTexture();
         this.initObservers();
         this.patchStyleGLTransform();
@@ -83,6 +82,7 @@
             if (mutations[0].attributeName === 'style') {
                 self.transformObject = self.getTransformObjectFromString(self.element.style.transform);
                 self.updateSpriteTransform();
+                this.hideDOM();
             } else {
                 self.updateTexture();
             }
