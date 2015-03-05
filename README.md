@@ -1,4 +1,6 @@
-HTML GL - render HTML/CSS via WebGL, framework agnostic
+<img alt="HTML GL" src="http://pixelscommander.com/polygon/htmlgl/figures/logo.png"/>
+
+Render HTML/CSS via WebGL, framework agnostic
 =====================================================================
 
 60 FPS animations and responsive interactions are top priority problems of cross-platform Web development. Since desktop browsers are mostly fine with handling animations, mobile and embedded devices still provide bad user experience.
@@ -9,7 +11,7 @@ HTML GL solves "the slow DOM problem" by creating WebGL representations of DOM e
 No DOM + WebGL rendering = highest FPS possible for Web platform
 -------------------------------------------------------
 
-<img alt="HTML GL flow diagram" src="http://pixelscommander.com/polygon/htmlgl/htmlgl-flow-diagram.png"/>
+<img alt="HTML GL flow diagram" src="http://pixelscommander.com/polygon/htmlgl/figures/htmlgl-flow-diagram.png"/>
 
 Demos
 -----
