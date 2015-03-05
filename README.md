@@ -22,8 +22,8 @@ Demos
 
 How to use?
 -----------
-Use tag name ```<webgl>``` on elements you are going to animate. These divs and their content will be rendered in WebGL also their CSS Transform properties maped to WebGL representation transformations. So DOM elements will not take part in animations which is resource saving.
-HTML GL is framework agnostic and it is easy to apply HTML GL to existing project in order to tweek performance.
+Use tag name ```<html-gl>``` on elements you are going to animate. These elements will be rendered in WebGL also their CSS Transform properties will be mapped to WebGL representation transformations. So DOM element itself will not be animated which is resource saving.
+HTML GL is framework agnostic and is easy to inject into existing project which needs performance tweaking.
 
 License
 -------
