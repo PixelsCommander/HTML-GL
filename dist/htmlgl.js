@@ -8430,19 +8430,26 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         w.HTMLGL.context = this;
 
         this.createStage();
-        this.addScrollListener();
+        this.addListenerers();
 
         if (!document.body) {
-            document.addEventListener("DOMContentLoaded", this.createViewer.bind(this));
+            document.addEventListener("DOMContentLoaded", this.init.bind(this));
         } else {
-            this.createViewer();
+            this.init();
         }
     }
 
     var p = HTMLGL.prototype;
 
-    p.addScrollListener = function () {
+    p.init = function () {
+        this.createViewer();
+        this.resizeViewer();
+        this.appendViewer();
+    }
+
+    p.addListenerers = function () {
         w.addEventListener('scroll', this.onScroll.bind(this));
+        w.addEventListener('resize', this.resizeViewer.bind(this));
     }
 
     p.onScroll = function (event) {
@@ -8478,17 +8485,23 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
     }
 
     p.createViewer = function () {
-        var width = w.innerWidth,
-            height = w.innerHeight;
-
-        this.renderer = PIXI.autoDetectRenderer(width, height, {transparent: true});
+        this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
         this.renderer.view.style.position = 'fixed';
         this.renderer.view.style.top = '0px';
         this.renderer.view.style.left = '0px';
-
-        document.body.appendChild(this.renderer.view);
         this.renderer.view.style['pointer-events'] = 'none';
+    }
 
+    p.resizeViewer = function () {
+        var width = w.innerWidth,
+            height = w.innerHeight;
+
+        this.renderer.resize(width, height);
+        this.stage.changed = true;
+    }
+
+    p.appendViewer = function () {
+        document.body.appendChild(this.renderer.view);
         requestAnimFrame(this.redraw.bind(this));
     }
 
