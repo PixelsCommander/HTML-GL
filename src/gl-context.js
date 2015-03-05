@@ -18,7 +18,7 @@
         this.createContext();
         w.HTMLGL.elements.forEach(function (element) {
             if (!element.haveSprite()) {
-                element.updateTexture();
+                element.applyNewTexture(element.image);
             }
         });
     }

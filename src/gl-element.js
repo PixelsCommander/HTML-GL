@@ -5,18 +5,21 @@
  */
 
 (function (w) {
-    var p = Object.create(HTMLElement.prototype);
+    var CUSTOM_ELEMENT_TAG_NAME = 'html-gl',
+        p = Object.create(HTMLElement.prototype);
 
     p.createdCallback = function () {
-        w.HTMLGL.elements.push(this);
-        this.renderer = 'webgl';
-        this.transformObject = {};
-        this.boundingRect = {};
-        this.image = {};
-        this.sprite = {};
-        this.texture = {};
-        this.bindCallbacks();
-        this.init();
+        if (this.baseURI.length > 0) {
+            w.HTMLGL.elements.push(this);
+            this.renderer = 'webgl';
+            this.transformObject = {};
+            this.boundingRect = {};
+            this.image = {};
+            this.sprite = {};
+            this.texture = {};
+            this.bindCallbacks();
+            this.init();
+        }
     }
 
     p.init = function () {
@@ -27,8 +30,7 @@
 
     p.updateTexture = function () {
         var self = this;
-        imagesLoaded(self, function () {
-            console.log('Images loaded');
+        new HTMLGL.ImagesLoaded(self, function () {
             self.updateBoundingRect();
             self.image = html2canvas(self, {
                 onrendered: self.applyNewTexture,
@@ -45,7 +47,6 @@
         if (!this.haveSprite()) {
             if (w.HTMLGL.stage) {
                 this.sprite = new PIXI.Sprite(this.texture);
-                console.log('Adding to stage');
                 w.HTMLGL.stage.addChild(this.sprite);
                 this.hideDOM();
             }
@@ -136,7 +137,7 @@
         return this.sprite.stage;
     }
 
-    w.GLElement = document.registerElement('html-gl', {
+    w.GLElement = document.registerElement(CUSTOM_ELEMENT_TAG_NAME, {
         prototype: p
     });
 })(window);
