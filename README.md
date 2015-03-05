@@ -16,9 +16,9 @@ No DOM + WebGL rendering = highest FPS possible for Web platform
 Demos
 -----
 
-- [Basic demo](http://pixelscommander.com/polygon/htmlgl/demo/) basic demo shows how to use HTML GL and animate GL Elements. It also demonstrate that HTML GL handle content change events and repaints element`s WebGL representation
-- [HTML GL](http://pixelscommander.com/polygon/htmlgl/demo/webgl.html) slider rendered via WebGL
-- [DOM](http://pixelscommander.com/polygon/htmlgl/demo/dom.html) this is the same project. The only difference is that HTMLGL.js is not included
+- [Basic demo](http://pixelscommander.com/polygon/htmlgl/demo/basic-webgl.html) basic demo shows how to use HTML GL and animate GL Elements. It also demonstrate that HTML GL handle content change events and repaints element`s WebGL representation
+- [HTML GL](http://pixelscommander.com/polygon/htmlgl/demo/advanced-content-webgl.html) slider rendered via WebGL
+- [DOM](http://pixelscommander.com/polygon/htmlgl/demo/advanced-content-dom.html) this is the same project. The only difference is that HTMLGL.js is not included
 
 How to use?
 -----------
