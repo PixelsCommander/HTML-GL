@@ -1,7 +1,9 @@
 <img alt="HTML GL" src="http://pixelscommander.com/polygon/htmlgl/figures/logo-blue.png"/>
 
-60 FPS apps by rendering HTML/CSS via WebGL, framework agnostic
-=====================================================================
+[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/PixelsCommander/HTML-GL)
+
+60 FPS by rendering HTML/CSS via WebGL, framework agnostic
+==========================================================
 
 Smooth animations and responsive interactions are top priority problems of cross-platform Web development. Since desktop browsers are mostly fine with handling animations, mobile and embedded devices still provide bad user experience.
 The biggest reason for animations to be janky is that "DOM is slow". It is true since DOM is quite complex model and every DOM change create a ripple of events or chain reaction over whole document.
