@@ -2,7 +2,7 @@
 
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/PixelsCommander/HTML-GL)
 
-60 FPS by rendering HTML/CSS via WebGL, framework agnostic
+60 FPS by rendering HTML/CSS in WebGL, framework agnostic
 ==========================================================
 
 Smooth animations and responsive interactions are top priority problems of cross-platform Web development. Since desktop browsers are mostly fine with handling animations, mobile and embedded devices still provide bad user experience.
