@@ -10,7 +10,8 @@ HTML GL solves "the slow DOM problem" by creating WebGL representations of DOM e
 
 ```html
 <html-gl>
-    This is rendered in <h1>WebGL</h1> <span style="color: red;">was it easy?</span>
+    This is rendered in <h1>WebGL</h1> <span style="color: green;">was it easy?</span>
+    Feel free to use external CSS and all you are common to in HTML/CSS world.
 </html-gl>
 ```
 
