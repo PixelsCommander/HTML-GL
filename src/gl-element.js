@@ -124,7 +124,7 @@
     p.patchStyleGLTransform = function () {
         var self = this;
         self.styleGl = {},
-        propertyName = this.style.transform ? 'transform' : 'WebkitTransform';
+        propertyName = this.style.transform !== undefined ? 'transform' : 'WebkitTransform';
 
         getterSetter(this.styleGl, propertyName,
             function () {
