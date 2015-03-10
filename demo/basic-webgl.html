@@ -3,6 +3,8 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>HTML GL demo</title>
+    <script src="../bower_components/promise-polyfill/Promise.min.js"></script>
+    <script src="../bower_components/webcomponents.js/CustomElements.min.js"></script>
     <script src="./js/vendor/velocity.js"></script>
     <script src="./js/vendor/html2canvas.js"></script>
     <script src="../bower_components/pixi/bin/pixi.dev.js"></script>
@@ -38,14 +40,13 @@
     window.animate = function () {
         var element = document.getElementsByTagName('html-gl')[0];
 
-        Velocity(element, {
+        var v = Velocity(element, {
             translateX: 100,
             translateY: 100,
             scaleX: 4,
             scaleY: 4,
             rotateZ: "360deg"
-        }, {duration: 1000})
-        .then(function () {
+        }, {duration: 1000}).then(function () {
             Velocity(element, {
                 translateX: 0,
                 translateY: 0,
