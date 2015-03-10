@@ -69,6 +69,7 @@
         this.renderer.view.style.top = '0px';
         this.renderer.view.style.left = '0px';
         this.renderer.view.style['pointer-events'] = 'none';
+        this.renderer.view.style['pointerEvents'] = 'none';
     }
 
     p.resizeViewer = function () {

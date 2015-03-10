@@ -8503,6 +8503,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         this.renderer.view.style.top = '0px';
         this.renderer.view.style.left = '0px';
         this.renderer.view.style['pointer-events'] = 'none';
+        this.renderer.view.style['pointerEvents'] = 'none';
     }
 
     p.resizeViewer = function () {
@@ -8596,7 +8597,7 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
 
 (function (w) {
     var style = document.createElement('style');
-    style.innerText = 'html-gl { display: inline-block;}';
+    style.innerHTML = 'html-gl { display: inline-block;}';
     document.getElementsByTagName('head')[0].appendChild(style);
 
     var CUSTOM_ELEMENT_TAG_NAME = 'html-gl',
