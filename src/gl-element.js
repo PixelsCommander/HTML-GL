@@ -1,7 +1,7 @@
 /*
-    Take into account
-    - updateTexture is expensive
-    - updateSpriteTransform is cheap
+ Take into account
+ - updateTexture is expensive
+ - updateSpriteTransform is cheap
  */
 
 (function (w) {
@@ -90,9 +90,12 @@
     }
 
     p.createSprite = function (texture) {
+        var self = this;
         this.sprite = new PIXI.Sprite(texture);
         w.HTMLGL.document.addChild(this.sprite);
-        this.hideDOM();
+        setTimeout(function () {
+            self.hideDOM()
+        }, 0);
     }
 
     p.initObservers = function () {
@@ -100,7 +103,7 @@
         var self = this;
         var observer = new MutationObserver(function (mutations) {
             if (mutations[0].attributeName === 'style') {
-                self.transformObject = self.getTransformObjectFromString(self.style.transform);
+                self.transformObject = self.getTransformObjectFromString(self.style.transform || self.style.webkitTransform);
                 self.updateSpriteTransform();
             } else {
                 self.updateTexture();
@@ -120,9 +123,10 @@
 
     p.patchStyleGLTransform = function () {
         var self = this;
-        self.styleGl = {};
+        self.styleGl = {},
+        propertyName = this.style.transform !== undefined ? 'transform' : 'WebkitTransform';
 
-        getterSetter(this.styleGl, 'transform',
+        getterSetter(this.styleGl, propertyName,
             function () {
                 return self.transformObject;
             },
@@ -151,11 +155,11 @@
         this.applyNewTexture = this.applyNewTexture.bind(this);
     }
 
-    p.haveSprite = function() {
+    p.haveSprite = function () {
         return this.sprite.stage;
     }
 
-    p.markStageAsChanged = function() {
+    p.markStageAsChanged = function () {
         if (w.HTMLGL.stage && !w.HTMLGL.stage.changed) {
             w.HTMLGL.stage.changed = true;
         }
