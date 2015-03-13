@@ -15,12 +15,6 @@ HTML GL solves "the slow DOM problem" by creating WebGL representations of DOM e
 Usage
 -----
 
-As jQuery plugin
-
-```html
-    $('.some div').htmlgl();
-```
-
 As Web Component
 
 ```html
@@ -29,6 +23,12 @@ As Web Component
     <span style="color: green;">was it easy?</span>
     Feel free to use CSS, images and all you are common to in HTML/CSS world.
 </html-gl>
+```
+
+As jQuery plugin
+
+```html
+    $('.some div').htmlgl();
 ```
 
 No DOM + WebGL rendering = highest FPS possible for Web platform
