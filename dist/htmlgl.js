@@ -8437,14 +8437,13 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
     w.HTMLGL = {
         context: undefined,
         stage: undefined,
-        elements: [],
+        elements: []
     };
 
     var HTMLGL = function () {
         w.HTMLGL.context = this;
 
         this.createStage();
-        this.onScroll();
         this.addListenerers();
 
         if (!document.body) {
@@ -8473,14 +8472,6 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         document.addEventListener('touchend', this.onMouseEvent.bind(this));
     }
 
-    p.onMouseEvent = function (event) {
-        var x = event.x || event.pageX,
-            y = event.y || event.pageY,
-            element = event.dispatcher !== 'html-gl' ? this.getGLElementByCoordinates(x, y) : null;
-
-        element ? this.emitEvent(element, event) : null;
-    }
-
     p.onScroll = function () {
         var scrollOffset = {};
 
@@ -8504,12 +8495,13 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         this.stage.changed = true;
     }
 
-    p.resizeViewer = function () {
-        var width = w.innerWidth,
-            height = w.innerHeight;
-
-        this.renderer.resize(width, height);
-        this.stage.changed = true;
+    p.createViewer = function () {
+        this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
+        this.renderer.view.style.position = 'fixed';
+        this.renderer.view.style.top = '0px';
+        this.renderer.view.style.left = '0px';
+        this.renderer.view.style['pointer-events'] = 'none';
+        this.renderer.view.style['pointerEvents'] = 'none';
     }
 
     p.appendViewer = function () {
@@ -8517,12 +8509,12 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         requestAnimFrame(this.redraw.bind(this));
     }
 
-    p.createViewer = function () {
-        this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
-        this.renderer.view.style.position = 'fixed';
-        this.renderer.view.style.top = '0px';
-        this.renderer.view.style.left = '0px';
-        this.renderer.view.style['pointer-events'] = 'none';
+    p.resizeViewer = function () {
+        var width = w.innerWidth,
+            height = w.innerHeight;
+
+        this.renderer.resize(width, height);
+        this.stage.changed = true;
     }
 
     p.createStage = function () {
@@ -8538,6 +8530,14 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
             this.renderer.render(this.stage);
             this.stage.changed = false;
         }
+    }
+
+    p.onMouseEvent = function (event) {
+        var x = event.x || event.pageX,
+            y = event.y || event.pageY,
+            element = event.dispatcher !== 'html-gl' ? this.getGLElementByCoordinates(x, y) : null;
+
+        element ? this.emitEvent(element, event) : null;
     }
 
     p.getGLElementByCoordinates = function (x, y) {
@@ -8642,7 +8642,7 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
 
 (function (w) {
     var style = document.createElement('style');
-    style.innerText = 'html-gl { display: inline-block; transform: translateZ(0);}';
+    style.innerHTML = 'html-gl { display: inline-block; transform: translateZ(0);}';
     document.getElementsByTagName('head')[0].appendChild(style);
 
     var CUSTOM_ELEMENT_TAG_NAME = 'html-gl',
