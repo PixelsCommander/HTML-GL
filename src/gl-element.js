@@ -6,7 +6,7 @@
 
 (function (w) {
     var style = document.createElement('style');
-    style.innerText = 'html-gl { display: inline-block; transform: translateZ(0);}';
+    style.innerHTML = 'html-gl { display: inline-block; transform: translateZ(0);}';
     document.getElementsByTagName('head')[0].appendChild(style);
 
     var CUSTOM_ELEMENT_TAG_NAME = 'html-gl',

@@ -2,14 +2,13 @@
     w.HTMLGL = {
         context: undefined,
         stage: undefined,
-        elements: [],
+        elements: []
     };
 
     var HTMLGL = function () {
         w.HTMLGL.context = this;
 
         this.createStage();
-        this.onScroll();
         this.addListenerers();
 
         if (!document.body) {
@@ -38,14 +37,6 @@
         document.addEventListener('touchend', this.onMouseEvent.bind(this));
     }
 
-    p.onMouseEvent = function (event) {
-        var x = event.x || event.pageX,
-            y = event.y || event.pageY,
-            element = event.dispatcher !== 'html-gl' ? this.getGLElementByCoordinates(x, y) : null;
-
-        element ? this.emitEvent(element, event) : null;
-    }
-
     p.onScroll = function () {
         var scrollOffset = {};
 
@@ -69,12 +60,13 @@
         this.stage.changed = true;
     }
 
-    p.resizeViewer = function () {
-        var width = w.innerWidth,
-            height = w.innerHeight;
-
-        this.renderer.resize(width, height);
-        this.stage.changed = true;
+    p.createViewer = function () {
+        this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
+        this.renderer.view.style.position = 'fixed';
+        this.renderer.view.style.top = '0px';
+        this.renderer.view.style.left = '0px';
+        this.renderer.view.style['pointer-events'] = 'none';
+        this.renderer.view.style['pointerEvents'] = 'none';
     }
 
     p.appendViewer = function () {
@@ -82,12 +74,12 @@
         requestAnimFrame(this.redraw.bind(this));
     }
 
-    p.createViewer = function () {
-        this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
-        this.renderer.view.style.position = 'fixed';
-        this.renderer.view.style.top = '0px';
-        this.renderer.view.style.left = '0px';
-        this.renderer.view.style['pointer-events'] = 'none';
+    p.resizeViewer = function () {
+        var width = w.innerWidth,
+            height = w.innerHeight;
+
+        this.renderer.resize(width, height);
+        this.stage.changed = true;
     }
 
     p.createStage = function () {
@@ -103,6 +95,14 @@
             this.renderer.render(this.stage);
             this.stage.changed = false;
         }
+    }
+
+    p.onMouseEvent = function (event) {
+        var x = event.x || event.pageX,
+            y = event.y || event.pageY,
+            element = event.dispatcher !== 'html-gl' ? this.getGLElementByCoordinates(x, y) : null;
+
+        element ? this.emitEvent(element, event) : null;
     }
 
     p.getGLElementByCoordinates = function (x, y) {
