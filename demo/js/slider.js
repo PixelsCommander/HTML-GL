@@ -14,21 +14,29 @@ for (var i = 0; i < images.length; i++) {
     };
 }
 
-slider.addEventListener('mousedown', function (event) {
+
+function onDragStart(event) {
     dragStart = true;
     startX = event.pageX || event.x;
     startLeft = parseInt(parseCSSTransform((slider.styleGL || slider.style)[transformPropertyName]).translateX) || 0;
-});
+}
 
-slider.addEventListener('mouseup', function () {
+function onDragEnd() {
     dragStart = false;
-});
+}
 
-slider.addEventListener('mousemove', function (event) {
+function onMove(event) {
     if (dragStart) {
         (slider.styleGL || slider.style)[transformPropertyName] = 'translateZ(0) translateX(' + (startLeft - (startX - ((event.pageX || event.x) || 0))) + 'px)';
     }
-});
+}
+
+slider.addEventListener('mousedown', onDragStart);
+slider.addEventListener('mouseup', onDragEnd);
+slider.addEventListener('mousemove', onMove);
+slider.addEventListener('touchstart', onDragStart);
+slider.addEventListener('touchend', onDragEnd);
+slider.addEventListener('touchmove', onMove);
 
 parseCSSTransform = function (transformString) {
     return (transformString.match(/([\w]+)\(([^\)]+)\)/g) || [])
