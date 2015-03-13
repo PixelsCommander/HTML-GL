@@ -8437,13 +8437,16 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
     w.HTMLGL = {
         context: undefined,
         stage: undefined,
-        elements: []
+        elements: [],
+        scrollX: 0,
+        scrollY: 0,
     };
 
     var HTMLGL = function () {
         w.HTMLGL.context = this;
 
         this.createStage();
+        this.onScroll();
         this.addListenerers();
 
         if (!document.body) {
@@ -8491,6 +8494,8 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         }
         this.document.x = -scrollOffset.left;
         this.document.y = -scrollOffset.top;
+        w.HTMLGL.scrollX = scrollOffset.left;
+        w.HTMLGL.scrollY = scrollOffset.top;
 
         this.stage.changed = true;
     }
@@ -8718,7 +8723,16 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
     }
 
     p.updateBoundingRect = function () {
-        this.boundingRect = this.getBoundingClientRect();
+        this.boundingRect = {
+            left: this.getBoundingClientRect().left,
+            right: this.getBoundingClientRect().right,
+            top: this.getBoundingClientRect().top,
+            bottom: this.getBoundingClientRect().bottom,
+            width: this.getBoundingClientRect().width,
+            height: this.getBoundingClientRect().height,
+        };
+        this.boundingRect.left = w.HTMLGL.scrollX + parseFloat(this.boundingRect.left);
+        this.boundingRect.top = w.HTMLGL.scrollY + parseFloat(this.boundingRect.top);
     }
 
     p.updatePivot = function () {

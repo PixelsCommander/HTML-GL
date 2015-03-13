@@ -19,7 +19,7 @@ As jQuery plugin
 
 ```html
     $('.some div').htmlgl();
-'''
+```
 
 As Web Component
 
