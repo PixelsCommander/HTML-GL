@@ -49,6 +49,7 @@ body {
   width: 100%;
   height: 100%;
   background: url("../../pic/bgs/Descendants.png") no-repeat #000000;
+  overflow-x: hidden;
 }
 html-gl {
   display: block;
@@ -91,7 +92,8 @@ ul.submenu {
 .broadcasts_list {
   margin: 36px 0 0 0;
   padding: 0 0 36px 0;
-  overflow-x: hidden;
+    /* TODO Implement overflow masks in WebGL
+    overflow-x: hidden;*/
 }
 .broadcasts_list h1 {
   font-family: Conv_InterstatePro-Light;

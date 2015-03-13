@@ -2,13 +2,14 @@
     w.HTMLGL = {
         context: undefined,
         stage: undefined,
-        elements: []
+        elements: [],
     };
 
     var HTMLGL = function () {
         w.HTMLGL.context = this;
 
         this.createStage();
+        this.onScroll();
         this.addListenerers();
 
         if (!document.body) {
@@ -29,9 +30,23 @@
     p.addListenerers = function () {
         w.addEventListener('scroll', this.onScroll.bind(this));
         w.addEventListener('resize', this.resizeViewer.bind(this));
+        document.addEventListener('click', this.onMouseEvent.bind(this), true);
+        document.addEventListener('mousemove', this.onMouseEvent.bind(this), true);
+        document.addEventListener('mouseup', this.onMouseEvent.bind(this), true);
+        document.addEventListener('mousedown', this.onMouseEvent.bind(this), true);
+        document.addEventListener('touchstart', this.onMouseEvent.bind(this));
+        document.addEventListener('touchend', this.onMouseEvent.bind(this));
     }
 
-    p.onScroll = function (event) {
+    p.onMouseEvent = function (event) {
+        var x = event.x || event.pageX,
+            y = event.y || event.pageY,
+            element = event.dispatcher !== 'html-gl' ? this.getGLElementByCoordinates(x, y) : null;
+
+        element ? this.emitEvent(element, event) : null;
+    }
+
+    p.onScroll = function () {
         var scrollOffset = {};
 
         if (window.pageYOffset != undefined) {
@@ -54,23 +69,6 @@
         this.stage.changed = true;
     }
 
-    p.redraw = function () {
-        requestAnimFrame(this.redraw.bind(this));
-
-        if (this.stage.changed) {
-            this.renderer.render(this.stage);
-            this.stage.changed = false;
-        }
-    }
-
-    p.createViewer = function () {
-        this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
-        this.renderer.view.style.position = 'fixed';
-        this.renderer.view.style.top = '0px';
-        this.renderer.view.style.left = '0px';
-        this.renderer.view.style['pointer-events'] = 'none';
-    }
-
     p.resizeViewer = function () {
         var width = w.innerWidth,
             height = w.innerHeight;
@@ -84,10 +82,57 @@
         requestAnimFrame(this.redraw.bind(this));
     }
 
+    p.createViewer = function () {
+        this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
+        this.renderer.view.style.position = 'fixed';
+        this.renderer.view.style.top = '0px';
+        this.renderer.view.style.left = '0px';
+        this.renderer.view.style['pointer-events'] = 'none';
+    }
+
     p.createStage = function () {
         w.HTMLGL.stage = this.stage = new PIXI.Stage(0xFFFFFF);
         w.HTMLGL.document = this.document = new PIXI.DisplayObjectContainer();
         this.stage.addChild(w.HTMLGL.document);
+    }
+
+    p.redraw = function () {
+        requestAnimFrame(this.redraw.bind(this));
+
+        if (this.stage.changed) {
+            this.renderer.render(this.stage);
+            this.stage.changed = false;
+        }
+    }
+
+    p.getGLElementByCoordinates = function (x, y) {
+        var element,
+            self = this,
+            result;
+
+        function isContained(child, parent) {
+            var current = child;
+            while (current) {
+                if (current === parent) return true;
+                current = current.parentNode;
+            }
+            return false;
+        }
+
+        w.HTMLGL.elements.forEach(function (glelement) {
+            element = document.elementFromPoint(x - parseInt(glelement.transformObject.translateX || 0), y - parseInt(glelement.transformObject.translateY || 0))
+            if (isContained(element, glelement)) {
+                result = element;
+            }
+        });
+        return result;
+    }
+
+    p.emitEvent = function (element, event) {
+        var newEvent = new MouseEvent(event.type, event);
+        newEvent.dispatcher = 'html-gl';
+        event.stopPropagation();
+        element.dispatchEvent(newEvent);
     }
 
     new HTMLGL();

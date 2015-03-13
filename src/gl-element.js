@@ -6,7 +6,7 @@
 
 (function (w) {
     var style = document.createElement('style');
-    style.innerText = 'html-gl { display: inline-block;}';
+    style.innerText = 'html-gl { display: inline-block; transform: translateZ(0);}';
     document.getElementsByTagName('head')[0].appendChild(style);
 
     var CUSTOM_ELEMENT_TAG_NAME = 'html-gl',
@@ -23,7 +23,9 @@
             this.texture = {};
             this.halfWidth = 0;
             this.halfHeight = 0;
+            this.observer = undefined;
             this.bindCallbacks();
+            this.transformProperty = this.style.transform !== undefined ? 'transform' : 'WebkitTransform';
             this.init();
         }
     }
@@ -31,11 +33,12 @@
     p.init = function () {
         this.updateTexture();
         this.initObservers();
-        this.patchStyleGLTransform();
+        this.patchstyleGLTransform();
     }
 
     p.updateTexture = function () {
         var self = this;
+
         new HTMLGL.ImagesLoaded(self, function () {
             self.updateBoundingRect();
             self.image = html2canvas(self, {
@@ -94,41 +97,50 @@
         this.sprite = new PIXI.Sprite(texture);
         w.HTMLGL.document.addChild(this.sprite);
         setTimeout(function () {
-            self.hideDOM()
+            self.hideDOM();
         }, 0);
     }
 
     p.initObservers = function () {
         //TODO Better heuristics for rerendering condition #2
-        var self = this;
-        var observer = new MutationObserver(function (mutations) {
+        var self = this,
+            config = {
+                childList: true,
+                characterData: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['style']
+            };
+
+        this.observer = this.observer || new MutationObserver(function (mutations) {
             if (mutations[0].attributeName === 'style') {
-                self.transformObject = self.getTransformObjectFromString(self.style.transform || self.style.webkitTransform);
+                self.transformObject = self.getTransformObjectFromString(self.style[self.transformProperty]);
                 self.updateSpriteTransform();
             } else {
                 self.updateTexture();
             }
         });
 
-        var config = {
-            childList: true,
-            characterData: true,
-            subtree: true,
-            attributes: true,
-            attributeFilter: ['style']
-        };
-
-        observer.observe(this, config);
+        this.observer.observe(this, config);
     }
 
-    p.patchStyleGLTransform = function () {
-        var self = this;
-        self.styleGl = {},
-        propertyName = this.style.transform !== undefined ? 'transform' : 'WebkitTransform';
+    p.disconnectObservers = function () {
+        this.observer.disconnect();
+    }
 
-        getterSetter(this.styleGl, propertyName,
-            function () {
-                return self.transformObject;
+    p.patchstyleGLTransform = function () {
+        var self = this;
+        self.styleGL = {};
+
+        getterSetter(this.styleGL, this.transformProperty, function () {
+                var result = '';
+
+                for (var transformPropertyName in self.transformObject) {
+                    var transformPropertyValue = '(' + self.transformObject[transformPropertyName] + ') ';
+                    result += transformPropertyName + transformPropertyValue;
+                }
+
+                return result;
             },
             function (value) {
                 self.transformObject = self.getTransformObjectFromString(value);
@@ -148,7 +160,7 @@
     }
 
     p.hideDOM = function () {
-        this.style.visibility = 'hidden';
+        this.style.opacity = 0;
     }
 
     p.bindCallbacks = function () {

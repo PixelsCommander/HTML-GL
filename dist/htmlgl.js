@@ -2041,6 +2041,7 @@ b.AnimCache[o.url]=g,o.spine=g,o.spineAtlas=d,o.spineAtlasLoader=n,a.loadingCoun
             document.querySelector(selector).removeAttribute(attributeName);
             var clonedWindow = container.contentWindow;
             var node = clonedWindow.document.querySelector(selector);
+            node.style.opacity === "0" && node.tagName === "HTML-GL" ? node.style.opacity = 1 : null;
             var oncloneHandler = (typeof(options.onclone) === "function") ? Promise.resolve(options.onclone(clonedWindow.document)) : Promise.resolve(true);
             return oncloneHandler.then(function() {
                 return renderWindow(node, container, options, windowWidth, windowHeight);
@@ -6425,7 +6426,7 @@ return function (global, window, document, undefined) {
                         /* Note: Not all CSS properties can be animated via attributes, but the browser won't throw an error for unsupported properties. */
                         element.setAttribute(property, propertyValue);
                     } else {
-                        var style = element.renderer === "webgl" ? element.styleGl : element.style;
+                        var style = element.renderer === "webgl" ? element.styleGL : element.style;
                         style[propertyName] = propertyValue;
                     }
 
@@ -8356,7 +8357,7 @@ return function (global, window, document, undefined) {
             }
 
             opts.begin = function() {
-                var style = element.renderer === "webgl" ? element.styleGl : element.style;
+                var style = element.renderer === "webgl" ? element.styleGL : element.style;
                 /* If the user passed in a begin callback, fire it now. */
                 begin && begin.call(elements, elements);
 
@@ -8436,13 +8437,14 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
     w.HTMLGL = {
         context: undefined,
         stage: undefined,
-        elements: []
+        elements: [],
     };
 
     var HTMLGL = function () {
         w.HTMLGL.context = this;
 
         this.createStage();
+        this.onScroll();
         this.addListenerers();
 
         if (!document.body) {
@@ -8463,9 +8465,23 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
     p.addListenerers = function () {
         w.addEventListener('scroll', this.onScroll.bind(this));
         w.addEventListener('resize', this.resizeViewer.bind(this));
+        document.addEventListener('click', this.onMouseEvent.bind(this), true);
+        document.addEventListener('mousemove', this.onMouseEvent.bind(this), true);
+        document.addEventListener('mouseup', this.onMouseEvent.bind(this), true);
+        document.addEventListener('mousedown', this.onMouseEvent.bind(this), true);
+        document.addEventListener('touchstart', this.onMouseEvent.bind(this));
+        document.addEventListener('touchend', this.onMouseEvent.bind(this));
     }
 
-    p.onScroll = function (event) {
+    p.onMouseEvent = function (event) {
+        var x = event.x || event.pageX,
+            y = event.y || event.pageY,
+            element = event.dispatcher !== 'html-gl' ? this.getGLElementByCoordinates(x, y) : null;
+
+        element ? this.emitEvent(element, event) : null;
+    }
+
+    p.onScroll = function () {
         var scrollOffset = {};
 
         if (window.pageYOffset != undefined) {
@@ -8488,23 +8504,6 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         this.stage.changed = true;
     }
 
-    p.redraw = function () {
-        requestAnimFrame(this.redraw.bind(this));
-
-        if (this.stage.changed) {
-            this.renderer.render(this.stage);
-            this.stage.changed = false;
-        }
-    }
-
-    p.createViewer = function () {
-        this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
-        this.renderer.view.style.position = 'fixed';
-        this.renderer.view.style.top = '0px';
-        this.renderer.view.style.left = '0px';
-        this.renderer.view.style['pointer-events'] = 'none';
-    }
-
     p.resizeViewer = function () {
         var width = w.innerWidth,
             height = w.innerHeight;
@@ -8518,10 +8517,57 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         requestAnimFrame(this.redraw.bind(this));
     }
 
+    p.createViewer = function () {
+        this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
+        this.renderer.view.style.position = 'fixed';
+        this.renderer.view.style.top = '0px';
+        this.renderer.view.style.left = '0px';
+        this.renderer.view.style['pointer-events'] = 'none';
+    }
+
     p.createStage = function () {
         w.HTMLGL.stage = this.stage = new PIXI.Stage(0xFFFFFF);
         w.HTMLGL.document = this.document = new PIXI.DisplayObjectContainer();
         this.stage.addChild(w.HTMLGL.document);
+    }
+
+    p.redraw = function () {
+        requestAnimFrame(this.redraw.bind(this));
+
+        if (this.stage.changed) {
+            this.renderer.render(this.stage);
+            this.stage.changed = false;
+        }
+    }
+
+    p.getGLElementByCoordinates = function (x, y) {
+        var element,
+            self = this,
+            result;
+
+        function isContained(child, parent) {
+            var current = child;
+            while (current) {
+                if (current === parent) return true;
+                current = current.parentNode;
+            }
+            return false;
+        }
+
+        w.HTMLGL.elements.forEach(function (glelement) {
+            element = document.elementFromPoint(x - parseInt(glelement.transformObject.translateX || 0), y - parseInt(glelement.transformObject.translateY || 0))
+            if (isContained(element, glelement)) {
+                result = element;
+            }
+        });
+        return result;
+    }
+
+    p.emitEvent = function (element, event) {
+        var newEvent = new MouseEvent(event.type, event);
+        newEvent.dispatcher = 'html-gl';
+        event.stopPropagation();
+        element.dispatchEvent(newEvent);
     }
 
     new HTMLGL();
@@ -8596,7 +8642,7 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
 
 (function (w) {
     var style = document.createElement('style');
-    style.innerText = 'html-gl { display: inline-block;}';
+    style.innerText = 'html-gl { display: inline-block; transform: translateZ(0);}';
     document.getElementsByTagName('head')[0].appendChild(style);
 
     var CUSTOM_ELEMENT_TAG_NAME = 'html-gl',
@@ -8613,7 +8659,9 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
             this.texture = {};
             this.halfWidth = 0;
             this.halfHeight = 0;
+            this.observer = undefined;
             this.bindCallbacks();
+            this.transformProperty = this.style.transform !== undefined ? 'transform' : 'WebkitTransform';
             this.init();
         }
     }
@@ -8621,11 +8669,12 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
     p.init = function () {
         this.updateTexture();
         this.initObservers();
-        this.patchStyleGLTransform();
+        this.patchstyleGLTransform();
     }
 
     p.updateTexture = function () {
         var self = this;
+
         new HTMLGL.ImagesLoaded(self, function () {
             self.updateBoundingRect();
             self.image = html2canvas(self, {
@@ -8684,41 +8733,50 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
         this.sprite = new PIXI.Sprite(texture);
         w.HTMLGL.document.addChild(this.sprite);
         setTimeout(function () {
-            self.hideDOM()
+            self.hideDOM();
         }, 0);
     }
 
     p.initObservers = function () {
         //TODO Better heuristics for rerendering condition #2
-        var self = this;
-        var observer = new MutationObserver(function (mutations) {
+        var self = this,
+            config = {
+                childList: true,
+                characterData: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['style']
+            };
+
+        this.observer = this.observer || new MutationObserver(function (mutations) {
             if (mutations[0].attributeName === 'style') {
-                self.transformObject = self.getTransformObjectFromString(self.style.transform || self.style.webkitTransform);
+                self.transformObject = self.getTransformObjectFromString(self.style[self.transformProperty]);
                 self.updateSpriteTransform();
             } else {
                 self.updateTexture();
             }
         });
 
-        var config = {
-            childList: true,
-            characterData: true,
-            subtree: true,
-            attributes: true,
-            attributeFilter: ['style']
-        };
-
-        observer.observe(this, config);
+        this.observer.observe(this, config);
     }
 
-    p.patchStyleGLTransform = function () {
-        var self = this;
-        self.styleGl = {},
-        propertyName = this.style.transform !== undefined ? 'transform' : 'WebkitTransform';
+    p.disconnectObservers = function () {
+        this.observer.disconnect();
+    }
 
-        getterSetter(this.styleGl, propertyName,
-            function () {
-                return self.transformObject;
+    p.patchstyleGLTransform = function () {
+        var self = this;
+        self.styleGL = {};
+
+        getterSetter(this.styleGL, this.transformProperty, function () {
+                var result = '';
+
+                for (var transformPropertyName in self.transformObject) {
+                    var transformPropertyValue = '(' + self.transformObject[transformPropertyName] + ') ';
+                    result += transformPropertyName + transformPropertyValue;
+                }
+
+                return result;
             },
             function (value) {
                 self.transformObject = self.getTransformObjectFromString(value);
@@ -8738,7 +8796,7 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
     }
 
     p.hideDOM = function () {
-        this.style.visibility = 'hidden';
+        this.style.opacity = 0;
     }
 
     p.bindCallbacks = function () {

@@ -2010,6 +2010,7 @@
             document.querySelector(selector).removeAttribute(attributeName);
             var clonedWindow = container.contentWindow;
             var node = clonedWindow.document.querySelector(selector);
+            node.style.opacity === "0" && node.tagName === "HTML-GL" ? node.style.opacity = 1 : null;
             var oncloneHandler = (typeof(options.onclone) === "function") ? Promise.resolve(options.onclone(clonedWindow.document)) : Promise.resolve(true);
             return oncloneHandler.then(function() {
                 return renderWindow(node, container, options, windowWidth, windowHeight);

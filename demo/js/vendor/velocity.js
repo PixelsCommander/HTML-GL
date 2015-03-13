@@ -1861,7 +1861,7 @@ return function (global, window, document, undefined) {
                         /* Note: Not all CSS properties can be animated via attributes, but the browser won't throw an error for unsupported properties. */
                         element.setAttribute(property, propertyValue);
                     } else {
-                        var style = element.renderer === "webgl" ? element.styleGl : element.style;
+                        var style = element.renderer === "webgl" ? element.styleGL : element.style;
                         style[propertyName] = propertyValue;
                     }
 
@@ -3792,7 +3792,7 @@ return function (global, window, document, undefined) {
             }
 
             opts.begin = function() {
-                var style = element.renderer === "webgl" ? element.styleGl : element.style;
+                var style = element.renderer === "webgl" ? element.styleGL : element.style;
                 /* If the user passed in a begin callback, fire it now. */
                 begin && begin.call(elements, elements);
 
