@@ -17,7 +17,7 @@ for (var i = 0; i < images.length; i++) {
 
 function onDragStart(event) {
     dragStart = true;
-    startX = event.pageX || event.x;
+    startX = (event.pageX || event.x) || event.touches[0].pageX;
     startLeft = parseInt(parseCSSTransform((slider.styleGL || slider.style)[transformPropertyName]).translateX) || 0;
 }
 
@@ -27,7 +27,8 @@ function onDragEnd() {
 
 function onMove(event) {
     if (dragStart) {
-        (slider.styleGL || slider.style)[transformPropertyName] = 'translateZ(0) translateX(' + (startLeft - (startX - ((event.pageX || event.x) || 0))) + 'px)';
+        var pageX = (event.pageX || event.x) || event.touches[0].pageX;
+        (slider.styleGL || slider.style)[transformPropertyName] = 'translateZ(0) translateX(' + (startLeft - (startX - (pageX || 0))) + 'px)';
     }
 }
 
