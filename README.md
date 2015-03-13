@@ -12,6 +12,17 @@ The biggest reason for animations to be janky is that "DOM is slow". It is true 
 
 HTML GL solves "the slow DOM problem" by creating WebGL representations of DOM elements and hiding actual DOM after. As a result you still work with HTML/CSS as you are common to, but DOM elements are just facades to their WebGL represenations. These GPU accelerated textures are very effective from resources consuming perspective and are very cheap to transform or animate.
 
+Usage
+-----
+
+As jQuery plugin
+
+```html
+    $('.some div').htmlgl();
+'''
+
+As Web Component
+
 ```html
 <html-gl>
     This element`s content is rendered in <h1>WebGL</h1>

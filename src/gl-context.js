@@ -2,13 +2,16 @@
     w.HTMLGL = {
         context: undefined,
         stage: undefined,
-        elements: []
+        elements: [],
+        scrollX: 0,
+        scrollY: 0,
     };
 
     var HTMLGL = function () {
         w.HTMLGL.context = this;
 
         this.createStage();
+        this.onScroll();
         this.addListenerers();
 
         if (!document.body) {
@@ -56,6 +59,8 @@
         }
         this.document.x = -scrollOffset.left;
         this.document.y = -scrollOffset.top;
+        w.HTMLGL.scrollX = scrollOffset.left;
+        w.HTMLGL.scrollY = scrollOffset.top;
 
         this.stage.changed = true;
     }

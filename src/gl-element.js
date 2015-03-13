@@ -82,7 +82,16 @@
     }
 
     p.updateBoundingRect = function () {
-        this.boundingRect = this.getBoundingClientRect();
+        this.boundingRect = {
+            left: this.getBoundingClientRect().left,
+            right: this.getBoundingClientRect().right,
+            top: this.getBoundingClientRect().top,
+            bottom: this.getBoundingClientRect().bottom,
+            width: this.getBoundingClientRect().width,
+            height: this.getBoundingClientRect().height,
+        };
+        this.boundingRect.left = w.HTMLGL.scrollX + parseFloat(this.boundingRect.left);
+        this.boundingRect.top = w.HTMLGL.scrollY + parseFloat(this.boundingRect.top);
     }
 
     p.updatePivot = function () {

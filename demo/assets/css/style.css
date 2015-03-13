@@ -39,6 +39,10 @@
   font-family: 'UPCDigital-bold';
   src: url(../fonts/DAWN-UPCDiBd.ttf) format('truetype');
 }
+
+html {
+    overflow-x: hidden;
+}
 body {
   box-sizing: border-box;
   padding: 30px 93px 0 93px;
