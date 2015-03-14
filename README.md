@@ -1,7 +1,7 @@
 <img alt="HTML GL" src="http://pixelscommander.com/polygon/htmlgl/figures/logo-blue.png"/>
 
-60 FPS by rendering HTML/CSS in WebGL, framework agnostic
-=========================================================
+60 FPS rendering and amazing effects by rendering HTML/CSS in WebGL, framework agnostic
+=======================================================================================
 
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/PixelsCommander/HTML-GL)
 
@@ -9,6 +9,7 @@ Smooth animations and responsive interactions are top priority problems of cross
 The biggest reason for animations to be janky is that "DOM is slow". It is true since DOM is quite complex model and every DOM change create a ripple of events or chain reaction over whole document.
 
 [Article about](http://pixelscommander.com/en/web-applications-performance/render-html-css-in-webgl-to-get-highest-performance-possibl/)
+[Demo with effects](http://pixelscommander.com/polygon/htmlgl/demo/filters.html)
 
 HTML GL solves "the slow DOM problem" by creating WebGL representations of DOM elements and hiding actual DOM after. As a result you still work with HTML/CSS as you are common to, but DOM elements are just facades to their WebGL represenations. These GPU accelerated textures are very effective from resources consuming perspective and are very cheap to transform or animate.
 
