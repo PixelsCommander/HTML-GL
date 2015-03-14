@@ -163,5 +163,12 @@
 </div>
 <script src="./js/vendor/velocity.js"></script>
 <script src="./js/slider.js"></script>
+<script>
+    window.addEventListener('load', function () {
+        setTimeout(function () {
+            Velocity(document.getElementsByTagName('html-gl')[0], {translateX: 408}, {duration: 500});
+        }, 500);
+    });
+</script>
 </body>
 </html>

@@ -1,7 +1,9 @@
 (function (w) {
+
     w.HTMLGL = {
         context: undefined,
         stage: undefined,
+        renderer: undefined,
         elements: [],
         scrollX: 0,
         scrollY: 0,
@@ -66,7 +68,7 @@
     }
 
     p.createViewer = function () {
-        this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
+        w.HTMLGL.renderer = this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
         this.renderer.view.style.position = 'fixed';
         this.renderer.view.style.top = '0px';
         this.renderer.view.style.left = '0px';

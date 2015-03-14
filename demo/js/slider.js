@@ -59,9 +59,3 @@ parseCSSTransform = function (transformString) {
             return m[it[0]] = it[1], m
         }, {});
 }
-
-window.addEventListener('load', function () {
-    setTimeout(function () {
-        Velocity(document.getElementsByTagName('html-gl')[0], {translateX: 408}, {duration: 500});
-    }, 500);
-});

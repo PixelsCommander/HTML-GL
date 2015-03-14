@@ -171,5 +171,12 @@
 <script src="../src/images-loaded.js"></script>
 <script src="../src/gl-element.js"></script>
 <script src="./js/slider.js"></script>
+<script>
+    window.addEventListener('load', function () {
+        setTimeout(function () {
+            Velocity(document.getElementsByTagName('html-gl')[0], {translateX: 408}, {duration: 500});
+        }, 500);
+    });
+</script>
 </body>
 </html>

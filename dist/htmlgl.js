@@ -8434,9 +8434,11 @@ return function (global, window, document, undefined) {
 Velocity, however, doesn't make this distinction. Thus, converting to or from the % unit with these subproperties
 will produce an inaccurate conversion value. The same issue exists with the cx/cy attributes of SVG circles and ellipses. */
 (function (w) {
+
     w.HTMLGL = {
         context: undefined,
         stage: undefined,
+        renderer: undefined,
         elements: [],
         scrollX: 0,
         scrollY: 0,
@@ -8501,7 +8503,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
     }
 
     p.createViewer = function () {
-        this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
+        w.HTMLGL.renderer = this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
         this.renderer.view.style.position = 'fixed';
         this.renderer.view.style.top = '0px';
         this.renderer.view.style.left = '0px';
