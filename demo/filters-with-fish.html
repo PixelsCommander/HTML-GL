@@ -291,7 +291,7 @@
     var fishs = [];
 
 
-    /*for (var i = 0; i < 20; i++)
+    for (var i = 0; i < 20; i++)
     {
         var fishId = i % 4;
         fishId += 1;
@@ -314,7 +314,7 @@
         fish.scale.x = fish.scale.y = 0.8 + Math.random() * 0.3;
         fishs.push(fish);
 
-    };*/
+    };
 
     var overlay = new PIXI.TilingSprite(PIXI.Texture.fromImage("assets/img/zeldaWaves.png"), window.HTMLGL.renderer.width, window.HTMLGL.renderer.height);
     overlay.alpha = 0.1//0.2
@@ -343,7 +343,7 @@
 
         pondContainer.filters = filtersToApply.length > 0 ? filtersToApply : null;
 
-        /*for (var i = 0; i < fishs.length; i++)
+        for (var i = 0; i < fishs.length; i++)
         {
             var fish = fishs[i];
 
@@ -360,7 +360,7 @@
 
             if(fish.position.y < bounds.y)fish.position.y += bounds.height;
             if(fish.position.y > bounds.y + bounds.height)fish.position.y -= bounds.height
-        }*/
+        }
 
 
         displacementFilter.offset.x = count * 10//blurAmount * 40;
