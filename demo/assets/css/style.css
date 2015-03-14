@@ -71,6 +71,16 @@ h1 {
 .menu.expanded {
   border-bottom: 1px solid #858382;
 }
+a {
+    font-family: verdana, sans-serif;
+    margin: 0 0 30px 0;
+    font-weight: 300;
+    color: #ffffff;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
 ul.menu,
 ul.submenu {
   list-style: none;
@@ -90,7 +100,9 @@ ul.submenu {
   font-size: 26px;
 }
 .submenu li {
-  display: inline;
+    overflow: hidden;
+    height: 24px;
+  display: inline-block;
   padding-right: 30px;
 }
 .broadcasts_list {
