@@ -1,6 +1,6 @@
 <img alt="HTML GL" src="http://pixelscommander.com/polygon/htmlgl/figures/logo-blue.png"/>
 
-60 FPS rendering and amazing effects by rendering HTML/CSS in WebGL, framework agnostic
+60 FPS and amazing effects by rendering HTML/CSS in WebGL, framework agnostic
 =======================================================================================
 
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/PixelsCommander/HTML-GL)
