@@ -8,8 +8,8 @@
 Smooth animations and responsive interactions are top priority problems of cross-platform Web development. Since desktop browsers are mostly fine with handling animations, mobile and embedded devices still provide bad user experience.
 The biggest reason for animations to be janky is that "DOM is slow". It is true since DOM is quite complex model and every DOM change create a ripple of events or chain reaction over whole document.
 
+- [Demo](http://pixelscommander.com/polygon/htmlgl/demo/filters.html)
 - [Article about](http://pixelscommander.com/en/web-applications-performance/render-html-css-in-webgl-to-get-highest-performance-possibl/)
-- [Demo with FX](http://pixelscommander.com/polygon/htmlgl/demo/filters.html)
 
 HTML GL solves "the slow DOM problem" by creating WebGL representations of DOM elements and hiding actual DOM after. As a result you still work with HTML/CSS as you are common to, but DOM elements are just facades to their WebGL represenations. These GPU accelerated textures are very effective from resources consuming perspective and are very cheap to transform or animate.
 
