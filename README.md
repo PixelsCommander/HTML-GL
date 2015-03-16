@@ -6,7 +6,7 @@
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/PixelsCommander/HTML-GL)
 
 Smooth animations and responsive interactions are top priority problems of cross-platform Web development. Since desktop browsers are mostly fine with handling animations, mobile and embedded devices still provide bad user experience.
-The biggest reason for animations to be janky is that "DOM is slow". It is true since DOM is quite complex model and every DOM change create a ripple of events or chain reaction over whole document.
+The biggest reason for animations to be janky is that "DOM is slow". It is true since DOM is a quite complex model and every DOM change create a ripple of events or chain reaction over whole document.
 
 - [Demo](http://pixelscommander.com/polygon/htmlgl/demo/filters.html)
 - [Article about](http://pixelscommander.com/en/web-applications-performance/render-html-css-in-webgl-to-get-highest-performance-possibl/)
