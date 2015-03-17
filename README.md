@@ -5,7 +5,7 @@
 
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/PixelsCommander/HTML-GL)
 
-HTML GL solves "the slow DOM problem" by creating WebGL representations of DOM elements and hiding actual DOM after. This speeds up HTML animations and apply effects available in OpenGL (as modern 3D games have).
+HTML GL solves "the slow DOM problem" by creating WebGL representations of DOM elements and hiding actual DOM after. This speeds up HTML/CSS animations and transformations by using 3D hardware acceleration and allows to apply OpenGL effects as modern 3D games have.
 
 - [Demo](http://pixelscommander.com/polygon/htmlgl/demo/filters.html)
 - [Article about HTML GL](http://pixelscommander.com/en/web-applications-performance/render-html-css-in-webgl-to-get-highest-performance-possibl/)
