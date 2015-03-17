@@ -5,7 +5,6 @@
 
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/PixelsCommander/HTML-GL)
 
-Smooth animations and responsive interactions are top priority problems of cross-platform Web development. Since desktop browsers are mostly fine with handling animations, mobile and embedded devices still provide bad user experience.
 HTML GL solves "the slow DOM problem" by creating WebGL representations of DOM elements and hiding actual DOM after. This allows to speed up HTML animations and apply effects available in OpenGL (as modern 3D games have).
 
 - [Demo](http://pixelscommander.com/polygon/htmlgl/demo/filters.html)
