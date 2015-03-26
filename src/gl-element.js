@@ -24,6 +24,7 @@
             this.halfWidth = 0;
             this.halfHeight = 0;
             this.observer = undefined;
+            this.GLParent = w.HTMLGL.document;//this.getGLParent();
             this.bindCallbacks();
             this.transformProperty = this.style.transform !== undefined ? 'transform' : 'WebkitTransform';
             this.init();
@@ -34,6 +35,17 @@
         this.updateTexture();
         this.initObservers();
         this.patchstyleGLTransform();
+    }
+
+    p.getGLParent = function () {
+        var parent = this;
+
+        while (parent) {
+            parent = parent.parentNode;
+            if (parent.tagName === 'HTML-GL' || parent === w.document) {
+                return parent;
+            }
+        }
     }
 
     p.updateTexture = function () {
@@ -83,13 +95,19 @@
 
     p.updateBoundingRect = function () {
         this.boundingRect = {
-            left: this.getBoundingClientRect().left,
-            right: this.getBoundingClientRect().right,
+            left: parseInt(this.getBoundingClientRect().left),
+            right: parseInt(this.getBoundingClientRect().right),
             top: this.getBoundingClientRect().top,
             bottom: this.getBoundingClientRect().bottom,
             width: this.getBoundingClientRect().width,
             height: this.getBoundingClientRect().height,
         };
+
+        if (this.GLParent.boundingRect) {
+            this.boundingRect.left -= this.GLParent.boundingRect.left;
+            this.boundingRect.top -= this.GLParent.boundingRect.top;
+        }
+
         this.boundingRect.left = w.HTMLGL.scrollX + parseFloat(this.boundingRect.left);
         this.boundingRect.top = w.HTMLGL.scrollY + parseFloat(this.boundingRect.top);
     }
@@ -102,9 +120,11 @@
     }
 
     p.createSprite = function (texture) {
-        var self = this;
+        var self = this,
+            parentSprite = this.GLParent.sprite || w.HTMLGL.document;
+
         this.sprite = new PIXI.Sprite(texture);
-        w.HTMLGL.document.addChild(this.sprite);
+        parentSprite.addChild(this.sprite);
         setTimeout(function () {
             self.hideDOM();
         }, 0);

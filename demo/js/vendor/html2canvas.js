@@ -2004,13 +2004,33 @@
 
     function renderDocument(document, options, windowWidth, windowHeight, html2canvasIndex) {
         return createWindowClone(document, document, windowWidth, windowHeight, options, document.defaultView.pageXOffset, document.defaultView.pageYOffset).then(function(container) {
-            log("Document cloned");
+            console.log("Document cloned");
             var attributeName = html2canvasNodeAttribute + html2canvasIndex;
             var selector = "[" + attributeName + "='" + html2canvasIndex + "']";
             document.querySelector(selector).removeAttribute(attributeName);
             var clonedWindow = container.contentWindow;
             var node = clonedWindow.document.querySelector(selector);
-            node.style.opacity === "0" && node.tagName === "HTML-GL" ? node.style.opacity = 1 : null;
+
+            //Hide child HTML-GL node since they should be rendered separately
+            var htmlGlNodes = node.querySelectorAll('html-gl');
+
+            for (var i = 0; i < htmlGlNodes.length; i++) {
+                if (htmlGlNodes[i] !== node) {
+                    console.log('Hiding child HTML-GL ' + htmlGlNodes[i].innerText);
+                    //htmlGlNodes[i].style.visibility = 'hidden';
+                }
+            }
+
+            //Show root HTML-GL node
+            if (node.tagName === "HTML-GL") {
+                console.log('Rendering HTML-GL ' + node.innerText);
+                node.style.position = 'absolute';
+                //node.style.top = '0px';
+                //node.style.left = '0px';
+                node.style.opacity = 1;
+                node.style.visibility = 'visible';
+            }
+
             var oncloneHandler = (typeof(options.onclone) === "function") ? Promise.resolve(options.onclone(clonedWindow.document)) : Promise.resolve(true);
             return oncloneHandler.then(function() {
                 return renderWindow(node, container, options, windowWidth, windowHeight);
@@ -2558,7 +2578,7 @@
 
     NodeContainer.prototype.isElementVisible = function() {
         return this.node.nodeType === Node.TEXT_NODE ? this.parent.visible : (
-        this.css('display') !== "none" &&
+        this.css('display') !== "none" && this.css('visibility') !== "hidden" &&
         !this.node.hasAttribute("data-html2canvas-ignore") &&
         (this.node.nodeName !== "INPUT" || this.node.getAttribute("type") !== "hidden")
         );
@@ -3960,6 +3980,9 @@
             this.canvas.height = height;
         }
         this.ctx = this.canvas.getContext("2d");
+        this.ctx.webkitImageSmoothingEnabled = false;
+        this.ctx.mozImageSmoothingEnabled = false;//firefox
+        this.ctx.imageSmoothingEnabled = false;
         this.taintCtx = this.document.createElement("canvas").getContext("2d");
         this.ctx.textBaseline = "bottom";
         this.variables = {};
