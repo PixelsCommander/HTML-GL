@@ -8433,42 +8433,130 @@ return function (global, window, document, undefined) {
 /* The CSS spec mandates that the translateX/Y/Z transforms are %-relative to the element itself -- not its parent.
 Velocity, however, doesn't make this distinction. Thus, converting to or from the % unit with these subproperties
 will produce an inaccurate conversion value. The same issue exists with the cx/cy attributes of SVG circles and ellipses. */
+/*
+ * Util is a part of HTML GL library
+ * Copyright (c) 2015 pixelscommander.com
+ * Distributed under MIT license
+ * http://htmlgl.com
+ * */
+
+(function(w){
+    w.HTMLGL = w.HTMLGL || {};
+    w.HTMLGL.util = {
+        getterSetter: function  (variableParent, variableName, getterFunction, setterFunction) {
+            if (Object.defineProperty) {
+                Object.defineProperty(variableParent, variableName, {
+                    get: getterFunction,
+                    set: setterFunction
+                });
+            }
+            else if (document.__defineGetter__) {
+                variableParent.__defineGetter__(variableName, getterFunction);
+                variableParent.__defineSetter__(variableName, setterFunction);
+            }
+
+            variableParent["get" + variableName] = getterFunction;
+            variableParent["set" + variableName] = setterFunction;
+        },
+        emitEvent: function (element, event) {
+            var newEvent = new MouseEvent(event.type, event);
+            newEvent.dispatcher = 'html-gl';
+            event.stopPropagation();
+            element.dispatchEvent(newEvent);
+        }
+    }
+})(window);
+/*
+ * GLElementResolver is a part of HTML GL library for resolving elements by coordinates given
+ * Copyright (c) 2015 pixelscommander.com
+ * Distributed under MIT license
+ * http://htmlgl.com
+ * */
+
+(function (w) {
+    var GLElementResolver = function (context) {
+    }
+
+    var p = GLElementResolver.prototype;
+
+    p.getElementByCoordinates = function (x, y) {
+        var element,
+            self = this,
+            result;
+
+        w.HTMLGL.elements.forEach(function (glelement) {
+            element = document.elementFromPoint(x - parseInt(glelement.transformObject.translateX || 0), y - parseInt(glelement.transformObject.translateY || 0))
+            if (self.isChildOf(element, glelement)) {
+                result = element;
+            }
+        });
+
+        return result;
+    }
+
+    p.isChildOf = function (child, parent) {
+        var current = child;
+        while (current) {
+            if (current === parent) return true;
+            current = current.parentNode;
+        }
+        return false;
+    }
+
+    w.HTMLGL.GLElementResolver = GLElementResolver;
+})(window);
+/*
+ * GLContext is a part of HTML GL library describing rendering context
+ * Copyright (c) 2015 pixelscommander.com
+ * Distributed under MIT license
+ * http://htmlgl.com
+ * */
+
 (function (w) {
 
-    w.HTMLGL = {
-        context: undefined,
-        stage: undefined,
-        renderer: undefined,
-        elements: [],
-        scrollX: 0,
-        scrollY: 0,
-    };
+    //Defining global namespace with respect if exists
+    HTMLGL = w.HTMLGL = w.HTMLGL || {};
 
-    var HTMLGL = function () {
+    //Defining it`s properties
+    HTMLGL.context = undefined;
+    HTMLGL.stage = undefined;
+    HTMLGL.renderer = undefined;
+    HTMLGL.elements = [];
+
+    //Cache for window`s scroll position, filled in by updateScrollPosition
+    HTMLGL.scrollX = 0;
+    HTMLGL.scrollY = 0;
+
+    var GLContext = function () {
         w.HTMLGL.context = this;
 
-        this.createStage();
-        this.onScroll();
-        this.addListenerers();
+        this.createStage();             //Creating stage before showing it
+        this.updateScrollPosition();    //Initialize scroll position for first time
+        this.initListeners();
+        this.elementResolver = new w.HTMLGL.GLElementResolver(this);
 
+        //Wait for DOMContentLoaded and initialize viewer then
         if (!document.body) {
-            document.addEventListener("DOMContentLoaded", this.init.bind(this));
+            document.addEventListener("DOMContentLoaded", this.initViewer.bind(this));
         } else {
-            this.init();
+            this.initViewer();
         }
     }
 
-    var p = HTMLGL.prototype;
+    var p = GLContext.prototype;
 
-    p.init = function () {
+    p.initViewer = function () {
         this.createViewer();
         this.resizeViewer();
         this.appendViewer();
     }
 
-    p.addListenerers = function () {
-        w.addEventListener('scroll', this.onScroll.bind(this));
+    p.initListeners = function () {
+        //window listeners
+        w.addEventListener('scroll', this.updateScrollPosition.bind(this));
         w.addEventListener('resize', this.resizeViewer.bind(this));
+
+        //document listeners - mouse and touch events
         document.addEventListener('click', this.onMouseEvent.bind(this), true);
         document.addEventListener('mousemove', this.onMouseEvent.bind(this), true);
         document.addEventListener('mouseup', this.onMouseEvent.bind(this), true);
@@ -8477,7 +8565,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         document.addEventListener('touchend', this.onMouseEvent.bind(this));
     }
 
-    p.onScroll = function () {
+    p.updateScrollPosition = function () {
         var scrollOffset = {};
 
         if (window.pageYOffset != undefined) {
@@ -8494,6 +8582,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
                 top: sy
             };
         }
+        
         this.document.x = -scrollOffset.left;
         this.document.y = -scrollOffset.top;
         w.HTMLGL.scrollX = scrollOffset.left;
@@ -8513,7 +8602,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
 
     p.appendViewer = function () {
         document.body.appendChild(this.renderer.view);
-        requestAnimFrame(this.redraw.bind(this));
+        requestAnimFrame(this.redrawStage.bind(this));
     }
 
     p.resizeViewer = function () {
@@ -8530,8 +8619,8 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         this.stage.addChild(w.HTMLGL.document);
     }
 
-    p.redraw = function () {
-        requestAnimFrame(this.redraw.bind(this));
+    p.redrawStage = function () {
+        requestAnimFrame(this.redrawStage.bind(this));
 
         if (this.stage.changed) {
             this.renderer.render(this.stage);
@@ -8542,59 +8631,23 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
     p.onMouseEvent = function (event) {
         var x = event.x || event.pageX,
             y = event.y || event.pageY,
-            element = event.dispatcher !== 'html-gl' ? this.getGLElementByCoordinates(x, y) : null;
+            //Finding element under mouse position
+            element = event.dispatcher !== 'html-gl' ? this.elementResolver.getElementByCoordinates(x, y) : null;
 
-        element ? this.emitEvent(element, event) : null;
+        //Emit event if there is an element under mouse position
+        element ? w.HTMLGL.util.emitEvent(element, event) : null;
     }
 
-    p.getGLElementByCoordinates = function (x, y) {
-        var element,
-            self = this,
-            result;
-
-        function isContained(child, parent) {
-            var current = child;
-            while (current) {
-                if (current === parent) return true;
-                current = current.parentNode;
-            }
-            return false;
-        }
-
-        w.HTMLGL.elements.forEach(function (glelement) {
-            element = document.elementFromPoint(x - parseInt(glelement.transformObject.translateX || 0), y - parseInt(glelement.transformObject.translateY || 0))
-            if (isContained(element, glelement)) {
-                result = element;
-            }
-        });
-        return result;
-    }
-
-    p.emitEvent = function (element, event) {
-        var newEvent = new MouseEvent(event.type, event);
-        newEvent.dispatcher = 'html-gl';
-        event.stopPropagation();
-        element.dispatchEvent(newEvent);
-    }
-
-    new HTMLGL();
+    w.HTMLGL.GLContext = GLContext;
+    new GLContext();
 })(window);
+/*
+ * ImagesLoaded is a part of HTML GL library which is a robust solution for determining "are images loaded or not?"
+ * Copyright (c) 2015 pixelscommander.com
+ * Distributed under MIT license
+ * http://htmlgl.com
+ * */
 
-function getterSetter(variableParent, variableName, getterFunction, setterFunction) {
-    if (Object.defineProperty) {
-        Object.defineProperty(variableParent, variableName, {
-            get: getterFunction,
-            set: setterFunction
-        });
-    }
-    else if (document.__defineGetter__) {
-        variableParent.__defineGetter__(variableName, getterFunction);
-        variableParent.__defineSetter__(variableName, setterFunction);
-    }
-
-    variableParent["get" + variableName] = getterFunction;
-    variableParent["set" + variableName] = setterFunction;
-}
 (function (w) {
     var ImagesLoaded = function (element, callback) {
         this.element = element;
@@ -8642,10 +8695,15 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
     w.HTMLGL.ImagesLoaded = ImagesLoaded;
 })(window);
 /*
- Take into account
- - updateTexture is expensive
- - updateSpriteTransform is cheap
- */
+* GLElement is a part of HTML GL library describing single HTML-GL element
+* Copyright (c) 2015 pixelscommander.com
+* Distributed under MIT license
+* http://htmlgl.com
+*
+* Please, take into account:
+* - updateTexture is expensive
+* - updateSpriteTransform is cheap
+* */
 
 (function (w) {
     var style = document.createElement('style');
@@ -8656,6 +8714,7 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
         p = Object.create(HTMLElement.prototype);
 
     p.createdCallback = function () {
+        //Check needed
         if (this.baseURI.length > 0) {
             w.HTMLGL.elements.push(this);
             this.renderer = 'webgl';
@@ -8784,7 +8843,7 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
         var self = this;
         self.styleGL = {};
 
-        getterSetter(this.styleGL, this.transformProperty, function () {
+        w.HTMLGL.util.getterSetter(this.styleGL, this.transformProperty, function () {
                 var result = '';
 
                 for (var transformPropertyName in self.transformObject) {
@@ -8829,7 +8888,7 @@ function getterSetter(variableParent, variableName, getterFunction, setterFuncti
         }
     }
 
-    w.GLElement = document.registerElement(CUSTOM_ELEMENT_TAG_NAME, {
+    w.HTMLGL.GLElement = document.registerElement(CUSTOM_ELEMENT_TAG_NAME, {
         prototype: p
     });
 })(window);
