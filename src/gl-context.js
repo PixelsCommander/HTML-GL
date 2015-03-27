@@ -24,6 +24,7 @@
         w.HTMLGL.context = this;
 
         this.createStage();             //Creating stage before showing it
+        console.log('context updated position');
         this.updateScrollPosition();    //Initialize scroll position for first time
         this.initListeners();
         this.elementResolver = new w.HTMLGL.GLElementResolver(this);
@@ -103,6 +104,7 @@
             height = w.innerHeight;
 
         this.renderer.resize(width, height);
+        this.updateTextures();
         this.stage.changed = true;
     }
 
@@ -117,8 +119,14 @@
 
         if (this.stage.changed) {
             this.renderer.render(this.stage);
-            this.stage.changed = false;
+            w.HTMLGL.stage.changed = false;
         }
+    }
+
+    p.updateTextures = function () {
+        w.HTMLGL.elements.forEach(function(element){
+            element.updateTexture();
+        });
     }
 
     p.onMouseEvent = function (event) {
@@ -129,6 +137,13 @@
 
         //Emit event if there is an element under mouse position
         element ? w.HTMLGL.util.emitEvent(element, event) : null;
+    }
+
+    //We would like to rerender if something changed, otherwise stand by
+    p.markStageAsChanged = function () {
+        if (w.HTMLGL.stage && !w.HTMLGL.stage.changed) {
+            w.HTMLGL.stage.changed = true;
+        }
     }
 
     w.HTMLGL.GLContext = GLContext;
