@@ -1,8 +1,13 @@
 /*
- Take into account
- - updateTexture is expensive
- - updateSpriteTransform is cheap
- */
+* GLElement is a part of HTML GL library describing single HTML-GL element
+* Copyright (c) 2015 pixelscommander.com
+* Distributed under MIT license
+* http://htmlgl.com
+*
+* Please, take into account:
+* - updateTexture is expensive
+* - updateSpriteTransform is cheap
+* */
 
 (function (w) {
     var style = document.createElement('style');
@@ -13,6 +18,7 @@
         p = Object.create(HTMLElement.prototype);
 
     p.createdCallback = function () {
+        //Check needed
         if (this.baseURI.length > 0) {
             w.HTMLGL.elements.push(this);
             this.renderer = 'webgl';
@@ -141,7 +147,7 @@
         var self = this;
         self.styleGL = {};
 
-        getterSetter(this.styleGL, this.transformProperty, function () {
+        w.HTMLGL.util.getterSetter(this.styleGL, this.transformProperty, function () {
                 var result = '';
 
                 for (var transformPropertyName in self.transformObject) {
@@ -186,7 +192,7 @@
         }
     }
 
-    w.GLElement = document.registerElement(CUSTOM_ELEMENT_TAG_NAME, {
+    w.HTMLGL.GLElement = document.registerElement(CUSTOM_ELEMENT_TAG_NAME, {
         prototype: p
     });
 })(window);

@@ -1,3 +1,10 @@
+/*
+ * ImagesLoaded is a part of HTML GL library which is a robust solution for determining "are images loaded or not?"
+ * Copyright (c) 2015 pixelscommander.com
+ * Distributed under MIT license
+ * http://htmlgl.com
+ * */
+
 (function (w) {
     var ImagesLoaded = function (element, callback) {
         this.element = element;

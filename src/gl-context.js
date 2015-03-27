@@ -1,39 +1,55 @@
+/*
+ * GLContext is a part of HTML GL library describing rendering context
+ * Copyright (c) 2015 pixelscommander.com
+ * Distributed under MIT license
+ * http://htmlgl.com
+ * */
+
 (function (w) {
 
-    w.HTMLGL = {
-        context: undefined,
-        stage: undefined,
-        renderer: undefined,
-        elements: [],
-        scrollX: 0,
-        scrollY: 0,
-    };
+    //Defining global namespace with respect if exists
+    HTMLGL = w.HTMLGL = w.HTMLGL || {};
 
-    var HTMLGL = function () {
+    //Defining it`s properties
+    HTMLGL.context = undefined;
+    HTMLGL.stage = undefined;
+    HTMLGL.renderer = undefined;
+    HTMLGL.elements = [];
+
+    //Cache for window`s scroll position, filled in by updateScrollPosition
+    HTMLGL.scrollX = 0;
+    HTMLGL.scrollY = 0;
+
+    var GLContext = function () {
         w.HTMLGL.context = this;
 
-        this.createStage();
-        this.onScroll();
-        this.addListenerers();
+        this.createStage();             //Creating stage before showing it
+        this.updateScrollPosition();    //Initialize scroll position for first time
+        this.initListeners();
+        this.elementResolver = new w.HTMLGL.GLElementResolver(this);
 
+        //Wait for DOMContentLoaded and initialize viewer then
         if (!document.body) {
-            document.addEventListener("DOMContentLoaded", this.init.bind(this));
+            document.addEventListener("DOMContentLoaded", this.initViewer.bind(this));
         } else {
-            this.init();
+            this.initViewer();
         }
     }
 
-    var p = HTMLGL.prototype;
+    var p = GLContext.prototype;
 
-    p.init = function () {
+    p.initViewer = function () {
         this.createViewer();
         this.resizeViewer();
         this.appendViewer();
     }
 
-    p.addListenerers = function () {
-        w.addEventListener('scroll', this.onScroll.bind(this));
+    p.initListeners = function () {
+        //window listeners
+        w.addEventListener('scroll', this.updateScrollPosition.bind(this));
         w.addEventListener('resize', this.resizeViewer.bind(this));
+
+        //document listeners - mouse and touch events
         document.addEventListener('click', this.onMouseEvent.bind(this), true);
         document.addEventListener('mousemove', this.onMouseEvent.bind(this), true);
         document.addEventListener('mouseup', this.onMouseEvent.bind(this), true);
@@ -42,7 +58,7 @@
         document.addEventListener('touchend', this.onMouseEvent.bind(this));
     }
 
-    p.onScroll = function () {
+    p.updateScrollPosition = function () {
         var scrollOffset = {};
 
         if (window.pageYOffset != undefined) {
@@ -59,6 +75,7 @@
                 top: sy
             };
         }
+        
         this.document.x = -scrollOffset.left;
         this.document.y = -scrollOffset.top;
         w.HTMLGL.scrollX = scrollOffset.left;
@@ -78,7 +95,7 @@
 
     p.appendViewer = function () {
         document.body.appendChild(this.renderer.view);
-        requestAnimFrame(this.redraw.bind(this));
+        requestAnimFrame(this.redrawStage.bind(this));
     }
 
     p.resizeViewer = function () {
@@ -95,8 +112,8 @@
         this.stage.addChild(w.HTMLGL.document);
     }
 
-    p.redraw = function () {
-        requestAnimFrame(this.redraw.bind(this));
+    p.redrawStage = function () {
+        requestAnimFrame(this.redrawStage.bind(this));
 
         if (this.stage.changed) {
             this.renderer.render(this.stage);
@@ -107,56 +124,13 @@
     p.onMouseEvent = function (event) {
         var x = event.x || event.pageX,
             y = event.y || event.pageY,
-            element = event.dispatcher !== 'html-gl' ? this.getGLElementByCoordinates(x, y) : null;
+            //Finding element under mouse position
+            element = event.dispatcher !== 'html-gl' ? this.elementResolver.getElementByCoordinates(x, y) : null;
 
-        element ? this.emitEvent(element, event) : null;
+        //Emit event if there is an element under mouse position
+        element ? w.HTMLGL.util.emitEvent(element, event) : null;
     }
 
-    p.getGLElementByCoordinates = function (x, y) {
-        var element,
-            self = this,
-            result;
-
-        function isContained(child, parent) {
-            var current = child;
-            while (current) {
-                if (current === parent) return true;
-                current = current.parentNode;
-            }
-            return false;
-        }
-
-        w.HTMLGL.elements.forEach(function (glelement) {
-            element = document.elementFromPoint(x - parseInt(glelement.transformObject.translateX || 0), y - parseInt(glelement.transformObject.translateY || 0))
-            if (isContained(element, glelement)) {
-                result = element;
-            }
-        });
-        return result;
-    }
-
-    p.emitEvent = function (element, event) {
-        var newEvent = new MouseEvent(event.type, event);
-        newEvent.dispatcher = 'html-gl';
-        event.stopPropagation();
-        element.dispatchEvent(newEvent);
-    }
-
-    new HTMLGL();
+    w.HTMLGL.GLContext = GLContext;
+    new GLContext();
 })(window);
-
-function getterSetter(variableParent, variableName, getterFunction, setterFunction) {
-    if (Object.defineProperty) {
-        Object.defineProperty(variableParent, variableName, {
-            get: getterFunction,
-            set: setterFunction
-        });
-    }
-    else if (document.__defineGetter__) {
-        variableParent.__defineGetter__(variableName, getterFunction);
-        variableParent.__defineSetter__(variableName, setterFunction);
-    }
-
-    variableParent["get" + variableName] = getterFunction;
-    variableParent["set" + variableName] = setterFunction;
-}
