@@ -18,14 +18,17 @@
         p = Object.create(HTMLElement.prototype);
 
     p.createdCallback = function () {
-        //Check needed
-        if (this.baseURI.length > 0) {
+        //Checking is node created inside of html2canvas virtual window or not. We do not need WebGL there
+        var isInsideHtml2Canvas = this.baseURI.length === 0;
+
+        if (!isInsideHtml2Canvas) {
             w.HTMLGL.elements.push(this);
+            //Needed to determine is element WebGL rendered or not
             this.renderer = 'webgl';
             this.transformObject = {};
             this.boundingRect = {};
             this.image = {};
-            this.sprite = {};
+            this.sprite = new PIXI.Sprite();
             this.texture = {};
             this.halfWidth = 0;
             this.halfHeight = 0;
@@ -39,13 +42,16 @@
     p.init = function () {
         this.updateTexture();
         this.initObservers();
-        this.patchstyleGLTransform();
+        this.patchStyleGLTransform();
     }
 
+    //Updateing bounds, waiting for all images to load and calling rasterization then
     p.updateTexture = function () {
         var self = this;
+        self.updateBoundingRect();
 
         new HTMLGL.ImagesLoaded(self, function () {
+            //Bounds could change during images loading
             self.updateBoundingRect();
             self.image = html2canvas(self, {
                 onrendered: self.applyNewTexture,
@@ -55,22 +61,27 @@
         });
     }
 
+    //Recreating texture from canvas given after calling updateTexture
     p.applyNewTexture = function (textureCanvas) {
         this.image = textureCanvas;
         this.texture = PIXI.Texture.fromCanvas(this.image);
 
         if (!this.haveSprite()) {
-            this.createSprite(this.texture);
+            this.initSprite(this.texture);
         } else {
             this.sprite.setTexture(this.texture);
         }
 
         this.updatePivot();
         this.updateSpriteTransform();
-        this.markStageAsChanged();
+
+        w.HTMLGL.context.markStageAsChanged();
     }
 
+    //Just updates WebGL representation coordinates and transformation
     p.updateSpriteTransform = function () {
+
+        //TODO add 3d rotation support
         var translateX = parseFloat(this.transformObject.translateX) || 0,
             translateY = parseFloat(this.transformObject.translateY) || 0,
             scaleX = parseFloat(this.transformObject.scaleX) || 1,
@@ -84,9 +95,11 @@
             this.sprite.scale.y = scaleY;
             this.sprite.rotation = rotate;
         }
-        this.markStageAsChanged();
+
+        w.HTMLGL.context.markStageAsChanged();
     }
 
+    //Getting bounding rect with respect to current scroll position
     p.updateBoundingRect = function () {
         this.boundingRect = {
             left: this.getBoundingClientRect().left,
@@ -100,6 +113,7 @@
         this.boundingRect.top = w.HTMLGL.scrollY + parseFloat(this.boundingRect.top);
     }
 
+    //Correct pivot needed to rotate element around it`s center
     p.updatePivot = function () {
         this.halfWidth = this.sprite.width / 2;
         this.halfHeight = this.sprite.height / 2;
@@ -107,9 +121,10 @@
         this.sprite.pivot.y = this.halfHeight;
     }
 
-    p.createSprite = function (texture) {
+    p.initSprite = function (texture) {
         var self = this;
-        this.sprite = new PIXI.Sprite(texture);
+        //this.sprite = new PIXI.Sprite(texture);
+        this.sprite.setTexture(texture);
         w.HTMLGL.document.addChild(this.sprite);
         setTimeout(function () {
             self.hideDOM();
@@ -139,11 +154,7 @@
         this.observer.observe(this, config);
     }
 
-    p.disconnectObservers = function () {
-        this.observer.disconnect();
-    }
-
-    p.patchstyleGLTransform = function () {
+    p.patchStyleGLTransform = function () {
         var self = this;
         self.styleGL = {};
 
@@ -184,12 +195,6 @@
 
     p.haveSprite = function () {
         return this.sprite.stage;
-    }
-
-    p.markStageAsChanged = function () {
-        if (w.HTMLGL.stage && !w.HTMLGL.stage.changed) {
-            w.HTMLGL.stage.changed = true;
-        }
     }
 
     w.HTMLGL.GLElement = document.registerElement(CUSTOM_ELEMENT_TAG_NAME, {

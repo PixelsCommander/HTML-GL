@@ -13,6 +13,13 @@ body {
     color:  #fff;
 }
 
+html-gl {
+    display: block !important;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
 /* ======== Fonts ========== */
 @font-face {
     font-family: "Uni Sans Thin CAPS";
@@ -68,7 +75,7 @@ p.page-title {
     font-family: "Uni Sans Heavy CAPS";
     font-size: 36px;
     margin: 0;
-    padding: 105px 0 70px 0;
+    padding: 85px 0 60px 0;
 }
 
 /* orange text  ============================================ */
@@ -174,7 +181,6 @@ a:hover {
     margin: 0 0 120px 0;
 }
 
-
 /* Slide-2  ============================================ */
 
 .slide-2 {
@@ -196,8 +202,18 @@ a:hover {
     font-weight: normal;
 }
 
-.slide-2 p {
+.slide-2 html-gl {
     font-family: Helvetica, Arial, sans-serif;
+}
+
+.why-container {
+    height: 280px;
+    position: relative;
+    margin-bottom: 50px;
+}
+
+.why-container h4 {
+    margin-bottom: 20px;
 }
 
 .justified-text {
@@ -219,14 +235,23 @@ a:hover {
     padding-bottom: 80px;
 }
 
+.slide-3 html-gl {
+    display: inline-block !important;
+}
+
 /* Styles for movie-list ============================================ */
 
 .example {
+    position: relative;
     text-align: left;
     margin-top: 50px;
     display: inline-block;
     width: 613px;
+}
 
+.example html-gl {
+    padding: 40px;
+    margin: -40px;
 }
 
 .movie-preview {
@@ -243,7 +268,7 @@ a:hover {
 .controls {
     width: 245px;
     height: 328px;
-    background-color: #000;
+
     display: inline-block;
     vertical-align: top;
     margin-top: 50px;
@@ -253,7 +278,7 @@ a:hover {
 
 .footer {
     text-align: left;
-    margin-top: 40px;
+    margin-top: 70px;
 }
 
 .footer a,
@@ -268,7 +293,7 @@ a:hover {
 
 .footer p {
     max-width: 400px;
-    margin-top: 10px;
+    margin-top: 5px;
     vertical-align: top;
     margin-right: 5px;
 }

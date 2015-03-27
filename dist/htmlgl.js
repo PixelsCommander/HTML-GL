@@ -8531,6 +8531,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         w.HTMLGL.context = this;
 
         this.createStage();             //Creating stage before showing it
+        console.log('context updated position');
         this.updateScrollPosition();    //Initialize scroll position for first time
         this.initListeners();
         this.elementResolver = new w.HTMLGL.GLElementResolver(this);
@@ -8610,6 +8611,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
             height = w.innerHeight;
 
         this.renderer.resize(width, height);
+        this.updateTextures();
         this.stage.changed = true;
     }
 
@@ -8624,8 +8626,14 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
 
         if (this.stage.changed) {
             this.renderer.render(this.stage);
-            this.stage.changed = false;
+            w.HTMLGL.stage.changed = false;
         }
+    }
+
+    p.updateTextures = function () {
+        w.HTMLGL.elements.forEach(function(element){
+            element.updateTexture();
+        });
     }
 
     p.onMouseEvent = function (event) {
@@ -8636,6 +8644,13 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
 
         //Emit event if there is an element under mouse position
         element ? w.HTMLGL.util.emitEvent(element, event) : null;
+    }
+
+    //We would like to rerender if something changed, otherwise stand by
+    p.markStageAsChanged = function () {
+        if (w.HTMLGL.stage && !w.HTMLGL.stage.changed) {
+            w.HTMLGL.stage.changed = true;
+        }
     }
 
     w.HTMLGL.GLContext = GLContext;
@@ -8714,14 +8729,17 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         p = Object.create(HTMLElement.prototype);
 
     p.createdCallback = function () {
-        //Check needed
-        if (this.baseURI.length > 0) {
+        //Checking is node created inside of html2canvas virtual window or not. We do not need WebGL there
+        var isInsideHtml2Canvas = this.baseURI.length === 0;
+
+        if (!isInsideHtml2Canvas) {
             w.HTMLGL.elements.push(this);
+            //Needed to determine is element WebGL rendered or not
             this.renderer = 'webgl';
             this.transformObject = {};
             this.boundingRect = {};
             this.image = {};
-            this.sprite = {};
+            this.sprite = new PIXI.Sprite();
             this.texture = {};
             this.halfWidth = 0;
             this.halfHeight = 0;
@@ -8735,13 +8753,16 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
     p.init = function () {
         this.updateTexture();
         this.initObservers();
-        this.patchstyleGLTransform();
+        this.patchStyleGLTransform();
     }
 
+    //Updateing bounds, waiting for all images to load and calling rasterization then
     p.updateTexture = function () {
         var self = this;
+        self.updateBoundingRect();
 
         new HTMLGL.ImagesLoaded(self, function () {
+            //Bounds could change during images loading
             self.updateBoundingRect();
             self.image = html2canvas(self, {
                 onrendered: self.applyNewTexture,
@@ -8751,22 +8772,27 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         });
     }
 
+    //Recreating texture from canvas given after calling updateTexture
     p.applyNewTexture = function (textureCanvas) {
         this.image = textureCanvas;
         this.texture = PIXI.Texture.fromCanvas(this.image);
 
         if (!this.haveSprite()) {
-            this.createSprite(this.texture);
+            this.initSprite(this.texture);
         } else {
             this.sprite.setTexture(this.texture);
         }
 
         this.updatePivot();
         this.updateSpriteTransform();
-        this.markStageAsChanged();
+
+        w.HTMLGL.context.markStageAsChanged();
     }
 
+    //Just updates WebGL representation coordinates and transformation
     p.updateSpriteTransform = function () {
+
+        //TODO add 3d rotation support
         var translateX = parseFloat(this.transformObject.translateX) || 0,
             translateY = parseFloat(this.transformObject.translateY) || 0,
             scaleX = parseFloat(this.transformObject.scaleX) || 1,
@@ -8780,9 +8806,11 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
             this.sprite.scale.y = scaleY;
             this.sprite.rotation = rotate;
         }
-        this.markStageAsChanged();
+
+        w.HTMLGL.context.markStageAsChanged();
     }
 
+    //Getting bounding rect with respect to current scroll position
     p.updateBoundingRect = function () {
         this.boundingRect = {
             left: this.getBoundingClientRect().left,
@@ -8796,6 +8824,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         this.boundingRect.top = w.HTMLGL.scrollY + parseFloat(this.boundingRect.top);
     }
 
+    //Correct pivot needed to rotate element around it`s center
     p.updatePivot = function () {
         this.halfWidth = this.sprite.width / 2;
         this.halfHeight = this.sprite.height / 2;
@@ -8803,9 +8832,10 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         this.sprite.pivot.y = this.halfHeight;
     }
 
-    p.createSprite = function (texture) {
+    p.initSprite = function (texture) {
         var self = this;
-        this.sprite = new PIXI.Sprite(texture);
+        //this.sprite = new PIXI.Sprite(texture);
+        this.sprite.setTexture(texture);
         w.HTMLGL.document.addChild(this.sprite);
         setTimeout(function () {
             self.hideDOM();
@@ -8835,11 +8865,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         this.observer.observe(this, config);
     }
 
-    p.disconnectObservers = function () {
-        this.observer.disconnect();
-    }
-
-    p.patchstyleGLTransform = function () {
+    p.patchStyleGLTransform = function () {
         var self = this;
         self.styleGL = {};
 
@@ -8880,12 +8906,6 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
 
     p.haveSprite = function () {
         return this.sprite.stage;
-    }
-
-    p.markStageAsChanged = function () {
-        if (w.HTMLGL.stage && !w.HTMLGL.stage.changed) {
-            w.HTMLGL.stage.changed = true;
-        }
     }
 
     w.HTMLGL.GLElement = document.registerElement(CUSTOM_ELEMENT_TAG_NAME, {
