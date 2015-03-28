@@ -69,6 +69,7 @@
         if (!this.haveSprite()) {
             this.initSprite(this.texture);
         } else {
+            this.sprite.texture.destroy();
             this.sprite.setTexture(this.texture);
         }
 
