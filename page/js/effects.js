@@ -123,28 +123,28 @@ var switchy = false;
 
 function animate() {
 
-    count += 0.1;
-
-    var blurAmount = Math.cos(count) ;
-    var blurAmount2 = Math.sin(count * 0.8)  ;
-
-    var filtersToApply = [];
-
-    filtersSwitchs[0] ? overlay.visible = true : overlay.visible = false;
-
-    for (var i = 0; i < filterCollection.length; i++) {
-        if(filtersSwitchs[i])filtersToApply.push(filterCollection[i]);
-    };
-
-    pondContainer.filters = filtersToApply.length > 0 ? filtersToApply : null;
-
-    displacementFilter.offset.x = count * 10//blurAmount * 40;
-    displacementFilter.offset.y = count * 10
-
-    overlay.tilePosition.x = count * -10//blurAmount * 40;
-    overlay.tilePosition.y = count * -10
-
     if (window.HTMLGL.scrollY > 1000) {
+        count += 0.1;
+
+        var blurAmount = Math.cos(count) ;
+        var blurAmount2 = Math.sin(count * 0.8)  ;
+
+        var filtersToApply = [];
+
+        filtersSwitchs[0] ? overlay.visible = true : overlay.visible = false;
+
+        for (var i = 0; i < filterCollection.length; i++) {
+            if(filtersSwitchs[i])filtersToApply.push(filterCollection[i]);
+        };
+
+        pondContainer.filters = filtersToApply.length > 0 ? filtersToApply : null;
+
+        displacementFilter.offset.x = count * 10//blurAmount * 40;
+        displacementFilter.offset.y = count * 10
+
+        overlay.tilePosition.x = count * -10//blurAmount * 40;
+        overlay.tilePosition.y = count * -10
+
         renderer.render(stage);
     }
     requestAnimFrame( animate );
