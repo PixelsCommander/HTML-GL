@@ -8531,7 +8531,6 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         w.HTMLGL.context = this;
 
         this.createStage();             //Creating stage before showing it
-        console.log('context updated position');
         this.updateScrollPosition();    //Initialize scroll position for first time
         this.initListeners();
         this.elementResolver = new w.HTMLGL.GLElementResolver(this);
@@ -8589,7 +8588,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         w.HTMLGL.scrollX = scrollOffset.left;
         w.HTMLGL.scrollY = scrollOffset.top;
 
-        this.stage.changed = true;
+        this.markStageAsChanged();
     }
 
     p.createViewer = function () {
@@ -8612,7 +8611,8 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
 
         this.renderer.resize(width, height);
         this.updateTextures();
-        this.stage.changed = true;
+
+        this.markStageAsChanged();
     }
 
     p.createStage = function () {
@@ -8621,11 +8621,10 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         this.stage.addChild(w.HTMLGL.document);
     }
 
+    //Avoiding function.bind() for performance and memory consuming reasons
     p.redrawStage = function () {
-        requestAnimFrame(this.redrawStage.bind(this));
-
-        if (this.stage.changed) {
-            this.renderer.render(this.stage);
+        if (w.HTMLGL.stage.changed) {
+            w.HTMLGL.renderer.render(w.HTMLGL.stage);
             w.HTMLGL.stage.changed = false;
         }
     }
@@ -8649,6 +8648,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
     //We would like to rerender if something changed, otherwise stand by
     p.markStageAsChanged = function () {
         if (w.HTMLGL.stage && !w.HTMLGL.stage.changed) {
+            requestAnimFrame(this.redrawStage);
             w.HTMLGL.stage.changed = true;
         }
     }
