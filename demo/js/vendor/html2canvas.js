@@ -2010,7 +2010,7 @@
             document.querySelector(selector).removeAttribute(attributeName);
             var clonedWindow = container.contentWindow;
             var node = clonedWindow.document.querySelector(selector);
-            node.style.opacity === "0" && node.tagName === "HTML-GL" ? node.style.opacity = 1 : null;
+            node.style.opacity === "0" && node.getAttribute('renderer') === "webgl" ? node.style.opacity = 1 : null;
             var oncloneHandler = (typeof(options.onclone) === "function") ? Promise.resolve(options.onclone(clonedWindow.document)) : Promise.resolve(true);
             return oncloneHandler.then(function() {
                 return renderWindow(node, container, options, windowWidth, windowHeight);
@@ -3429,6 +3429,17 @@
             blh = borderRadius[3][0],
             blv = borderRadius[3][1];
 
+        var halfHeight = Math.floor(height / 2);
+
+        tlh = tlh > halfHeight ? halfHeight : tlh;
+        tlv = tlv > halfHeight ? halfHeight : tlv;
+        trh = trh > halfHeight ? halfHeight : trh;
+        trv = trv > halfHeight ? halfHeight : trv;
+        brh = brh > halfHeight ? halfHeight : brh;
+        brv = brv > halfHeight ? halfHeight : brv;
+        blh = blh > halfHeight ? halfHeight : blh;
+        blv = blv > halfHeight ? halfHeight : blv;
+
         var topWidth = width - trh,
             rightHeight = height - brv,
             bottomWidth = width - brh,
@@ -3861,10 +3872,10 @@
             imageContainer,
             0,
             0,
-            imageContainer.image.width || width,
-            imageContainer.image.height || height,
-            bounds.left + paddingLeft + borders[3].width,
-            bounds.top + paddingTop + borders[0].width,
+            Math.round(imageContainer.image.width || width),
+            Math.round(imageContainer.image.height || height),
+            Math.round(bounds.left + paddingLeft + borders[3].width),
+            Math.round(bounds.top + paddingTop + borders[0].width),
             width,
             height
         );

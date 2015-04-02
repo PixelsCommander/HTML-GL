@@ -15,6 +15,7 @@
   "dependencies": {
     "pixi": "~2.2.5",
     "webcomponents.js": "~0.5.5",
-    "promise-polyfill": "~2.0.0"
+    "promise-polyfill": "~2.0.0",
+    "jquery": "~2.1.3"
   }
 }
