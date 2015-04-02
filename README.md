@@ -53,7 +53,7 @@ HTML GL is framework agnostic and is easy to inject into existing project which 
 
 Rasterization API
 -----------------
-In order to imporove technology we are trying to promote standardization of native Rasterization API for browsers. Help us to be better and to add this cool feature to the spec by spreading the [article](http://pixelscommander.com/en/javascript/state-of-html-content-rasterization-draw-html-to-canvas-image/) and [proposal draft](https://docs.google.com/document/d/1eqNtrkhf8WEDJC2J82eQmjSrR1YRs0Iic496ASeE6dI/pub).
+In order to improve technology we are trying to promote standardized native Rasterization API for JavaScript. Help us to be better and to add this cool feature to browsers by spreading the [article](http://pixelscommander.com/en/javascript/state-of-html-content-rasterization-draw-html-to-canvas-image/) and [proposal draft](https://docs.google.com/document/d/1eqNtrkhf8WEDJC2J82eQmjSrR1YRs0Iic496ASeE6dI/pub).
 
 License
 -------
