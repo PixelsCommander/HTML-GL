@@ -6,11 +6,12 @@
  * */
 
 (function (w) {
-
     //Defining global namespace with respect if exists
     HTMLGL = w.HTMLGL = w.HTMLGL || {};
 
     //Defining it`s properties
+    HTMLGL.JQ_PLUGIN_NAME = 'htmlgl';
+    HTMLGL.CUSTOM_ELEMENT_TAG_NAME = 'html-gl';
     HTMLGL.context = undefined;
     HTMLGL.stage = undefined;
     HTMLGL.renderer = undefined;

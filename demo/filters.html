@@ -12,12 +12,9 @@
         <ul class="menu expanded">
             <li><a target="_blank" href="http://pixelscommander.com/en/web-applications-performance/render-html-css-in-webgl-to-get-highest-performance-possibl/">ABOUT HTML-GL</a></li>
             <li><a target="_blank" href="https://github.com/PixelsCommander/HTML-GL">GITHUB REPO</a></li>
-            <li><a target="_blank" href="https://github.com/PixelsCommander/HTML-GL/archive/master.zip">DOWNLOAD</a></li>
         </ul>
         <ul class="submenu">
-            <li>MOVIES</li>
-            <li>TV</li>
-            <li>KIDS</li>
+            <li><a target="_blank" href="https://github.com/PixelsCommander/HTML-GL/archive/master.zip">DOWNLOAD</a></li>
             <li>
                 <!-- AddThis Button BEGIN -->
                 <div class="addthis_toolbox addthis_default_style">
@@ -200,6 +197,7 @@
     displacementFolder.add(filtersSwitchs, '0').name("apply");
     displacementFolder.add(displacementFilter.scale, 'x', 1, 200).name("scaleX");
     displacementFolder.add(displacementFilter.scale, 'y', 1, 200).name("scaleY");
+    displacementFolder.open();
 
     var blurFilter = new PIXI.BlurFilter();
 

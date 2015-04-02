@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>HTML GL demo</title>
+    <script src="../bower_components/promise-polyfill/Promise.min.js"></script>
+    <script src="../bower_components/webcomponents.js/CustomElements.min.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="./js/vendor/velocity.js"></script>
+    <script src="./js/vendor/html2canvas.js"></script>
+    <script src="../bower_components/pixi/bin/pixi.dev.js"></script>
+    <script src="../src/util.js"></script>
+    <script src="../src/gl-element-resolver.js"></script>
+    <script src="../src/gl-context.js"></script>
+    <script src="../src/images-loaded.js"></script>
+    <script src="../src/gl-element.js"></script>
+</head>
+<!-- Adding style since demo is designed for inline-block, otherwise will have full screen width -->
+<style>
+    #htmlgl-content {
+        display: inline-block;
+    }
+</style>
+<body>
+<h1>HTML GL demo</h1>
+
+<div id="htmlgl-content">
+    This layer is rendered in <h1>WebGL</h1> <span style="color: red;">because</span> it have tag name <b>html-gl</b>
+</div>
+<button onclick="window.animate()">Animate WebGL layer</button>
+<button onclick="window.changeNodeContent()">Change layer content</button>
+<button onclick="window.changeNodeTransform()">Simply change layer`s style.transform</button>
+<h2>
+    TODO
+</h2>
+<ul>
+    <li>Add retina support in order to avoid blurry content</li>
+</ul>
+<script>
+    $('#htmlgl-content').htmlgl();
+
+    window.changeNodeContent = function () {
+        document.getElementsByTagName('div')[0].textContent = 'Animation was smooth, was not it? This is a new content. It is still visible in dev tools, affects HTML layout and is rendered via WebGL.';
+    }
+
+    window.changeNodeTransform = function () {
+        var element = document.getElementsByTagName('div')[0];
+        element.style.webkitTransform = 'translateX(400px) translateY(100px)';
+        element.style.transform = 'translateX(400px) translateY(100px)';
+    }
+
+    window.animate = function () {
+        $('#htmlgl-content').velocity({
+            translateX: 100,
+            translateY: 100,
+            scaleX: 4,
+            scaleY: 4,
+            rotateZ: "360deg"
+        }, { duration: 1000 }).velocity({
+            translateX: 0,
+            translateY: 0,
+            scaleX: 1,
+            scaleY: 1,
+            rotateZ: "0"
+        }, { duration: 1000 });
+    }
+</script>
+</body>
+</html>

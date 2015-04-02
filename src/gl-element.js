@@ -10,20 +10,21 @@
 * */
 
 (function (w) {
-    var style = document.createElement('style');
-    style.innerHTML = 'html-gl { display: inline-block; transform: translateZ(0);}';
-    document.getElementsByTagName('head')[0].appendChild(style);
+    var p = Object.create(HTMLElement.prototype),
+        style = document.createElement('style');
 
-    var CUSTOM_ELEMENT_TAG_NAME = 'html-gl',
-        p = Object.create(HTMLElement.prototype);
+    //Default styling for html-gl elements
+    style.innerHTML = HTMLGL.CUSTOM_ELEMENT_TAG_NAME + ' { display: inline-block; transform: translateZ(0);}';
+    document.head.appendChild(style);
 
     p.createdCallback = function () {
         //Checking is node created inside of html2canvas virtual window or not. We do not need WebGL there
         var isInsideHtml2Canvas = this.baseURI.length === 0;
 
         if (!isInsideHtml2Canvas) {
-            w.HTMLGL.elements.push(this);
-            //Needed to determine is element WebGL rendered or not
+            HTMLGL.elements.push(this);
+            //Needed to determine is element WebGL rendered or not relying on tag name
+            this.setAttribute('renderer', 'webgl');
             this.renderer = 'webgl';
             this.transformObject = {};
             this.boundingRect = {};
@@ -76,7 +77,7 @@
         this.updatePivot();
         this.updateSpriteTransform();
 
-        w.HTMLGL.context.markStageAsChanged();
+        HTMLGL.context.markStageAsChanged();
     }
 
     //Just updates WebGL representation coordinates and transformation
@@ -97,7 +98,7 @@
             this.sprite.rotation = rotate;
         }
 
-        w.HTMLGL.context.markStageAsChanged();
+        HTMLGL.context.markStageAsChanged();
     }
 
     //Getting bounding rect with respect to current scroll position
@@ -110,8 +111,9 @@
             width: this.getBoundingClientRect().width,
             height: this.getBoundingClientRect().height,
         };
-        this.boundingRect.left = w.HTMLGL.scrollX + parseFloat(this.boundingRect.left);
-        this.boundingRect.top = w.HTMLGL.scrollY + parseFloat(this.boundingRect.top);
+
+        this.boundingRect.left = HTMLGL.scrollX + parseFloat(this.boundingRect.left);
+        this.boundingRect.top = HTMLGL.scrollY + parseFloat(this.boundingRect.top);
     }
 
     //Correct pivot needed to rotate element around it`s center
@@ -126,7 +128,7 @@
         var self = this;
         //this.sprite = new PIXI.Sprite(texture);
         this.sprite.setTexture(texture);
-        w.HTMLGL.document.addChild(this.sprite);
+        HTMLGL.document.addChild(this.sprite);
         setTimeout(function () {
             self.hideDOM();
         }, 0);
@@ -159,7 +161,7 @@
         var self = this;
         self.styleGL = {};
 
-        w.HTMLGL.util.getterSetter(this.styleGL, this.transformProperty, function () {
+        HTMLGL.util.getterSetter(this.styleGL, this.transformProperty, function () {
                 var result = '';
 
                 for (var transformPropertyName in self.transformObject) {
@@ -198,7 +200,35 @@
         return this.sprite.stage;
     }
 
-    w.HTMLGL.GLElement = document.registerElement(CUSTOM_ELEMENT_TAG_NAME, {
+    HTMLGL.GLElement = document.registerElement(HTMLGL.CUSTOM_ELEMENT_TAG_NAME, {
         prototype: p
-    });
+    })
+
+    HTMLGL.GLElement.createFromNode = function (node) {
+        //Extending node with GLElement methods
+        for (var i in p) {
+            if (p.hasOwnProperty(i)) {
+                node[i] = p[i];
+            }
+        }
+
+        p.createdCallback.apply(node);
+        return node;
+    }
+
+    //Wrap to jQuery plugin
+    if (w.$ !== undefined) {
+        $[HTMLGL.JQ_PLUGIN_NAME] = {};
+        $[HTMLGL.JQ_PLUGIN_NAME].elements = [];
+
+        $.fn[HTMLGL.JQ_PLUGIN_NAME] = function () {
+            return this.each(function () {
+                if (!$.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME)) {
+                    var propellerObj = HTMLGL.GLElement.createFromNode(this);
+                    $.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME, propellerObj);
+                    $[HTMLGL.JQ_PLUGIN_NAME].elements.push(propellerObj);
+                }
+            });
+        };
+    }
 })(window);
