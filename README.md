@@ -51,6 +51,10 @@ How to use?
 Include HTMLGL.js into project. Use tag name ```<html-gl>``` or jQuery plugin ```$(myElement).htmlgl()``` for elements you are going to animate. These elements will be rendered in WebGL and their CSS Transform properties will be mapped to WebGL representation transformations. So DOM node itself will not be animated or displayed in order to avoid resources consuming.
 HTML GL is framework agnostic and is easy to inject into existing project which needs performance tweaking.
 
+Rasterization API
+-----------------
+In order to imporove technology we are trying to promote standardization of native Rasterization API for browsers. Help us to be better and to add this cool feature to the spec by spreading the [article](http://pixelscommander.com/en/javascript/state-of-html-content-rasterization-draw-html-to-canvas-image/) and [proposal draft](https://docs.google.com/document/d/1eqNtrkhf8WEDJC2J82eQmjSrR1YRs0Iic496ASeE6dI/pub).
+
 License
 -------
 MIT: http://mit-license.org/
