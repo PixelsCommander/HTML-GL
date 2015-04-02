@@ -8,6 +8,7 @@
 HTML GL solves "the slow DOM problem" by creating WebGL representations of DOM elements and hiding actual DOM after. This speeds up HTML/CSS animations and transformations by using 3D hardware acceleration and allows to apply OpenGL effects as modern 3D games have.
 
 - [Demo](http://pixelscommander.com/polygon/htmlgl/demo/filters.html)
+- [Project page](http://htmlgl.com)
 - [Article about HTML GL](http://pixelscommander.com/en/web-applications-performance/render-html-css-in-webgl-to-get-highest-performance-possibl/)
 
 Using HTML GL you still work with HTML/CSS as you are common to, but DOM elements are just facades to their WebGL represenations. These GPU accelerated textures are very effective from resources consuming perspective and are very cheap to transform or animate.
