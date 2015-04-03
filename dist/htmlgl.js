@@ -8742,7 +8742,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
 
     p.createdCallback = function () {
         //Checking is node created inside of html2canvas virtual window or not. We do not need WebGL there
-        var isInsideHtml2Canvas = this.baseURI && this.baseURI.length === 0;
+        var isInsideHtml2Canvas = this.baseURI !== undefined && this.baseURI.length === 0;
 
         if (!isInsideHtml2Canvas) {
             HTMLGL.elements.push(this);
