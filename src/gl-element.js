@@ -19,7 +19,7 @@
 
     p.createdCallback = function () {
         //Checking is node created inside of html2canvas virtual window or not. We do not need WebGL there
-        var isInsideHtml2Canvas = this.baseURI.length === 0;
+        var isInsideHtml2Canvas = this.baseURI && this.baseURI.length === 0;
 
         if (!isInsideHtml2Canvas) {
             HTMLGL.elements.push(this);
@@ -46,7 +46,7 @@
         this.patchStyleGLTransform();
     }
 
-    //Updateing bounds, waiting for all images to load and calling rasterization then
+    //Updating bounds, waiting for all images to load and calling rasterization then
     p.updateTexture = function () {
         var self = this;
         self.updateBoundingRect();

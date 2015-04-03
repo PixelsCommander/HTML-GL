@@ -14,6 +14,7 @@ window.addEventListener('DOMContentLoaded', function(){
     displacementFolder.add(filtersSwitchs, '0').name("apply");
     displacementFolder.add(displacementFilter.scale, 'x', 1, 200).name("scaleX");
     displacementFolder.add(displacementFilter.scale, 'y', 1, 200).name("scaleY");
+    displacementFolder.open();
 
     var blurFilter = new PIXI.BlurFilter();
 
