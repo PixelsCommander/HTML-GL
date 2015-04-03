@@ -8742,7 +8742,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
 
     p.createdCallback = function () {
         //Checking is node created inside of html2canvas virtual window or not. We do not need WebGL there
-        var isInsideHtml2Canvas = this.baseURI.length === 0;
+        var isInsideHtml2Canvas = this.baseURI !== undefined && this.baseURI.length === 0;
 
         if (!isInsideHtml2Canvas) {
             HTMLGL.elements.push(this);
@@ -8769,7 +8769,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         this.patchStyleGLTransform();
     }
 
-    //Updateing bounds, waiting for all images to load and calling rasterization then
+    //Updating bounds, waiting for all images to load and calling rasterization then
     p.updateTexture = function () {
         var self = this;
         self.updateBoundingRect();
