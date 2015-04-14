@@ -217,16 +217,16 @@
     }
 
     //Wrap to jQuery plugin
-    if (w.$ !== undefined) {
-        $[HTMLGL.JQ_PLUGIN_NAME] = {};
-        $[HTMLGL.JQ_PLUGIN_NAME].elements = [];
+    if (w.jQuery !== undefined) {
+        jQuery[HTMLGL.JQ_PLUGIN_NAME] = {};
+        jQuery[HTMLGL.JQ_PLUGIN_NAME].elements = [];
 
-        $.fn[HTMLGL.JQ_PLUGIN_NAME] = function () {
+        jQuery.fn[HTMLGL.JQ_PLUGIN_NAME] = function () {
             return this.each(function () {
-                if (!$.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME)) {
+                if (!jQuery.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME)) {
                     var propellerObj = HTMLGL.GLElement.createFromNode(this);
-                    $.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME, propellerObj);
-                    $[HTMLGL.JQ_PLUGIN_NAME].elements.push(propellerObj);
+                    jQuery.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME, propellerObj);
+                    jQuery[HTMLGL.JQ_PLUGIN_NAME].elements.push(propellerObj);
                 }
             });
         };
