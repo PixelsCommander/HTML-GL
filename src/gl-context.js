@@ -48,7 +48,7 @@
     p.initListeners = function () {
         //window listeners
         w.addEventListener('scroll', this.updateScrollPosition.bind(this));
-        w.addEventListener('resize', this.resizeViewer.bind(this));
+        w.addEventListener('resize', w.HTMLGL.util.debounce(this.resizeViewer, 500).bind(this));
 
         //document listeners - mouse and touch events
         document.addEventListener('click', this.onMouseEvent.bind(this), true);
@@ -96,7 +96,7 @@
 
     p.appendViewer = function () {
         document.body.appendChild(this.renderer.view);
-        requestAnimFrame(this.redrawStage.bind(this));
+        requestAnimationFrame(this.redrawStage.bind(this));
     }
 
     p.resizeViewer = function () {
@@ -142,7 +142,7 @@
     //We would like to rerender if something changed, otherwise stand by
     p.markStageAsChanged = function () {
         if (w.HTMLGL.stage && !w.HTMLGL.stage.changed) {
-            requestAnimFrame(this.redrawStage);
+            requestAnimationFrame(this.redrawStage);
             w.HTMLGL.stage.changed = true;
         }
     }
