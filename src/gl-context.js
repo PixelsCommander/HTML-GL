@@ -12,6 +12,7 @@
     //Defining it`s properties
     HTMLGL.JQ_PLUGIN_NAME = 'htmlgl';
     HTMLGL.CUSTOM_ELEMENT_TAG_NAME = 'html-gl';
+    HTMLGL.READY_EVENT = 'htmlglReady';
     HTMLGL.context = undefined;
     HTMLGL.stage = undefined;
     HTMLGL.renderer = undefined;

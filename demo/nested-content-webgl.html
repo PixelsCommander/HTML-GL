@@ -36,19 +36,21 @@
     <section class="broadcasts_list">
         <h1>SLIDER BELOW IS RENDERED IN WEBGL, DRAG IT</h1>
         <html-gl class="horizontal_carusel">
-            <li class="broadcast" onclick="alert('Clicked Argo')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_argo.png" width="186px" height="270px">
+            <html-gl>
+                <li class="broadcast" onclick="alert('Clicked Argo')">
+                    <div class="image_background"></div>
+                    <img src="./pic/boxes/box_argo.png" width="186px" height="270px">
 
-                <p>
-                    Select me with DevTools
-                </p>
+                    <p>
+                        Select me with DevTools
+                    </p>
 
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>7.8<span>/10</span></span>
-                </p>
-            </li>
+                    <p>
+                        <img src="./assets/img/imdb.png" width="52px" height="24px">
+                        <span>7.8<span>/10</span></span>
+                    </p>
+                </li>
+            </html-gl>
             <li class="broadcast" onclick="alert('Clicked Avatar')">
                 <div class="image_background"></div>
                 <img src="./pic/boxes/box_avatar.png" width="186px" height="270px">
@@ -192,7 +194,7 @@
     });
 
     document.getElementsByTagName('html-gl')[0].addEventListener('htmlglReady', function(e){
-        alert('htmlglReady');
+        alert('htmlglReady for ' + e.target);
     });
 </script>
 </body>
