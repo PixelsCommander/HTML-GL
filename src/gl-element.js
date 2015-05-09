@@ -1,13 +1,13 @@
 /*
-* GLElement is a part of HTML GL library describing single HTML-GL element
-* Copyright (c) 2015 pixelscommander.com
-* Distributed under MIT license
-* http://htmlgl.com
-*
-* Please, take into account:
-* - updateTexture is expensive
-* - updateSpriteTransform is cheap
-* */
+ * GLElement is a part of HTML GL library describing single HTML-GL element
+ * Copyright (c) 2015 pixelscommander.com
+ * Distributed under MIT license
+ * http://htmlgl.com
+ *
+ * Please, take into account:
+ * - updateTexture is expensive
+ * - updateSpriteTransform is cheap
+ * */
 
 (function (w) {
     var p = Object.create(HTMLElement.prototype),
@@ -26,14 +26,22 @@
             //Needed to determine is element WebGL rendered or not relying on tag name
             this.setAttribute('renderer', 'webgl');
             this.renderer = 'webgl';
+
             this.transformObject = {};
             this.boundingRect = {};
             this.image = {};
             this.sprite = new PIXI.Sprite();
             this.texture = {};
+
             this.halfWidth = 0;
             this.halfHeight = 0;
+
             this.observer = undefined;
+
+            this.glChilds = [];
+            this.glChildsReady = 0;
+            this.glParent = this.getGlParent();
+
             this.bindCallbacks();
             this.transformProperty = this.style.transform !== undefined ? 'transform' : 'WebkitTransform';
             this.init();
@@ -41,9 +49,57 @@
     }
 
     p.init = function () {
+        this.notifyGlParent();
         this.updateTexture();
         this.initObservers();
         this.patchStyleGLTransform();
+    }
+
+    p.getGlParent = function () {
+        var parent = this,
+            tagName = HTMLGL.CUSTOM_ELEMENT_TAG_NAME.toUpperCase();
+
+        while (parent) {
+            parent = parent.parentNode;
+            if (parent.tagName === tagName) {
+                return parent;
+            } else if (parent === w.document) {
+                return null;
+            }
+        }
+    }
+
+    //Notify GL parent about one more HTML GL child in the tree
+    p.notifyGlParent = function () {
+        if (this.glParent) {
+            this.glParent.addGlChild(this);
+        }
+    }
+
+    p.addGlChild = function (child) {
+        this.glChilds.push(child);
+    }
+
+    p.glChildReady = function () {
+        this.glChildsReady++;
+        this.dispatchReady();
+    }
+
+    //If all my childs ready notify parent that I am
+    p.dispatchReady = function () {
+        if (this.isReady()) {
+            var event = new Event(HTMLGL.READY_EVENT);
+            this.dispatchEvent(event);
+
+            if (this.glParent) {
+                //Inform parent
+                this.glParent.glChildReady();
+            }
+        }
+    }
+
+    p.isReady = function () {
+        return (this.glChilds.length - this.glChildsReady === 0) && this.haveSprite();
     }
 
     //Updating bounds, waiting for all images to load and calling rasterization then
@@ -112,6 +168,11 @@
             height: this.getBoundingClientRect().height,
         };
 
+        if (this.glParent && this.glParent.boundingRect) {
+            this.boundingRect.left -= this.glParent.boundingRect.left;
+            this.boundingRect.top -= this.glParent.boundingRect.top;
+        }
+
         this.boundingRect.left = HTMLGL.scrollX + parseFloat(this.boundingRect.left);
         this.boundingRect.top = HTMLGL.scrollY + parseFloat(this.boundingRect.top);
     }
@@ -125,12 +186,16 @@
     }
 
     p.initSprite = function (texture) {
-        var self = this;
-        //this.sprite = new PIXI.Sprite(texture);
+        var self = this,
+            parentSprite = this.glParent && this.glParent.sprite || w.HTMLGL.document;
+
         this.sprite.setTexture(texture);
-        HTMLGL.document.addChild(this.sprite);
+        parentSprite.addChild(this.sprite);
+
         setTimeout(function () {
             self.hideDOM();
+            //Notify parents that I am initialized
+            self.dispatchReady();
         }, 0);
     }
 
