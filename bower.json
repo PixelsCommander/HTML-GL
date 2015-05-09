@@ -1,6 +1,6 @@
 {
-  "name": "HTMLGL",
-  "version": "0.1.1",
+  "name": "htmlgl",
+  "version": "0.2",
   "authors": [
     "PixelsCommander <denis.radin@gmail.com>"
   ],
@@ -13,7 +13,7 @@
     "tests"
   ],
   "dependencies": {
-    "pixi": "~2.2.5",
+    "pixi": "~2.2.9",
     "webcomponents.js": "~0.5.5",
     "promise-polyfill": "~2.0.0",
     "jquery": "~2.1.3"

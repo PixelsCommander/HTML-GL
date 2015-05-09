@@ -19,7 +19,16 @@
 
     p.createdCallback = function () {
         //Checking is node created inside of html2canvas virtual window or not. We do not need WebGL there
-        var isInsideHtml2Canvas = this.baseURI !== undefined && this.baseURI.length === 0;
+        var currentNode = this,
+            isMounted = false;
+
+        while (currentNode = currentNode.parentNode) {
+            if (currentNode.tagName === 'BODY') {
+                isMounted = true;
+            }
+        }
+
+        var isInsideHtml2Canvas = isMounted && (this.baseURI !== undefined && this.baseURI.length === 0);
 
         if (!isInsideHtml2Canvas) {
             HTMLGL.elements.push(this);
@@ -110,6 +119,7 @@
         new HTMLGL.ImagesLoaded(self, function () {
             //Bounds could change during images loading
             self.updateBoundingRect();
+
             self.image = html2canvas(self, {
                 onrendered: self.applyNewTexture,
                 width: self.boundingRect.width,
