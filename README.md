@@ -57,7 +57,8 @@ In order to improve technology we are trying to promote standardized native Rast
 
 Fast way to animate
 -------------------
-The most performant way to animate HTML-GL tags is to change tag's `styleGL.transform` in the same way you operate on `style.transform`. Velocity.js copy from HTML-GL repository (https://github.com/PixelsCommander/HTML-GL/blob/master/demo/js/vendor/velocity.js) have this optimization built-in. Feel free to use it in the way described in official Velocity.js documentation.
+The most performant way to animate HTML-GL tags is to operate on tag's `styleGL.transform` in the same way you operate on `style.transform`. E.g. `style.transform = 'translateX(100px) translateY(50px)'`.
+Velocity.js copy from HTML-GL repository (https://github.com/PixelsCommander/HTML-GL/blob/master/demo/js/vendor/velocity.js) have this optimization built-in. Feel free to use it in the way described in official Velocity.js documentation.
 
 Animating HTML-GL tag children
 ------------------------------
