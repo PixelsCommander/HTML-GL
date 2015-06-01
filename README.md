@@ -55,6 +55,14 @@ Rasterization API
 -----------------
 In order to improve technology we are trying to promote standardized native Rasterization API for JavaScript. Help us to be better and to add this cool feature to browsers by spreading the [article](http://pixelscommander.com/en/javascript/state-of-html-content-rasterization-draw-html-to-canvas-image/) and [proposal draft](https://gist.github.com/PixelsCommander/a0b5882139cbb8a1781c#file-proposal-md).
 
+Animating HTML-GL tag children
+----------------------------
+Since it is very efficient to make transformations (move, rotate, scale, change opacity) on HTML-GL tags it becomes very slow to animate it's children until they are HTML-GL tags too. This happens because of necessity to rasterize and send HTML-GL tag texture to GPU.
+
+Animating
+---------
+The most performant way to animate HTML-GL tags is to change tag's `styleGL.transform` in the same way you operate on `style.transform`. Velocity.js copy from HTML-GL repository (https://github.com/PixelsCommander/HTML-GL/blob/master/demo/js/vendor/velocity.js) have this optimization built-in. Feel free to use it in the way described in official Velocity.js documentation.
+
 License
 -------
 MIT: http://mit-license.org/
