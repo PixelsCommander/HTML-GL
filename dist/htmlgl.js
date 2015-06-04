@@ -8783,10 +8783,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
             this.glChildsReady = 0;
             this.glParent = this.getGlParent();
 
-            if (HTMLGL.GLEffectsManager) {
-                this.effectsManager = new HTMLGL.GLEffectsManager(this);
-            }
-
+            this.initEffects();
             this.bindCallbacks();
             this.transformProperty = this.style.transform !== undefined ? 'transform' : 'WebkitTransform';
             this.init();
@@ -9009,6 +9006,12 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
 
     p.haveSprite = function () {
         return this.sprite.stage;
+    }
+
+    p.initEffects = function () {
+        if (HTMLGL.GLEffectsManager) {
+            this.effectsManager = new HTMLGL.GLEffectsManager(this);
+        }
     }
 
     HTMLGL.GLElement = document.registerElement(HTMLGL.CUSTOM_ELEMENT_TAG_NAME, {
