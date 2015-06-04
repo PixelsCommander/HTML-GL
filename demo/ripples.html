@@ -1,221 +1,96 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/appstyle.css">
     <title>HTML GL filters demo</title>
     <meta name="viewport" content="width=1024 maximum-scale=1.0 minimum-scale=1.0 initial-scale=1.0, user-scalable=no" />
 </head>
 <body>
-<div class="content_wrapper">
-    <h1>MENU RENDERED IN DOM</h1>
-    <nav class="top_nav">
-        <ul class="menu expanded">
-            <li><a target="_blank" href="http://pixelscommander.com/en/web-applications-performance/render-html-css-in-webgl-to-get-highest-performance-possibl/">ABOUT HTML-GL</a></li>
-            <li><a target="_blank" href="https://github.com/PixelsCommander/HTML-GL">GITHUB REPO</a></li>
-        </ul>
-        <ul class="submenu">
-            <li><a target="_blank" href="https://github.com/PixelsCommander/HTML-GL/archive/master.zip">DOWNLOAD</a></li>
-            <li>
-                <!-- AddThis Button BEGIN -->
-                <div class="addthis_toolbox addthis_default_style">
-                    <iframe style="display: inline-block;"
-                            src="http://ghbtns.com/github-btn.html?user=PixelsCommander&repo=HTML-GL&type=watch"
-                            allowtransparency="true" frameborder="0" scrolling="0" width="62" height="20"></iframe>
-                    <a class="addthis_button_tweet"></a>
-                    <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-                </div>
-                <script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>
-                <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-4ea2f9164143bcfb"></script>
-                <!-- AddThis Button END -->
-            </li>
-        </ul>
-    </nav>
-    <section class="broadcasts_list">
-        <h1>SLIDER BELOW IS RENDERED IN WEBGL, DRAG IT</h1>
-        <html-gl class="horizontal_carusel">
-            <li class="broadcast" onclick="alert('Clicked Argo')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_argo.png" width="186px" height="270px">
+<html-gl effects="ripples">
+    <ul>
+        <li>
+            <img src="./assets/img/icons/bitcoin.png">
+            <p>Bitcoin</p>
+        </li>
+        <li>
+            <img src="./assets/img/icons/2checkout.png">
+            <p>2checkout</p>
+        </li>
+        <li>
+            <img src="./assets/img/icons/calendar.png">
+            <p>Calendar</p>
+        </li>
+        <li>
+            <img src="./assets/img/icons/calculator.png">
+            <p>Calculator</p>
+        </li>
+        <li>
+            <img src="./assets/img/icons/clock.png">
+            <p>Clock</p>
+        </li>
+        <li>
+            <img src="./assets/img/icons/discover.png">
+            <p>Discover</p>
+        </li>
+        <li>
+            <img src="./assets/img/icons/ebay.png">
+            <p>Ebay</p>
+        </li>
+        <li>
+            <img src="./assets/img/icons/google-wallet.png">
+            <p>Google wallet</p>
+        </li>
+        <li>
+            <img src="./assets/img/icons/maestro.png">
+            <p>Maestro</p>
+        </li>
+        <li>
+            <img src="./assets/img/icons/mastercard.png">
+            <p>MasterCard</p>
+        </li>
+        <li>
+            <img src="./assets/img/icons/paypal.png">
+            <p>PayPal</p>
+        </li>
+        <li>
+            <img src="./assets/img/icons/locker.png">
+            <p>Locker</p>
+        </li>
+        <li>
+            <img src="./assets/img/icons/visa.png">
+            <p>Visa</p>
+        </li>
+        <li>
+            <img src="./assets/img/icons/wire-transfer.png">
+            <p>Wire transfer</p>
+        </li>
+        <li>
+            <img src="./assets/img/icons/wu.png">
+            <p>Western Union</p>
+        </li>
+    </ul>
+</html-gl>
 
-                <p>
-                    Select me with DevTools
-                </p>
 
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>7.8<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Clicked Avatar')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_avatar.png" width="186px" height="270px">
 
-                <p>
-                    Change me in DevTools
-                </p>
 
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>8.0<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Clicked Breaking Bad')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_breaking_bad.png" width="186px" height="270px">
-
-                <p>
-                    Breaking bad
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>9.6<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Quantum of solace')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
-
-                <p>
-                    Quantum of solace
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>6.7<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Quantum of solace')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
-
-                <p>
-                    Quantum of solace
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>7.4<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Quantum of solace')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
-
-                <p>
-                    Quantum of solace
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>7.4<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Quantum of solace')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
-
-                <p>
-                    Quantum of solace
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>7.4<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Quantum of solace')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
-
-                <p>
-                    Quantum of solace
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>7.4<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Quantum of solace')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
-
-                <p>
-                    Quantum of solace
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>7.4<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Quantum of solace')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
-
-                <p>
-                    Quantum of solace
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>7.4<span>/10</span></span>
-                </p>
-            </li>
-            <div class="">
-
-            </div>
-        </html-gl>
-    </section>
-</div>
-
-<script src="../bower_components/promise-polyfill/Promise.min.js"></script>
-<script src="../bower_components/webcomponents.js/CustomElements.min.js"></script>
-<script src="./js/vendor/velocity.js"></script>
-<script src="./js/vendor/html2canvas.js"></script>
-<script src="../bower_components/pixi/bin/pixi.dev.js"></script>
-<script src="../src/util.js"></script>
-<script src="../src/gl-element-resolver.js"></script>
-<script src="../src/gl-context.js"></script>
-<script src="../src/images-loaded.js"></script>
-<script src="../src/gl-element.js"></script>
-<script src="./js/slider.js"></script>
-<script src="./js/vendor/dat.gui.min.js"></script>
 <script>
+    var listItems = document.getElementsByTagName('li');
 
-    var renderer = window.HTMLGL.renderer;
+    for (var i = 0; i < listItems.length; i++) {
+        var item = listItems[i];
 
-    var displacementTexture = PIXI.Texture.fromImage("assets/img/displacement_ripples.jpg");
-    var displacementFilter = new PIXI.DisplacementFilter(displacementTexture);
-
-    window.HTMLGL.stage.addChild(window.HTMLGL.document);
-
-    window.HTMLGL.document.filters = [displacementFilter];
-
-    displacementFilter.scale.x = 30;
-    displacementFilter.scale.y = 30;
-
-    var count = 0;
-
-    function animate() {
-
-        count += 0.1;
-
-        displacementFilter.uniforms.dimensions.value.x = displacementFilter.uniforms.dimensions.value.x * count;
-        displacementFilter.uniforms.dimensions.value.y = displacementFilter.uniforms.dimensions.value.y * count;
-
-        //displacementTexture.scale.x = count * 10;
-        //displacementTexture.scale.y = count * 10;
-
-        //displacementFilter.scale.x = count;// * 10;
-        //displacementFilter.scale.y = count;// * 10;
-
-        renderer.render(window.HTMLGL.stage);
-        requestAnimFrame( animate );
+        item.addEventListener('mouseup', function(e){
+            console.log(e.currentTarget.innerText);
+        });
     }
-
-    requestAnimFrame( animate );
 </script>
+
+
+
+
+
+<script src="../dist/htmlgl.min.js"></script>
+<script src="../dist/htmlgl-effects.min.js"></script>
 </body>
 </html>

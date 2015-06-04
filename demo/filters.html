@@ -355,26 +355,6 @@
 
         pondContainer.filters = filtersToApply.length > 0 ? filtersToApply : null;
 
-        /*for (var i = 0; i < fishs.length; i++)
-        {
-            var fish = fishs[i];
-
-            fish.direction += fish.turnSpeed * 0.01;
-            fish.position.x += Math.sin(fish.direction) * fish.speed;
-            fish.position.y += Math.cos(fish.direction) * fish.speed;
-
-            fish.rotation = -fish.direction - Math.PI/2;
-
-            // wrap..
-
-            if(fish.position.x < bounds.x)fish.position.x += bounds.width;
-            if(fish.position.x > bounds.x + bounds.width)fish.position.x -= bounds.width
-
-            if(fish.position.y < bounds.y)fish.position.y += bounds.height;
-            if(fish.position.y > bounds.y + bounds.height)fish.position.y -= bounds.height
-        }*/
-
-
         displacementFilter.offset.x = count * 10//blurAmount * 40;
         displacementFilter.offset.y = count * 10
 
