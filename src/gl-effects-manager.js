@@ -31,4 +31,9 @@
     }
 
     w.HTMLGL.GLEffectsManager = GLEffectsManager;
+
+    //Reinitialize effects on elements
+    w.HTMLGL.elements.forEach(function(element){
+        element.initEffects();
+    });
 })(window);
