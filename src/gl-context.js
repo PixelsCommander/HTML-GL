@@ -44,6 +44,50 @@
         this.createViewer();
         this.resizeViewer();
         this.appendViewer();
+        this.initElements();
+    }
+
+    p.createViewer = function () {
+        w.HTMLGL.renderer = this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
+        this.renderer.view.style.position = 'fixed';
+        this.renderer.view.style.top = '0px';
+        this.renderer.view.style.left = '0px';
+        this.renderer.view.style['pointer-events'] = 'none';
+        this.renderer.view.style['pointerEvents'] = 'none';
+    }
+
+    p.appendViewer = function () {
+        document.body.appendChild(this.renderer.view);
+        requestAnimationFrame(this.redrawStage.bind(this));
+    }
+
+    p.resizeViewer = function () {
+        var width = w.innerWidth,
+            height = w.innerHeight,
+            oldRatio = HTMLGL.pixelRatio;
+
+        //Update pixelRatio since could be resized on different screen with different ratio
+        HTMLGL.pixelRatio = window.devicePixelRatio || 1;
+
+        width = width * HTMLGL.pixelRatio;
+        height = height * HTMLGL.pixelRatio;
+
+        if (oldRatio !== 1 || HTMLGL.pixelRatio !== 1) {
+            var rendererScale = 1 / HTMLGL.pixelRatio;
+            this.renderer.view.style.transformOrigin = '0 0';
+            this.renderer.view.style.webkitTransformOrigin = '0 0';
+            this.renderer.view.style.transform = 'scaleX(' + rendererScale + ') scaleY(' + rendererScale + ')';
+            this.renderer.view.style.webkitTransform = 'scaleX(' + rendererScale + ') scaleY(' + rendererScale + ')';
+        }
+
+        this.renderer.resize(width, height);
+
+        //No need to update textures when is not mounted yet
+        if (this.renderer.view.parentNode) {
+            this.updateTextures();
+        }
+
+        this.markStageAsChanged();
     }
 
     p.initListeners = function () {
@@ -77,35 +121,12 @@
                 top: sy
             };
         }
-        
-        this.document.x = -scrollOffset.left;
-        this.document.y = -scrollOffset.top;
+
+        this.document.x = -scrollOffset.left * HTMLGL.pixelRatio;
+        this.document.y = -scrollOffset.top * HTMLGL.pixelRatio;
+
         w.HTMLGL.scrollX = scrollOffset.left;
         w.HTMLGL.scrollY = scrollOffset.top;
-
-        this.markStageAsChanged();
-    }
-
-    p.createViewer = function () {
-        w.HTMLGL.renderer = this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
-        this.renderer.view.style.position = 'fixed';
-        this.renderer.view.style.top = '0px';
-        this.renderer.view.style.left = '0px';
-        this.renderer.view.style['pointer-events'] = 'none';
-        this.renderer.view.style['pointerEvents'] = 'none';
-    }
-
-    p.appendViewer = function () {
-        document.body.appendChild(this.renderer.view);
-        requestAnimationFrame(this.redrawStage.bind(this));
-    }
-
-    p.resizeViewer = function () {
-        var width = w.innerWidth,
-            height = w.innerHeight;
-
-        this.renderer.resize(width, height);
-        this.updateTextures();
 
         this.markStageAsChanged();
     }
@@ -118,7 +139,7 @@
 
     //Avoiding function.bind() for performance and memory consuming reasons
     p.redrawStage = function () {
-        if (w.HTMLGL.stage.changed) {
+        if (w.HTMLGL.stage.changed && w.HTMLGL.renderer) {
             w.HTMLGL.renderer.render(w.HTMLGL.stage);
             w.HTMLGL.stage.changed = false;
         }
@@ -127,6 +148,12 @@
     p.updateTextures = function () {
         w.HTMLGL.elements.forEach(function(element){
             element.updateTexture();
+        });
+    }
+
+    p.initElements = function () {
+        w.HTMLGL.elements.forEach(function(element){
+            element.init();
         });
     }
 
@@ -147,6 +174,8 @@
             w.HTMLGL.stage.changed = true;
         }
     }
+
+    w.HTMLGL.pixelRatio = window.devicePixelRatio || 1;
 
     w.HTMLGL.GLContext = GLContext;
     new GLContext();

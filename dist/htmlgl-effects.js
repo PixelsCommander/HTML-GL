@@ -34,8 +34,8 @@ void 0===Date.now&&(Date.now=function(){return(new Date).valueOf()});var TWEEN=T
     var p = Ripples.prototype;
 
     p.ripple = function(e) {
-        this.displacementSprite.x = e.pageX;
-        this.displacementSprite.y = e.pageY;
+        this.displacementSprite.x = e.pageX * HTMLGL.pixelRatio;
+        this.displacementSprite.y = e.pageY * HTMLGL.pixelRatio;
 
         this.displacementSprite.scale.x = 0.05;
         this.displacementSprite.scale.y = 0.05;
@@ -44,7 +44,7 @@ void 0===Date.now&&(Date.now=function(){return(new Date).valueOf()});var TWEEN=T
         this.displacementFilter.scale.y = 100;
 
         new TWEEN.Tween( this.displacementSprite.scale )
-            .to( { x: 1.5, y:1.5 }, 1000 )
+            .to( { x: 1.5 * HTMLGL.pixelRatio, y:1.5 * HTMLGL.pixelRatio }, 1000 )
             .easing( TWEEN.Easing.Cubic.Out )
             .start();
 

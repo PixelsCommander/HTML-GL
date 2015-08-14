@@ -28,7 +28,7 @@
             }
         }
 
-        var isInsideHtml2Canvas = isMounted && (this.baseURI !== undefined && this.baseURI.length === 0);
+        var isInsideHtml2Canvas = !isMounted && (this.baseURI !== undefined && this.baseURI.length === 0);
 
         if (!isInsideHtml2Canvas) {
             HTMLGL.elements.push(this);
@@ -71,7 +71,8 @@
 
         while (parent) {
             parent = parent.parentNode;
-            if (parent.tagName === tagName) {
+
+            if (parent && parent.tagName === tagName) {
                 return parent;
             } else if (parent === w.document) {
                 return null;
@@ -123,14 +124,15 @@
 
             self.image = html2canvas(self, {
                 onrendered: self.applyNewTexture,
-                width: self.boundingRect.width,
-                height: self.boundingRect.height
+                width: self.boundingRect.width * HTMLGL.pixelRatio,
+                height: self.boundingRect.height * HTMLGL.pixelRatio
             });
         });
     }
 
     //Recreating texture from canvas given after calling updateTexture
     p.applyNewTexture = function (textureCanvas) {
+        //document.body.appendChild(textureCanvas);
         this.image = textureCanvas;
         this.texture = PIXI.Texture.fromCanvas(this.image);
 
@@ -158,8 +160,8 @@
             rotate = (parseFloat(this.transformObject.rotateZ) / 180) * Math.PI || 0;
 
         if (this.sprite && this.sprite.position) {
-            this.sprite.position.x = this.boundingRect.left + translateX + this.halfWidth;
-            this.sprite.position.y = this.boundingRect.top + translateY + this.halfHeight;
+            this.sprite.position.x = (this.boundingRect.left + translateX) * HTMLGL.pixelRatio + this.halfWidth;
+            this.sprite.position.y = (this.boundingRect.top + translateY) * HTMLGL.pixelRatio + this.halfHeight;
             this.sprite.scale.x = scaleX;
             this.sprite.scale.y = scaleY;
             this.sprite.rotation = rotate;
