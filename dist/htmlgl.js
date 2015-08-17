@@ -8728,7 +8728,6 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         this.createViewer();
         this.resizeViewer();
         this.appendViewer();
-        this.initElements();
     }
 
     p.createViewer = function () {
@@ -8762,6 +8761,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
             this.renderer.view.style.webkitTransformOrigin = '0 0';
             this.renderer.view.style.transform = 'scaleX(' + rendererScale + ') scaleY(' + rendererScale + ')';
             this.renderer.view.style.webkitTransform = 'scaleX(' + rendererScale + ') scaleY(' + rendererScale + ')';
+            this.updateScrollPosition.bind(this)();
         }
 
         this.renderer.resize(width, height);
@@ -8771,6 +8771,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
             this.updateTextures();
         }
 
+        this.updateElementsPositions();
         this.markStageAsChanged();
     }
 
@@ -8778,6 +8779,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         //window listeners
         w.addEventListener('scroll', this.updateScrollPosition.bind(this));
         w.addEventListener('resize', w.HTMLGL.util.debounce(this.resizeViewer, 500).bind(this));
+        w.addEventListener('resize', this.updateElementsPositions.bind(this));
 
         //document listeners - mouse and touch events
         document.addEventListener('click', this.onMouseEvent.bind(this), true);
@@ -8830,21 +8832,28 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
     }
 
     p.updateTextures = function () {
-        w.HTMLGL.elements.forEach(function(element){
+        w.HTMLGL.elements.forEach(function (element) {
             element.updateTexture();
         });
     }
 
     p.initElements = function () {
-        w.HTMLGL.elements.forEach(function(element){
+        w.HTMLGL.elements.forEach(function (element) {
             element.init();
+        });
+    }
+
+    p.updateElementsPositions = function () {
+        w.HTMLGL.elements.forEach(function (element) {
+            element.updateBoundingRect();
+            element.updateSpriteTransform();
         });
     }
 
     p.onMouseEvent = function (event) {
         var x = event.x || event.pageX,
             y = event.y || event.pageY,
-            //Finding element under mouse position
+        //Finding element under mouse position
             element = event.dispatcher !== 'html-gl' ? this.elementResolver.getElementByCoordinates(x, y) : null;
 
         //Emit event if there is an element under mouse position
