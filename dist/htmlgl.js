@@ -8701,6 +8701,9 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
     HTMLGL.stage = undefined;
     HTMLGL.renderer = undefined;
     HTMLGL.elements = [];
+    HTMLGL.pixelRatio = null;
+    HTMLGL.oldPixelRatio = null;
+    HTMLGL.enabled = true;
 
     //Cache for window`s scroll position, filled in by updateScrollPosition
     HTMLGL.scrollX = 0;
@@ -8745,9 +8748,9 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
     }
 
     p.resizeViewer = function () {
-        var width = w.innerWidth,
-            height = w.innerHeight,
-            oldRatio = HTMLGL.pixelRatio;
+        var self = this,
+            width = w.innerWidth,
+            height = w.innerHeight;
 
         //Update pixelRatio since could be resized on different screen with different ratio
         HTMLGL.pixelRatio = window.devicePixelRatio || 1;
@@ -8755,24 +8758,32 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         width = width * HTMLGL.pixelRatio;
         height = height * HTMLGL.pixelRatio;
 
-        if (oldRatio !== 1 || HTMLGL.pixelRatio !== 1) {
-            var rendererScale = 1 / HTMLGL.pixelRatio;
-            this.renderer.view.style.transformOrigin = '0 0';
-            this.renderer.view.style.webkitTransformOrigin = '0 0';
-            this.renderer.view.style.transform = 'scaleX(' + rendererScale + ') scaleY(' + rendererScale + ')';
-            this.renderer.view.style.webkitTransform = 'scaleX(' + rendererScale + ') scaleY(' + rendererScale + ')';
-            this.updateScrollPosition.bind(this)();
+        if (HTMLGL.pixelRatio !== HTMLGL.oldPixelRatio) {
+            this.disable();
+            this.updateTextures().then(function(){
+                self.updateScrollPosition();
+                self.updateElementsPositions();
+
+                var rendererScale = 1 / HTMLGL.pixelRatio;
+                self.renderer.view.style.transformOrigin = '0 0';
+                self.renderer.view.style.webkitTransformOrigin = '0 0';
+                self.renderer.view.style.transform = 'scaleX(' + rendererScale + ') scaleY(' + rendererScale + ')';
+                self.renderer.view.style.webkitTransform = 'scaleX(' + rendererScale + ') scaleY(' + rendererScale + ')';
+                self.renderer.resize(width, height);
+
+                this.enable();
+
+                w.HTMLGL.renderer.render(w.HTMLGL.stage);
+            });
+        } else {
+            if (this.renderer.view.parentNode) { //No need to update textures when is not mounted yet
+                this.updateTextures();
+            }
+            this.updateElementsPositions();
+            this.markStageAsChanged();
         }
 
-        this.renderer.resize(width, height);
-
-        //No need to update textures when is not mounted yet
-        if (this.renderer.view.parentNode) {
-            this.updateTextures();
-        }
-
-        this.updateElementsPositions();
-        this.markStageAsChanged();
+        HTMLGL.oldPixelRatio = HTMLGL.pixelRatio;
     }
 
     p.initListeners = function () {
@@ -8825,16 +8836,20 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
 
     //Avoiding function.bind() for performance and memory consuming reasons
     p.redrawStage = function () {
-        if (w.HTMLGL.stage.changed && w.HTMLGL.renderer) {
+        if (w.HTMLGL.stage.changed && w.HTMLGL.renderer && w.HTMLGL.enabled) {
             w.HTMLGL.renderer.render(w.HTMLGL.stage);
             w.HTMLGL.stage.changed = false;
         }
     }
 
     p.updateTextures = function () {
+        var updatePromises = [];
+
         w.HTMLGL.elements.forEach(function (element) {
-            element.updateTexture();
+            updatePromises.push(element.updateTexture());
         });
+
+        return Promise.all(updatePromises);
     }
 
     p.initElements = function () {
@@ -8846,6 +8861,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
     p.updateElementsPositions = function () {
         w.HTMLGL.elements.forEach(function (element) {
             element.updateBoundingRect();
+            element.updatePivot();
             element.updateSpriteTransform();
         });
     }
@@ -8866,6 +8882,14 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
             requestAnimationFrame(this.redrawStage);
             w.HTMLGL.stage.changed = true;
         }
+    }
+
+    p.disable = function () {
+        w.HTMLGL.enabled = true;
+    }
+
+    p.enable = function () {
+        w.HTMLGL.enabled = false;
     }
 
     w.HTMLGL.pixelRatio = window.devicePixelRatio || 1;
@@ -9046,15 +9070,12 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         var self = this;
         self.updateBoundingRect();
 
-        new HTMLGL.ImagesLoaded(self, function () {
-            //Bounds could change during images loading
-            self.updateBoundingRect();
-
+        return new Promise(function(resolve, reject){
             self.image = html2canvas(self, {
                 onrendered: self.applyNewTexture,
                 width: self.boundingRect.width * HTMLGL.pixelRatio,
                 height: self.boundingRect.height * HTMLGL.pixelRatio
-            });
+            }).then(resolve);
         });
     }
 
@@ -9100,13 +9121,15 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
 
     //Getting bounding rect with respect to current scroll position
     p.updateBoundingRect = function () {
+        var boundingRect = this.getBoundingClientRect();
+
         this.boundingRect = {
-            left: this.getBoundingClientRect().left,
-            right: this.getBoundingClientRect().right,
-            top: this.getBoundingClientRect().top,
-            bottom: this.getBoundingClientRect().bottom,
-            width: this.getBoundingClientRect().width,
-            height: this.getBoundingClientRect().height,
+            left: boundingRect.left,
+            right: boundingRect.right,
+            top: boundingRect.top,
+            bottom: boundingRect.bottom,
+            width: boundingRect.width,
+            height: boundingRect.height,
         };
 
         if (this.glParent && this.glParent.boundingRect) {

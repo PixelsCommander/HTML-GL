@@ -118,15 +118,12 @@
         var self = this;
         self.updateBoundingRect();
 
-        new HTMLGL.ImagesLoaded(self, function () {
-            //Bounds could change during images loading
-            self.updateBoundingRect();
-
+        return new Promise(function(resolve, reject){
             self.image = html2canvas(self, {
                 onrendered: self.applyNewTexture,
                 width: self.boundingRect.width * HTMLGL.pixelRatio,
                 height: self.boundingRect.height * HTMLGL.pixelRatio
-            });
+            }).then(resolve);
         });
     }
 
@@ -172,13 +169,15 @@
 
     //Getting bounding rect with respect to current scroll position
     p.updateBoundingRect = function () {
+        var boundingRect = this.getBoundingClientRect();
+
         this.boundingRect = {
-            left: this.getBoundingClientRect().left,
-            right: this.getBoundingClientRect().right,
-            top: this.getBoundingClientRect().top,
-            bottom: this.getBoundingClientRect().bottom,
-            width: this.getBoundingClientRect().width,
-            height: this.getBoundingClientRect().height,
+            left: boundingRect.left,
+            right: boundingRect.right,
+            top: boundingRect.top,
+            bottom: boundingRect.bottom,
+            width: boundingRect.width,
+            height: boundingRect.height,
         };
 
         if (this.glParent && this.glParent.boundingRect) {

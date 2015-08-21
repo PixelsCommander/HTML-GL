@@ -16,7 +16,7 @@
     TODO
 </h2>
 <ul>
-    <li>Add retina support in order to avoid blurry content</li>
+    <li>Add more effects presets</li>
 </ul>
 <script src="../bower_components/promise-polyfill/Promise.min.js"></script>
 <script src="../bower_components/webcomponents.js/CustomElements.min.js"></script>
@@ -38,6 +38,11 @@
         element.style.webkitTransform = 'translateX(400px) translateY(100px)';
         element.style.transform = 'translateX(400px) translateY(100px)';
     }
+
+    document.addEventListener('keydown', function(){
+        window.devicePixelRatio = window.devicePixelRatio === 1 ? 2 : 1;
+        HTMLGL.context.resizeViewer();
+    });
 
     window.animate = function () {
         var element = document.getElementsByTagName('html-gl')[0];
