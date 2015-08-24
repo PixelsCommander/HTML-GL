@@ -71,6 +71,8 @@
         //Update pixelRatio since could be resized on different screen with different ratio
         HTMLGL.pixelRatio = window.devicePixelRatio || 1;
 
+        console.log(HTMLGL.pixelRatio);
+
         width = width * HTMLGL.pixelRatio;
         height = height * HTMLGL.pixelRatio;
 

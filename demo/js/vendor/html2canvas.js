@@ -1635,6 +1635,8 @@ function cloneNode(node, javascriptEnabled) {
     var child = node.firstChild;
     while(child) {
         if (javascriptEnabled === true || child.nodeType !== 1 || child.nodeName !== 'SCRIPT') {
+            console.log(clone);
+
             clone.appendChild(cloneNode(child, javascriptEnabled));
         }
         child = child.nextSibling;
@@ -1675,6 +1677,7 @@ module.exports = function(ownerDocument, containerDocument, width, height, optio
     container.style.position = "fixed";
     container.style.left = "-10000px";
     container.style.top = "0px";
+    container.style.border = "0";
     container.style.border = "0";
     container.width = width;
     container.height = height;
@@ -2054,6 +2057,7 @@ module.exports = (typeof(document) === "undefined" || typeof(Object.create) !== 
 function renderDocument(document, options, windowWidth, windowHeight, html2canvasIndex) {
     return createWindowClone(document, document, windowWidth, windowHeight, options, document.defaultView.pageXOffset, document.defaultView.pageYOffset).then(function(container) {
         log("Document cloned");
+
         var attributeName = html2canvasNodeAttribute + html2canvasIndex;
         var selector = "[" + attributeName + "='" + html2canvasIndex + "']";
         document.querySelector(selector).removeAttribute(attributeName);
@@ -3492,7 +3496,17 @@ function calculateCurvePoints(bounds, borderRadius, borders) {
         blh = borderRadius[3][0],
         blv = borderRadius[3][1];
 
-    var topWidth = width - trh,
+        var halfHeight = Math.floor(height / 2);
+        tlh = tlh > halfHeight ? halfHeight : tlh;
+        tlv = tlv > halfHeight ? halfHeight : tlv;
+        trh = trh > halfHeight ? halfHeight : trh;
+        trv = trv > halfHeight ? halfHeight : trv;
+        brh = brh > halfHeight ? halfHeight : brh;
+        brv = brv > halfHeight ? halfHeight : brv;
+        blh = blh > halfHeight ? halfHeight : blh;
+        blv = blv > halfHeight ? halfHeight : blv;
+
+        var topWidth = width - trh,
         rightHeight = height - brv,
         bottomWidth = width - brh,
         leftHeight = height - blv;
@@ -4161,8 +4175,8 @@ CanvasRenderer.prototype.drawImage = function(imageContainer, sx, sy, sw, sh, dx
 CanvasRenderer.prototype.clip = function(shapes, callback, context) {
     this.ctx.save();
     shapes.filter(hasEntries).forEach(function(shape) {
-        //shape = this.applyRatioToShape(shape);
-        //this.shape(shape).clip();
+        shape = this.applyRatioToShape(shape);
+        this.shape(shape).clip();
     }, this);
     callback.call(context);
     this.ctx.restore();

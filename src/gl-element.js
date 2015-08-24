@@ -28,7 +28,8 @@
             }
         }
 
-        var isInsideHtml2Canvas = !isMounted && (this.baseURI !== undefined && this.baseURI.length === 0);
+        debugger;
+        var isInsideHtml2Canvas = !isMounted || (this.baseURI === undefined || this.baseURI === '' || this.baseURI === null);
 
         if (!isInsideHtml2Canvas) {
             HTMLGL.elements.push(this);
@@ -120,16 +121,18 @@
 
         return new Promise(function(resolve, reject){
             self.image = html2canvas(self, {
-                onrendered: self.applyNewTexture,
                 width: self.boundingRect.width * HTMLGL.pixelRatio,
                 height: self.boundingRect.height * HTMLGL.pixelRatio
-            }).then(resolve);
+            }).then(function(textureCanvas){
+                self.applyNewTexture(textureCanvas);
+                resolve();
+            });
         });
     }
 
     //Recreating texture from canvas given after calling updateTexture
     p.applyNewTexture = function (textureCanvas) {
-        //document.body.appendChild(textureCanvas);
+        document.body.appendChild(textureCanvas);
         this.image = textureCanvas;
         this.texture = PIXI.Texture.fromCanvas(this.image);
 
