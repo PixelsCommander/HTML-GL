@@ -28,7 +28,6 @@
             }
         }
 
-        debugger;
         var isInsideHtml2Canvas = !isMounted || (this.baseURI === undefined || this.baseURI === '' || this.baseURI === null);
 
         if (!isInsideHtml2Canvas) {
@@ -132,7 +131,6 @@
 
     //Recreating texture from canvas given after calling updateTexture
     p.applyNewTexture = function (textureCanvas) {
-        document.body.appendChild(textureCanvas);
         this.image = textureCanvas;
         this.texture = PIXI.Texture.fromCanvas(this.image);
 

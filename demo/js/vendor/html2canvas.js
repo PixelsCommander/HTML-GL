@@ -1635,8 +1635,6 @@ function cloneNode(node, javascriptEnabled) {
     var child = node.firstChild;
     while(child) {
         if (javascriptEnabled === true || child.nodeType !== 1 || child.nodeName !== 'SCRIPT') {
-            console.log(clone);
-
             clone.appendChild(cloneNode(child, javascriptEnabled));
         }
         child = child.nextSibling;
@@ -4027,13 +4025,14 @@ module.exports = Renderer;
 },{"./log":15}],23:[function(require,module,exports){
 var Renderer = require('../renderer');
 var LinearGradientContainer = require('../lineargradientcontainer');
+var Utils = require('../utils');
 var log = require('../log');
 
 function CanvasRenderer(width, height) {
-    this.ratio = window.devicePixelRatio;
+    this.ratio = Utils.getDeviceRatio();
 
-    width = this.applyRatio(width);
-    height = this.applyRatio(height);
+    width = Utils.applyRatio(width);
+    height = Utils.applyRatio(height);
 
     Renderer.apply(this, arguments);
     this.canvas = this.options.canvas || this.document.createElement("canvas");
@@ -4057,62 +4056,16 @@ function CanvasRenderer(width, height) {
 
 CanvasRenderer.prototype = Object.create(Renderer.prototype);
 
-CanvasRenderer.prototype.applyRatio = function(value) {
-    return value * this.ratio;
-}
-
-CanvasRenderer.prototype.applyRatioToBounds = function(bounds) {
-    bounds.width = bounds.width * this.ratio;
-    bounds.top = bounds.top * this.ratio;
-
-    //In case this is a size
-    try {
-        bounds.left = bounds.left * this.ratio;
-        bounds.height = bounds.height * this.ratio;
-    } catch (e) {
-
-    }
-
-    return bounds;
-}
-
-CanvasRenderer.prototype.applyRatioToPosition = function(position) {
-    position.left = position.left * this.ratio;
-    position.height = position.height * this.ratio;
-
-    return bounds;
-}
-
-CanvasRenderer.prototype.applyRatioToShape = function(shape) {
-    for (var i = 0; i < shape.length; i++) {
-        if (shape[i] instanceof Array) {
-            for (var k = 1; k < shape[i].length; k++) {
-                shape[i][k] = this.applyRatio(shape[i][k]);
-            }
-        }
-    }
-    return shape;
-}
-
-CanvasRenderer.prototype.applyRatioToFontSize = function(fontSize) {
-    var numericPart = parseFloat(fontSize) * this.ratio;
-    var stringPart = fontSize.replace(/[0-9]/g, '');
-
-    fontSize = numericPart + stringPart;
-
-    return fontSize;
-}
-
 CanvasRenderer.prototype.setFillStyle = function(fillStyle) {
     this.ctx.fillStyle = typeof(fillStyle) === "object" && !!fillStyle.isColor ? fillStyle.toString() : fillStyle;
     return this.ctx;
 };
 
 CanvasRenderer.prototype.rectangle = function(left, top, width, height, color) {
-    left = this.applyRatio(left);
-    top = this.applyRatio(top);
-    width = this.applyRatio(width);
-    height = this.applyRatio(height);
+    left = Utils.applyRatio(left);
+    top = Utils.applyRatio(top);
+    width = Utils.applyRatio(width);
+    height = Utils.applyRatio(height);
 
     this.setFillStyle(color).fillRect(left, top, width, height);
 };
@@ -4126,9 +4079,9 @@ CanvasRenderer.prototype.circle = function(left, top, size, color) {
 };
 
 CanvasRenderer.prototype.circleStroke = function(left, top, size, color, stroke, strokeColor) {
-    left = this.applyRatio(left);
-    top = this.applyRatio(top);
-    size = this.applyRatio(size);
+    left = Utils.applyRatio(left);
+    top = Utils.applyRatio(top);
+    size = Utils.applyRatio(size);
 
     this.circle(left, top, size, color);
     this.ctx.strokeStyle = strokeColor.toString();
@@ -4136,7 +4089,7 @@ CanvasRenderer.prototype.circleStroke = function(left, top, size, color, stroke,
 };
 
 CanvasRenderer.prototype.drawShape = function(shape, color) {
-    shape = this.applyRatioToShape(shape);
+    shape = Utils.applyRatioToShape(shape);
 
     this.shape(shape);
     this.setFillStyle(color).fill();
@@ -4158,14 +4111,16 @@ CanvasRenderer.prototype.taints = function(imageContainer) {
 };
 
 CanvasRenderer.prototype.drawImage = function(imageContainer, sx, sy, sw, sh, dx, dy, dw, dh) {
-    sx = this.applyRatio(sx);
-    sy = this.applyRatio(sy);
-    //sw = this.applyRatio(sw);
-    //sh = this.applyRatio(sh);
-    dx = this.applyRatio(dx);
-    dy = this.applyRatio(dy);
-    dw = this.applyRatio(dw);
-    dh = this.applyRatio(dh);
+    //Do not scale source coordinates
+    //sx = Utils.applyRatio(sx);
+    //sy = Utils.applyRatio(sy);
+    //sw = Utils.applyRatio(sw);
+    //sh = Utils.applyRatio(sh);
+
+    dx = Utils.applyRatio(dx);
+    dy = Utils.applyRatio(dy);
+    dw = Utils.applyRatio(dw);
+    dh = Utils.applyRatio(dh);
 
     if (!this.taints(imageContainer) || this.options.allowTaint) {
         this.ctx.drawImage(imageContainer.image, sx, sy, sw, sh, dx, dy, dw, dh);
@@ -4175,8 +4130,8 @@ CanvasRenderer.prototype.drawImage = function(imageContainer, sx, sy, sw, sh, dx
 CanvasRenderer.prototype.clip = function(shapes, callback, context) {
     this.ctx.save();
     shapes.filter(hasEntries).forEach(function(shape) {
-        shape = this.applyRatioToShape(shape);
-        this.shape(shape).clip();
+        shape = Utils.applyRatioToShape(shape);
+        this.shape(shape)//.clip();
     }, this);
     callback.call(context);
     this.ctx.restore();
@@ -4196,13 +4151,13 @@ CanvasRenderer.prototype.shape = function(shape) {
 };
 
 CanvasRenderer.prototype.font = function(color, style, variant, weight, size, family) {
-    size = this.applyRatioToFontSize(size);
+    size = Utils.applyRatioToFontSize(size);
     this.setFillStyle(color).font = [style, variant, weight, size, family].join(" ").split(",")[0];
 };
 
 CanvasRenderer.prototype.fontShadow = function(color, offsetX, offsetY, blur) {
-    offsetX = this.applyRatio(offsetX);
-    offsetY = this.applyRatio(offsetY);
+    offsetX = Utils.applyRatio(offsetX);
+    offsetY = Utils.applyRatio(offsetY);
 
     this.setVariable("shadowColor", color.toString())
         .setVariable("shadowOffsetY", offsetX)
@@ -4234,20 +4189,20 @@ CanvasRenderer.prototype.setVariable = function(property, value) {
 };
 
 CanvasRenderer.prototype.text = function(text, left, bottom) {
-    left = this.applyRatio(left);
-    bottom = this.applyRatio(bottom);
+    left = Utils.applyRatio(left);
+    bottom = Utils.applyRatio(bottom);
 
     this.ctx.fillText(text, left, bottom);
 };
 
 CanvasRenderer.prototype.backgroundRepeatShape = function(imageContainer, backgroundPosition, size, bounds, left, top, width, height, borderData) {
     debugger;
-    size = this.applyRatio(size);
-    bounds = this.applyRatioToBounds(bounds);
-    left = this.applyRatio(left);
-    top = this.applyRatio(top);
-    width = this.applyRatio(width);
-    height = this.applyRatio(height);
+    size = Utils.applyRatio(size);
+    bounds = Utils.applyRatioToBounds(bounds);
+    left = Utils.applyRatio(left);
+    top = Utils.applyRatio(top);
+    width = Utils.applyRatio(width);
+    height = Utils.applyRatio(height);
 
     var shape = [
         ["line", Math.round(left), Math.round(top)],
@@ -4262,11 +4217,11 @@ CanvasRenderer.prototype.backgroundRepeatShape = function(imageContainer, backgr
 
 CanvasRenderer.prototype.renderBackgroundRepeat = function(imageContainer, backgroundPosition, size, bounds, borderLeft, borderTop) {
     debugger;
-    bounds = this.applyRatioToBounds(bounds);
-    size = this.applyRatioToBounds(size);
-    backgroundPosition = this.applyRatioToBounds(backgroundPosition);
-    borderLeft = this.applyRatio(borderLeft);
-    borderTop = this.applyRatio(borderTop);
+    bounds = Utils.applyRatioToBounds(bounds);
+    size = Utils.applyRatioToBounds(size);
+    backgroundPosition = Utils.applyRatioToBounds(backgroundPosition);
+    borderLeft = Utils.applyRatio(borderLeft);
+    borderTop = Utils.applyRatio(borderTop);
 
     var offsetX = Math.round(bounds.left + backgroundPosition.left + borderLeft), offsetY = Math.round(bounds.top + backgroundPosition.top + borderTop);
     this.setFillStyle(this.ctx.createPattern(this.resizeImage(imageContainer, size), "repeat"));
@@ -4277,7 +4232,7 @@ CanvasRenderer.prototype.renderBackgroundRepeat = function(imageContainer, backg
 
 CanvasRenderer.prototype.renderBackgroundGradient = function(gradientImage, bounds) {
     debugger;
-    bounds = this.applyRatioToBounds(bounds);
+    bounds = Utils.applyRatioToBounds(bounds);
 
     if (gradientImage instanceof LinearGradientContainer) {
         var gradient = this.ctx.createLinearGradient(
@@ -4293,7 +4248,7 @@ CanvasRenderer.prototype.renderBackgroundGradient = function(gradientImage, boun
 };
 
 CanvasRenderer.prototype.resizeImage = function(imageContainer, size) {
-    size = this.applyRatioToBounds(size);
+    size = Utils.applyRatioToBounds(size);
 
     var image = imageContainer.image;
     if(image.width === size.width && image.height === size.height) {
@@ -4314,7 +4269,7 @@ function hasEntries(array) {
 
 module.exports = CanvasRenderer;
 
-},{"../lineargradientcontainer":14,"../log":15,"../renderer":22}],24:[function(require,module,exports){
+},{"../lineargradientcontainer":14,"../log":15,"../renderer":22,"../utils":29}],24:[function(require,module,exports){
 var NodeContainer = require('./nodecontainer');
 
 function StackingContext(hasOwnStacking, opacity, element, parent) {
@@ -4675,6 +4630,58 @@ exports.parseBackgrounds = function(backgroundImage) {
     appendResult();
     return results;
 };
+
+exports.getDeviceRatio = function() {
+    return window.devicePixelRatio;
+};
+
+exports.applyRatio = function(value) {
+    return value * exports.getDeviceRatio();
+}
+
+exports.applyRatioToBounds = function(bounds) {
+    bounds.width = bounds.width * exports.getDeviceRatio();
+    bounds.top = bounds.top * exports.getDeviceRatio();
+
+    //In case this is a size
+    try {
+        bounds.left = bounds.left * exports.getDeviceRatio();
+        bounds.height = bounds.height * exports.getDeviceRatio();
+    } catch (e) {
+
+    }
+
+    return bounds;
+}
+
+exports.applyRatioToPosition = function(position) {
+    position.left = position.left * exports.getDeviceRatio();
+    position.height = position.height * exports.getDeviceRatio();
+
+    return bounds;
+}
+
+exports.applyRatioToShape = function(shape) {
+    for (var i = 0; i < shape.length; i++) {
+        if (shape[i] instanceof Array) {
+            for (var k = 1; k < shape[i].length; k++) {
+                shape[i][k] = this.applyRatio(shape[i][k]);
+            }
+        }
+    }
+    return shape;
+}
+
+exports.applyRatioToFontSize = function(fontSize) {
+    var numericPart = parseFloat(fontSize) * exports.getDeviceRatio();
+    var stringPart = fontSize.replace(/[0-9]/g, '');
+
+    fontSize = numericPart + stringPart;
+
+    return fontSize;
+}
+
+
 
 },{}],30:[function(require,module,exports){
 var GradientContainer = require('./gradientcontainer');
