@@ -1,5 +1,5 @@
 {
-  "name": "HTML-GL",
+  "name": "html-gl",
   "version": "0.3.0",
   "description": "Get as many FPS as you need by rendering HTML/CSS in WebGL",
   "main": "index.js",

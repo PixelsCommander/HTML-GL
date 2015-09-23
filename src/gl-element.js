@@ -308,8 +308,8 @@
         jQuery.fn[HTMLGL.JQ_PLUGIN_NAME] = function () {
             return this.each(function () {
                 if (!jQuery.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME)) {
-                    var propellerObj = HTMLGL.GLElement.createFromNode(this);
-                    jQuery.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME, propellerObj);
+                    var htmlGLobj = HTMLGL.GLElement.createFromNode(this);
+                    jQuery.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME, htmlGLobj);
                     jQuery[HTMLGL.JQ_PLUGIN_NAME].elements.push(propellerObj);
                 }
             });
