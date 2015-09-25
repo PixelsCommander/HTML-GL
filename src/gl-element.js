@@ -303,12 +303,12 @@
         jQuery[HTMLGL.JQ_PLUGIN_NAME] = {};
         jQuery[HTMLGL.JQ_PLUGIN_NAME].elements = [];
 
-        jQuery.fn[HTMLGL.JQ_PLUGIN_NAME] = function () {
+        jQuery.fn[HTMLGL.JQ_PLUGIN_NAME] = function (options) {
             return this.each(function () {
                 if (!jQuery.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME)) {
-                    var propellerObj = HTMLGL.GLElement.createFromNode(this);
-                    jQuery.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME, propellerObj);
-                    jQuery[HTMLGL.JQ_PLUGIN_NAME].elements.push(propellerObj);
+                    var htmlglObj = HTMLGL.GLElement.createFromNode(this, options);
+                    jQuery.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME, htmlglObj);
+                    jQuery[HTMLGL.JQ_PLUGIN_NAME].elements.push(htmlglObj);
                 }
             });
         };

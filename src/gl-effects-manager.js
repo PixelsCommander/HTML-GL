@@ -8,32 +8,56 @@
 (function (w) {
     var GLEffectsManager = function (element) {
         this.element = element;
-        this.filters = [];
-        this.updateFiltersFromAttribute();
+        this.filters = {};
+        this.initObserver();
+        this.updateFilters();
     }
 
     var p = GLEffectsManager.prototype;
 
-    p.updateFiltersFromAttribute = function () {
-        var attributeValue = this.element.getAttribute('effects') || '',
-            effects = attributeValue.split(' '),
-            self = this;
-
-        effects.forEach(function(effectName){
-            if (HTMLGL.effects[effectName]) {
-                new HTMLGL.effects[effectName](self.element);
+    p.initObserver = function () {
+        var self = this,
+            config = {
+                attributes: true,
+                attributeFilter: ['effects']
             };
+
+        this.observer = this.observer || new MutationObserver(self.updateFilters.bind(this));
+
+        this.observer.observe(this.element, config);
+    }
+
+    p.updateFilters = function () {
+        var attributeValue = this.element.getAttribute('effects') || '',
+            effectsNamesArray = attributeValue.split(' ');
+
+        this.addFiltersFromAttributes(effectsNamesArray);
+        this.cleanFiltersFromAttributes(effectsNamesArray);
+    }
+
+    p.addFiltersFromAttributes = function (effectsNamesArray) {
+        var self = this;
+        effectsNamesArray.forEach(function (effectName) {
+            if (HTMLGL.effects[effectName]) {
+                self.filters[effectName] = self.filters[effectName] || new HTMLGL.effects[effectName](self.element);
+            }
         });
     }
 
-    p.cleanFiltersFromAttribute = function () {
-
+    p.cleanFiltersFromAttributes = function (effectsNamesArray) {
+        var self = this;
+        Object.keys(this.filters).forEach(function (effectName) {
+            if (effectsNamesArray.indexOf(effectName) === -1 && self.filters[effectName]) {
+                self.filters[effectName].destroy();
+                self.filters[effectName] = null;
+            }
+        });
     }
 
     w.HTMLGL.GLEffectsManager = GLEffectsManager;
 
     //Reinitialize effects on elements
-    w.HTMLGL.elements.forEach(function(element){
+    w.HTMLGL.elements.forEach(function (element) {
         element.initEffects();
     });
 })(window);
