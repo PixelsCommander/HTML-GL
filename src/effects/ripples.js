@@ -10,7 +10,6 @@
 
         this.displacementSprite = PIXI.Sprite.fromImage('assets/img/ripple_displacement.png');
         this.displacementFilter = new PIXI.filters.DisplacementFilter(this.displacementSprite);
-        //this.element.sprite.filters = this.element.sprite.filters || [];
 
         this.element.sprite.filters = (this.element.sprite.filters || []).concat(this.displacementFilter);
 

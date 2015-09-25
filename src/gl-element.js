@@ -28,7 +28,7 @@
             }
         }
 
-        var isInsideHtml2Canvas = isMounted && (this.baseURI !== undefined && this.baseURI.length === 0);
+        var isInsideHtml2Canvas = !isMounted || (this.baseURI === undefined || this.baseURI === '' || this.baseURI === null);
 
         if (!isInsideHtml2Canvas) {
             HTMLGL.elements.push(this);
@@ -71,7 +71,8 @@
 
         while (parent) {
             parent = parent.parentNode;
-            if (parent.tagName === tagName) {
+
+            if (parent && parent.tagName === tagName) {
                 return parent;
             } else if (parent === w.document) {
                 return null;
@@ -117,14 +118,13 @@
         var self = this;
         self.updateBoundingRect();
 
-        new HTMLGL.ImagesLoaded(self, function () {
-            //Bounds could change during images loading
-            self.updateBoundingRect();
-
+        return new Promise(function(resolve, reject){
             self.image = html2canvas(self, {
-                onrendered: self.applyNewTexture,
-                width: self.boundingRect.width,
-                height: self.boundingRect.height
+                width: self.boundingRect.width * HTMLGL.pixelRatio,
+                height: self.boundingRect.height * HTMLGL.pixelRatio
+            }).then(function(textureCanvas){
+                self.applyNewTexture(textureCanvas);
+                resolve();
             });
         });
     }
@@ -158,8 +158,8 @@
             rotate = (parseFloat(this.transformObject.rotateZ) / 180) * Math.PI || 0;
 
         if (this.sprite && this.sprite.position) {
-            this.sprite.position.x = this.boundingRect.left + translateX + this.halfWidth;
-            this.sprite.position.y = this.boundingRect.top + translateY + this.halfHeight;
+            this.sprite.position.x = (this.boundingRect.left + translateX) * HTMLGL.pixelRatio + this.halfWidth;
+            this.sprite.position.y = (this.boundingRect.top + translateY) * HTMLGL.pixelRatio + this.halfHeight;
             this.sprite.scale.x = scaleX;
             this.sprite.scale.y = scaleY;
             this.sprite.rotation = rotate;
@@ -170,13 +170,15 @@
 
     //Getting bounding rect with respect to current scroll position
     p.updateBoundingRect = function () {
+        var boundingRect = this.getBoundingClientRect();
+
         this.boundingRect = {
-            left: this.getBoundingClientRect().left,
-            right: this.getBoundingClientRect().right,
-            top: this.getBoundingClientRect().top,
-            bottom: this.getBoundingClientRect().bottom,
-            width: this.getBoundingClientRect().width,
-            height: this.getBoundingClientRect().height,
+            left: boundingRect.left,
+            right: boundingRect.right,
+            top: boundingRect.top,
+            bottom: boundingRect.bottom,
+            width: boundingRect.width,
+            height: boundingRect.height,
         };
 
         if (this.glParent && this.glParent.boundingRect) {
@@ -303,12 +305,12 @@
         jQuery[HTMLGL.JQ_PLUGIN_NAME] = {};
         jQuery[HTMLGL.JQ_PLUGIN_NAME].elements = [];
 
-        jQuery.fn[HTMLGL.JQ_PLUGIN_NAME] = function (options) {
+        jQuery.fn[HTMLGL.JQ_PLUGIN_NAME] = function () {
             return this.each(function () {
                 if (!jQuery.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME)) {
-                    var htmlglObj = HTMLGL.GLElement.createFromNode(this, options);
-                    jQuery.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME, htmlglObj);
-                    jQuery[HTMLGL.JQ_PLUGIN_NAME].elements.push(htmlglObj);
+                    var htmlGLobj = HTMLGL.GLElement.createFromNode(this);
+                    jQuery.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME, htmlGLobj);
+                    jQuery[HTMLGL.JQ_PLUGIN_NAME].elements.push(propellerObj);
                 }
             });
         };

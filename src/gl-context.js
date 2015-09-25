@@ -17,6 +17,9 @@
     HTMLGL.stage = undefined;
     HTMLGL.renderer = undefined;
     HTMLGL.elements = [];
+    HTMLGL.pixelRatio = null;
+    HTMLGL.oldPixelRatio = null;
+    HTMLGL.enabled = true;
 
     //Cache for window`s scroll position, filled in by updateScrollPosition
     HTMLGL.scrollX = 0;
@@ -46,10 +49,66 @@
         this.appendViewer();
     }
 
+    p.createViewer = function () {
+        w.HTMLGL.renderer = this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
+        this.renderer.view.style.position = 'fixed';
+        this.renderer.view.style.top = '0px';
+        this.renderer.view.style.left = '0px';
+        this.renderer.view.style['pointer-events'] = 'none';
+        this.renderer.view.style['pointerEvents'] = 'none';
+    }
+
+    p.appendViewer = function () {
+        document.body.appendChild(this.renderer.view);
+        requestAnimationFrame(this.redrawStage.bind(this));
+    }
+
+    p.resizeViewer = function () {
+        var self = this,
+            width = w.innerWidth,
+            height = w.innerHeight;
+
+        //Update pixelRatio since could be resized on different screen with different ratio
+        HTMLGL.pixelRatio = window.devicePixelRatio || 1;
+
+        console.log(HTMLGL.pixelRatio);
+
+        width = width * HTMLGL.pixelRatio;
+        height = height * HTMLGL.pixelRatio;
+
+        if (HTMLGL.pixelRatio !== HTMLGL.oldPixelRatio) {
+            this.disable();
+            this.updateTextures().then(function(){
+                self.updateScrollPosition();
+                self.updateElementsPositions();
+
+                var rendererScale = 1 / HTMLGL.pixelRatio;
+                self.renderer.view.style.transformOrigin = '0 0';
+                self.renderer.view.style.webkitTransformOrigin = '0 0';
+                self.renderer.view.style.transform = 'scaleX(' + rendererScale + ') scaleY(' + rendererScale + ')';
+                self.renderer.view.style.webkitTransform = 'scaleX(' + rendererScale + ') scaleY(' + rendererScale + ')';
+                self.renderer.resize(width, height);
+
+                this.enable();
+
+                w.HTMLGL.renderer.render(w.HTMLGL.stage);
+            });
+        } else {
+            if (this.renderer.view.parentNode) { //No need to update textures when is not mounted yet
+                this.updateTextures();
+            }
+            this.updateElementsPositions();
+            this.markStageAsChanged();
+        }
+
+        HTMLGL.oldPixelRatio = HTMLGL.pixelRatio;
+    }
+
     p.initListeners = function () {
         //window listeners
         w.addEventListener('scroll', this.updateScrollPosition.bind(this));
         w.addEventListener('resize', w.HTMLGL.util.debounce(this.resizeViewer, 500).bind(this));
+        w.addEventListener('resize', this.updateElementsPositions.bind(this));
 
         //document listeners - mouse and touch events
         document.addEventListener('click', this.onMouseEvent.bind(this), true);
@@ -77,35 +136,12 @@
                 top: sy
             };
         }
-        
-        this.document.x = -scrollOffset.left;
-        this.document.y = -scrollOffset.top;
+
+        this.document.x = -scrollOffset.left * HTMLGL.pixelRatio;
+        this.document.y = -scrollOffset.top * HTMLGL.pixelRatio;
+
         w.HTMLGL.scrollX = scrollOffset.left;
         w.HTMLGL.scrollY = scrollOffset.top;
-
-        this.markStageAsChanged();
-    }
-
-    p.createViewer = function () {
-        w.HTMLGL.renderer = this.renderer = PIXI.autoDetectRenderer(0, 0, {transparent: true});
-        this.renderer.view.style.position = 'fixed';
-        this.renderer.view.style.top = '0px';
-        this.renderer.view.style.left = '0px';
-        this.renderer.view.style['pointer-events'] = 'none';
-        this.renderer.view.style['pointerEvents'] = 'none';
-    }
-
-    p.appendViewer = function () {
-        document.body.appendChild(this.renderer.view);
-        requestAnimationFrame(this.redrawStage.bind(this));
-    }
-
-    p.resizeViewer = function () {
-        var width = w.innerWidth,
-            height = w.innerHeight;
-
-        this.renderer.resize(width, height);
-        this.updateTextures();
 
         this.markStageAsChanged();
     }
@@ -118,22 +154,40 @@
 
     //Avoiding function.bind() for performance and memory consuming reasons
     p.redrawStage = function () {
-        if (w.HTMLGL.stage.changed) {
+        if (w.HTMLGL.stage.changed && w.HTMLGL.renderer && w.HTMLGL.enabled) {
             w.HTMLGL.renderer.render(w.HTMLGL.stage);
             w.HTMLGL.stage.changed = false;
         }
     }
 
     p.updateTextures = function () {
-        w.HTMLGL.elements.forEach(function(element){
-            element.updateTexture();
+        var updatePromises = [];
+
+        w.HTMLGL.elements.forEach(function (element) {
+            updatePromises.push(element.updateTexture());
+        });
+
+        return Promise.all(updatePromises);
+    }
+
+    p.initElements = function () {
+        w.HTMLGL.elements.forEach(function (element) {
+            element.init();
+        });
+    }
+
+    p.updateElementsPositions = function () {
+        w.HTMLGL.elements.forEach(function (element) {
+            element.updateBoundingRect();
+            element.updatePivot();
+            element.updateSpriteTransform();
         });
     }
 
     p.onMouseEvent = function (event) {
         var x = event.x || event.pageX,
             y = event.y || event.pageY,
-            //Finding element under mouse position
+        //Finding element under mouse position
             element = event.dispatcher !== 'html-gl' ? this.elementResolver.getElementByCoordinates(x, y) : null;
 
         //Emit event if there is an element under mouse position
@@ -147,6 +201,16 @@
             w.HTMLGL.stage.changed = true;
         }
     }
+
+    p.disable = function () {
+        w.HTMLGL.enabled = true;
+    }
+
+    p.enable = function () {
+        w.HTMLGL.enabled = false;
+    }
+
+    w.HTMLGL.pixelRatio = window.devicePixelRatio || 1;
 
     w.HTMLGL.GLContext = GLContext;
     new GLContext();
