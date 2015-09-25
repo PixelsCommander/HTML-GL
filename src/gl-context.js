@@ -69,7 +69,7 @@
             height = w.innerHeight;
 
         //Update pixelRatio since could be resized on different screen with different ratio
-        HTMLGL.pixelRatio = window.devicePixelRatio || 1;
+        HTMLGL.pixelRatio = w.HTMLGL.getPixelRatio();
 
         console.log(HTMLGL.pixelRatio);
 
@@ -210,7 +210,11 @@
         w.HTMLGL.enabled = false;
     }
 
-    w.HTMLGL.pixelRatio = window.devicePixelRatio || 1;
+    w.HTMLGL.getPixelRatio = function() {
+        return 1;//window.devicePixelRatio || 1;
+    }
+
+    w.HTMLGL.pixelRatio = w.HTMLGL.getPixelRatio();
 
     w.HTMLGL.GLContext = GLContext;
     new GLContext();

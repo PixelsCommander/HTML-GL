@@ -1,6 +1,6 @@
-(function(w){
+(function (w) {
 
-    var Ripples = function(element){
+    var Ripples = function (element) {
         this.element = element;
         this.ripple = this.ripple.bind(this);
         this.element.addEventListener('mousedown', this.ripple);
@@ -10,7 +10,8 @@
 
         this.displacementSprite = PIXI.Sprite.fromImage('assets/img/ripple_displacement.png');
         this.displacementFilter = new PIXI.filters.DisplacementFilter(this.displacementSprite);
-        this.element.sprite.filters = [this.displacementFilter];
+
+        this.element.sprite.filters = (this.element.sprite.filters || []).concat(this.displacementFilter);
 
         this.displacementSprite.scale.x = 0.05;
         this.displacementSprite.scale.y = 0.05;
@@ -31,9 +32,9 @@
 
     var p = Ripples.prototype;
 
-    p.ripple = function(e) {
-        this.displacementSprite.x = e.pageX * HTMLGL.pixelRatio;
-        this.displacementSprite.y = e.pageY * HTMLGL.pixelRatio;
+    p.ripple = function (e) {
+        this.displacementSprite.x = e.pageX * w.HTMLGL.pixelRatio;
+        this.displacementSprite.y = e.pageY * w.HTMLGL.pixelRatio;
 
         this.displacementSprite.scale.x = 0.05;
         this.displacementSprite.scale.y = 0.05;
@@ -41,15 +42,26 @@
         this.displacementFilter.scale.x = 100;
         this.displacementFilter.scale.y = 100;
 
-        new TWEEN.Tween( this.displacementSprite.scale )
-            .to( { x: 1.5 * HTMLGL.pixelRatio, y:1.5 * HTMLGL.pixelRatio }, 1000 )
-            .easing( TWEEN.Easing.Cubic.Out )
+        new TWEEN.Tween(this.displacementSprite.scale)
+            .to({x: 1.5, y: 1.5}, 1000)
+            .easing(TWEEN.Easing.Cubic.Out)
             .start();
 
-        new TWEEN.Tween( this.displacementFilter.scale )
-            .to( { x: 0, y:0 }, 1000 )
-            .easing( TWEEN.Easing.Cubic.Out )
+        new TWEEN.Tween(this.displacementFilter.scale)
+            .to({x: 0, y: 0}, 1000)
+            .easing(TWEEN.Easing.Cubic.Out)
             .start();
+    }
+
+    p.destroy = function () {
+        ///var filterIndex = this.element.sprite.filters.indexOf(this.displacementFilter);
+
+        //window.HTMLGL.document.removeChild(this.displacementSprite);
+        this.element.removeEventListener('mousedown', this.ripple);
+        //this.element.sprite.removeFilter([this.displacementFilter]);
+
+        //this.element.sprite.filters.splice(filterIndex, 1);
+        //this.displacementSprite.texture.destroy();
     }
 
     w.HTMLGL.effects = w.HTMLGL.effects || {};

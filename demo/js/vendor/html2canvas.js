@@ -2088,12 +2088,12 @@ function renderWindow(node, container, options, windowWidth, windowHeight) {
             canvas = renderer.canvas;
         } else {
             //If retina - increase bounds by two since we ve got 2x canvas from renderer
-            if (window.devicePixelRatio !== 1) {
+            /*if (window.devicePixelRatio !== 1) {
                 bounds.top = bounds.top * window.devicePixelRatio;
                 bounds.left = bounds.left * window.devicePixelRatio;
                 bounds.right = bounds.right * window.devicePixelRatio;
                 bounds.bottom = bounds.bottom * window.devicePixelRatio;
-            }
+            }*/
 
             canvas = crop(renderer.canvas, {width:  options.width != null ? options.width : bounds.width, height: options.height != null ? options.height : bounds.height, top: bounds.top, left: bounds.left, x: clonedWindow.pageXOffset, y: clonedWindow.pageYOffset});
         }
@@ -4632,7 +4632,7 @@ exports.parseBackgrounds = function(backgroundImage) {
 };
 
 exports.getDeviceRatio = function() {
-    return window.devicePixelRatio;
+    return 1;//window.devicePixelRatio;
 };
 
 exports.applyRatio = function(value) {
