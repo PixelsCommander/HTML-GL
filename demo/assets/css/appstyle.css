@@ -42,7 +42,7 @@
 
 body {
     box-sizing: border-box;
-    padding: 20px 43px 0 43px;
+    /* padding: 20px 43px 0 43px; */
     margin: 0;
     font-family: Conv_InterstatePro-Regular;
     font-weight: normal;

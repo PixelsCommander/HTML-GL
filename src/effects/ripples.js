@@ -33,8 +33,8 @@
     var p = Ripples.prototype;
 
     p.ripple = function (e) {
-        this.displacementSprite.x = e.pageX;
-        this.displacementSprite.y = e.pageY;
+        this.displacementSprite.x = e.pageX * w.HTMLGL.pixelRatio;
+        this.displacementSprite.y = e.pageY * w.HTMLGL.pixelRatio;
 
         this.displacementSprite.scale.x = 0.05;
         this.displacementSprite.scale.y = 0.05;

@@ -1,12 +1,12 @@
 (function (w) {
 
-    var Noise = function (element) {
+    var Bloom = function (element) {
         this.element = element;
-        this.filter = new PIXI.filters.NoiseFilter();
+        this.filter = new PIXI.filters.BloomFilter();
         this.element.sprite.filters = (this.element.sprite.filters || []).concat(this.filter);
     }
 
-    var p = Noise.prototype;
+    var p = Bloom.prototype;
 
     p.destroy = function () {
         var filterIndex = this.element.sprite.filters.indexOf(this.filter);
@@ -14,5 +14,5 @@
     }
 
     w.HTMLGL.effects = w.HTMLGL.effects || {};
-    w.HTMLGL.effects.noise = Noise;
+    w.HTMLGL.effects.bloom = Bloom;
 })(window);

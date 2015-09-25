@@ -1,14 +1,12 @@
 (function (w) {
 
-    var DotScreen = function (element) {
+    var Ascii = function (element) {
         this.element = element;
-        this.filter = new PIXI.filters.DotScreenFilter();
-        this.filter.scale = parseInt(this.element.getAttribute('dotScreenScale')) || 1;
-        this.filter.angle = parseInt(this.element.getAttribute('dotScreenAngle')) || 1;
+        this.filter = new PIXI.filters.AsciiFilter();
         this.element.sprite.filters = (this.element.sprite.filters || []).concat(this.filter);
     }
 
-    var p = DotScreen.prototype;
+    var p = Ascii.prototype;
 
     p.destroy = function () {
         var filterIndex = this.element.sprite.filters.indexOf(this.filter);
@@ -16,5 +14,5 @@
     }
 
     w.HTMLGL.effects = w.HTMLGL.effects || {};
-    w.HTMLGL.effects.dotscreen = DotScreen;
+    w.HTMLGL.effects.ascii = Ascii;
 })(window);

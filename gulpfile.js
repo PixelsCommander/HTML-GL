@@ -12,7 +12,7 @@ gulp.task('default', function () {
         .pipe(gulp.dest('dist'));
 
     //Effects add-on
-    gulp.src(['bower_components/tween.js/build/tween.min.js', 'src/effects/ripples.js', 'src/effects/pixelate.js', 'src/gl-effects-manager.js'])
+    gulp.src(['bower_components/tween.js/build/tween.min.js', 'src/effects/*.js', 'src/gl-effects-manager.js'])
         .pipe(concat(BUNDLE_NAME + '-effects.js'))
         .pipe(gulp.dest('dist'))
         .pipe(uglify(BUNDLE_NAME + '-effects.min.js'))

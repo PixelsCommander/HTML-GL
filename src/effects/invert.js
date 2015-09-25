@@ -6,7 +6,7 @@
         this.element.sprite.filters = (this.element.sprite.filters || []).concat(this.filter);
     }
 
-    var p = Bloom.prototype;
+    var p = Invert.prototype;
 
     p.destroy = function () {
         var filterIndex = this.element.sprite.filters.indexOf(this.filter);

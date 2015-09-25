@@ -2112,12 +2112,12 @@ function renderWindow(node, container, options, windowWidth, windowHeight) {
             canvas = renderer.canvas;
         } else {
             //If retina - increase bounds by two since we ve got 2x canvas from renderer
-            if (window.devicePixelRatio !== 1) {
+            /*if (window.devicePixelRatio !== 1) {
                 bounds.top = bounds.top * window.devicePixelRatio;
                 bounds.left = bounds.left * window.devicePixelRatio;
                 bounds.right = bounds.right * window.devicePixelRatio;
                 bounds.bottom = bounds.bottom * window.devicePixelRatio;
-            }
+            }*/
 
             canvas = crop(renderer.canvas, {width:  options.width != null ? options.width : bounds.width, height: options.height != null ? options.height : bounds.height, top: bounds.top, left: bounds.left, x: clonedWindow.pageXOffset, y: clonedWindow.pageYOffset});
         }
@@ -4656,7 +4656,7 @@ exports.parseBackgrounds = function(backgroundImage) {
 };
 
 exports.getDeviceRatio = function() {
-    return window.devicePixelRatio;
+    return 1;//window.devicePixelRatio;
 };
 
 exports.applyRatio = function(value) {
@@ -8774,7 +8774,7 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
             height = w.innerHeight;
 
         //Update pixelRatio since could be resized on different screen with different ratio
-        HTMLGL.pixelRatio = window.devicePixelRatio || 1;
+        HTMLGL.pixelRatio = w.HTMLGL.getPixelRatio();
 
         console.log(HTMLGL.pixelRatio);
 
@@ -8915,7 +8915,11 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         w.HTMLGL.enabled = false;
     }
 
-    w.HTMLGL.pixelRatio = window.devicePixelRatio || 1;
+    w.HTMLGL.getPixelRatio = function() {
+        return 1;//window.devicePixelRatio || 1;
+    }
+
+    w.HTMLGL.pixelRatio = w.HTMLGL.getPixelRatio();
 
     w.HTMLGL.GLContext = GLContext;
     new GLContext();
@@ -9280,12 +9284,12 @@ will produce an inaccurate conversion value. The same issue exists with the cx/c
         jQuery[HTMLGL.JQ_PLUGIN_NAME] = {};
         jQuery[HTMLGL.JQ_PLUGIN_NAME].elements = [];
 
-        jQuery.fn[HTMLGL.JQ_PLUGIN_NAME] = function (options) {
+        jQuery.fn[HTMLGL.JQ_PLUGIN_NAME] = function () {
             return this.each(function () {
                 if (!jQuery.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME)) {
-                    var htmlglObj = HTMLGL.GLElement.createFromNode(this, options);
-                    jQuery.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME, htmlglObj);
-                    jQuery[HTMLGL.JQ_PLUGIN_NAME].elements.push(htmlglObj);
+                    var htmlGLobj = HTMLGL.GLElement.createFromNode(this);
+                    jQuery.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME, htmlGLobj);
+                    jQuery[HTMLGL.JQ_PLUGIN_NAME].elements.push(propellerObj);
                 }
             });
         };
