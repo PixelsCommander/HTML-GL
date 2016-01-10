@@ -211,7 +211,7 @@
     }
 
     w.HTMLGL.getPixelRatio = function() {
-        return 1;//window.devicePixelRatio || 1;
+        return window.devicePixelRatio || 1;
     }
 
     w.HTMLGL.pixelRatio = w.HTMLGL.getPixelRatio();
