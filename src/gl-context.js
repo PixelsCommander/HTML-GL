@@ -89,8 +89,6 @@
                 self.renderer.view.style.webkitTransform = 'scaleX(' + rendererScale + ') scaleY(' + rendererScale + ')';
                 self.renderer.resize(width, height);
 
-                this.enable();
-
                 w.HTMLGL.renderer.render(w.HTMLGL.stage);
             });
         } else {
