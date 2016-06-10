@@ -67,9 +67,7 @@ Since it is very efficient to make transformations (move, rotate, scale, change 
 
 Running demos from repository
 -----------------------------
-Please run
-    bower install
-before running demos
+Please run ```bower install``` before running demos
 
 License
 -------
