@@ -65,6 +65,12 @@ Animating HTML-GL tag children
 ------------------------------
 Since it is very efficient to make transformations (move, rotate, scale, change opacity) on HTML-GL tags it becomes very slow to animate it's children until they are HTML-GL tags too. This happens because of necessity to rasterize and send HTML-GL tag texture to GPU.
 
+Running demos from repository
+-----------------------------
+Please run
+    bower install
+before running demos
+
 License
 -------
 MIT: http://mit-license.org/
