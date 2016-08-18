@@ -28,8 +28,8 @@ As Web Component
 
 As jQuery plugin
 
-```html
-    $('.some div').htmlgl();
+```js
+$('.some div').htmlgl();
 ```
 
 No DOM + WebGL rendering = highest FPS possible for Web platform
@@ -41,7 +41,7 @@ Demos
 -----
 
 - [Filters](http://pixelscommander.com/polygon/htmlgl/demo/filters.html) WebGL is not only about performance. It breaks any HTML/CSS limits in terms of animations and interactivity
-- [Mobile effects](http://pixelscommander.com/polygon/htmlgl/demo/ripples.html) use attribute ```effects``` on ```<html-gl>``` element to specify effects you use, this one is nice for mobile
+- [Mobile effects](http://pixelscommander.com/polygon/htmlgl/demo/ripples.html) use attribute `effects` on `<html-gl>` element to specify effects you use, this one is nice for mobile
 - [Basic HTML GL](http://pixelscommander.com/polygon/htmlgl/demo/basic-webgl.html) demo shows how to use HTML GL and animate GL Elements. It also demonstrate that HTML GL handle content change events and repaints element`s WebGL representation
 - [Basic DOM](http://pixelscommander.com/polygon/htmlgl/demo/basic-dom.html) this is the same project as previous. The only difference is that htmlgl.js is not included
 - [Advanced content HTML GL](http://pixelscommander.com/polygon/htmlgl/demo/advanced-content-webgl.html) slider with nested content rendered via WebGL and animated, ability to drag with mouse horizontaly, click event listeners on boxes
@@ -49,7 +49,7 @@ Demos
 
 How to use?
 -----------
-Include HTMLGL.js into project. Use tag name ```<html-gl>``` or jQuery plugin ```$(myElement).htmlgl()``` for elements you are going to animate. These elements will be rendered in WebGL and their CSS Transform properties will be mapped to WebGL representation transformations. So DOM node itself will not be animated or displayed in order to avoid resources consuming.
+Include HTMLGL.js into project. Use tag name `<html-gl>` or jQuery plugin `$(myElement).htmlgl()` for elements you are going to animate. These elements will be rendered in WebGL and their CSS Transform properties will be mapped to WebGL representation transformations. So DOM node itself will not be animated or displayed in order to avoid resources consuming.
 HTML GL is framework agnostic and is easy to inject into existing project which needs performance tweaking.
 
 Rasterization API
@@ -67,7 +67,7 @@ Since it is very efficient to make transformations (move, rotate, scale, change 
 
 Running demos from repository
 -----------------------------
-Please run ```bower install``` before running demos
+Please run `bower install` before running demos
 
 License
 -------
