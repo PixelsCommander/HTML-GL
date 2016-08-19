@@ -13,6 +13,17 @@ HTML GL solves "the slow DOM problem" by creating WebGL representations of DOM e
 
 Using HTML GL you still work with HTML/CSS as you are common to, but DOM elements are just facades to their WebGL represenations. These GPU accelerated textures are very effective from resources consuming perspective and are very cheap to transform or animate.
 
+Install
+-------
+npm:
+```bash
+npm install --save html-gl
+```
+Bower:
+```bash
+bower install --save htmlgl
+```
+
 Usage
 -----
 
