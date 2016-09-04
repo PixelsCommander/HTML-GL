@@ -25,7 +25,16 @@ three.on('update', function (timestamp) {
 
 //Adding UI to scene
 var elementToAddToScene = document.getElementById('gl-header');
-var htmlglNode = window.HTMLGL.createElement(elementToAddToScene);
+var htmlglNode = window.HTMLGL.createElement(elementToAddToScene, {
+    material: new THREE.MeshPhongMaterial( {
+        color: 'rgb(255,255,255)',
+        shininess: 320,
+        combine: THREE.MixOperation,
+        envMap: this.reflectionCamera.renderTarget.texture,
+        reflectivity: 0.2,
+        specular: 0xffffff,
+    } );
+});
 var htmlglThreeObject = htmlglNode.displayObject;
 
 scene.add(htmlglThreeObject);

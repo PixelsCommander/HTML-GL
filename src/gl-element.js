@@ -3,7 +3,9 @@ image.src = "data:image/jpeg;base64,/9j/4Q/+RXhpZgAATU0AKgAAAAgACwEPAAIAAAAGAAAA
 
 class GLElement {
 
-    constructor(node) {
+    constructor(node, settings) {
+
+        this.settings = settings || {};
         this.node = node;
         this.parent = {};
         this.renderer = HTMLGL.renderer;
