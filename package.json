@@ -1,37 +1,43 @@
 {
   "name": "html-gl",
-  "version": "0.3.2",
-  "description": "Get as many FPS as you need by rendering HTML/CSS in WebGL",
+  "version": "2.0.0",
+  "description": "Render HTML/CSS in WebGL for maximum possible performance and amazing effects",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/PixelsCommander/HTML-GL.git"
+    "url": "git+https://github.com/PixelsCommander/HTML-GL.git"
   },
   "keywords": [
-    "WebGL",
-    "HTML",
-    "CSS",
-    "JS",
-    "performance",
-    "NoDOM",
-    "60fps",
-    "animations"
+    "webgl",
+    "html",
+    "css",
+    "vr",
+    "virtual",
+    "reality"
   ],
-  "author": "PixelsCommander",
-  "license": "MIT",
+  "author": "Denis Radin aka PixelsCommander",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/PixelsCommander/HTML-GL/issues"
   },
-  "homepage": "https://github.com/PixelsCommander/HTML-GL",
+  "homepage": "https://github.com/PixelsCommander/HTML-GL#readme",
   "devDependencies": {
-    "gulp": "~3.8.11",
-    "gulp-concat": "~2.5.2",
-    "gulp-uglifyjs": "~0.6.0"
+    "babel-core": "^6.14.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.14.0",
+    "webpack": "^1.13.2",
+    "webpack-visualizer-plugin": "^0.1.5"
   },
   "dependencies": {
-    "gulp-bump": "^0.2.2"
+    "rasterizehtml": "^1.2.2",
+    "three-firstperson-vr-controls": "^0.1.0",
+    "three-js": "^79.0.0",
+    "three.terrain.js": "^1.4.0",
+    "tween.js": "^16.3.4",
+    "webpack-uglify-js-plugin": "^1.1.9",
+    "webvr-polyfill": "^0.9.14"
   }
 }
