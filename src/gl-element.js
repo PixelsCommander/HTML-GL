@@ -310,7 +310,7 @@
                 if (!jQuery.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME)) {
                     var htmlGLobj = HTMLGL.GLElement.createFromNode(this);
                     jQuery.data(this, 'plugin_' + HTMLGL.JQ_PLUGIN_NAME, htmlGLobj);
-                    jQuery[HTMLGL.JQ_PLUGIN_NAME].elements.push(propellerObj);
+                    jQuery[HTMLGL.JQ_PLUGIN_NAME].elements.push(htmlGLobj);
                 }
             });
         };
