@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Ocean - Jérémy BOUNY</title>
+		<link href="assets/css/style.css" rel="stylesheet">
+		<link rel="stylesheet" href="assets/css/content.css">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<style>
+			iframe {
+				position: absolute;
+				left: 0;
+				top: 0;
+				border: 0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="canvas-3d" class="viewer"></div>
+		
+		<!-- External libraries -->
+		<script src="assets/libs/three.min.js"></script>
+		<script src="assets/libs/three/OBJLoader.js"></script>
+		
+		<script src="assets/libs/RequestAnimationFrame.js"></script>
+		<script src="assets/libs/jquery.min.js"></script>
+		<script src="assets/libs/three/OrbitControls.js"></script>
+		<script src="../../node_modules/three-firstperson-vr-controls/FirstPersonVRControls.js"></script>
+		<script src="assets/libs/VRControls.js"></script>
+		<script src="assets/libs/FastBlur.js"></script>
+		<script src="assets/libs/konami.js"></script>
+		
+		<!-- Terrain generator -->
+		<script src="assets/libs/terrain-generator/mersenne-twister.js"></script>
+		<script src="assets/libs/terrain-generator/blur.js"></script>
+		<script src="assets/libs/terrain-generator/destructure.js"></script>
+		<script src="assets/libs/terrain-generator/mountains.js"></script>
+		<script src="assets/libs/terrain-generator/perlinnoise.js"></script>
+		<script src="assets/libs/terrain-generator/terraingen.js"></script>
+		<script src="assets/libs/terrain-generator/circle.js"></script>
+		
+		<!-- Water shader -->
+		<script src="assets/libs/water-material.js"></script>
+		
+		<!-- Demo files -->
+		<script src="assets/js/window.js"></script>
+		<script src="assets/js/demo.js"></script>
+		<script src="assets/js/main.js"></script>
+		<div id="gl-iframe" width="660" height="800">
+			<header>
+				<h1>BOAT</h1> <h2>Yachts for sale</h2>
+			</header>
+			<main>
+				<div class="yacht">
+					<div class="image"><img src="./assets/pic/achilles.jpg"></div>
+					<div class="info">
+						<p>Achiless</p>
+						<p class="price">1.250.000 EUR</p>
+						<p class="small">Perini Navi | 55.9 m | 12 guests</p>
+					</div>
+				</div>
+				<div class="yacht">
+					<div class="image"><img src="./assets/pic/arcana.jpg"></div>
+					<div class="info">
+						<p>Arcana</p>
+						<p class="price">2.050.000 EUR</p>
+						<p class="small">Heesen Yachts $9,250,000 43.59m 1988</p>
+					</div>
+				</div>
+				<div class="yacht">
+					<div class="image"><img src="./assets/pic/flyingdragon.jpg"></div>
+					<div class="info">
+						<p>Flying Dragon</p>
+						<p class="price">10.800.000 EUR</p>
+						<p class="small">Heesen Yachts $9,250,000 43.59m 1988</p>
+					</div>
+				</div>
+				<div class="yacht">
+					<div class="image"><img src="./assets/pic/ladysheridan.jpg"></div>
+					<div class="info">
+						<p>ladysheridan</p>
+						<p class="price">6.200.000 EUR</p>
+						<p class="small">Heesen Yachts $9,250,000 43.59m 1988</p>
+					</div>
+				</div>
+				<div class="yacht">
+					<div class="image"><img src="./assets/pic/mylo.jpg"></div>
+					<div class="info">
+						<p>mylo</p>
+						<p class="price">4.150.000 EUR</p>
+						<p class="small">Heesen Yachts $9,250,000 43.59m 1988</p>
+					</div>
+				</div>
+				<div class="yacht">
+					<div class="image"><img src="./assets/pic/mysecret.jpg"></div>
+					<div class="info">
+						<p>mysecret</p>
+						<p class="price">7.750.000 EUR</p>
+						<p class="small">Heesen Yachts $9,250,000 43.59m 1988</p>
+					</div>
+				</div>
+				<footer>
+
+				</footer>
+				<script>
+					var yachts = Array.prototype.slice.apply(document.getElementsByClassName('yacht'));
+
+					yachts.forEach(function(yacht){
+						yacht.addEventListener('mouseover', function(e){
+							e.target.style.transform = 'translateZ(100px) scaleX(1.5) scaleY(1.5)';
+						});
+
+						yacht.addEventListener('mouseleave', function(e){
+							e.target.style.transform = 'translateZ(0px) scaleX(1) scaleY(1)';
+						});
+					});
+				</script>
+			</main>
+		</div>
+	</body>
+	<script src="../../dist/html-gl.js"></script>
+</html>

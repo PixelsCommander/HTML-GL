@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body {
+            background-color: rgb(39,45,77);
+            color: white;
+        }
+
+        #gl-header {
+            position: absolute;
+            transition: transform 0.2s ease;
+        }
+
+        #is-layer {
+            transform: translateZ(0);
+            transition: transform 0.2s ease;
+        }
+
+        #is-layer:hover {
+            transform: scaleX(2) scaleY(2);
+        }
+
+        img {
+            border: 2px solid white;
+            transform: translateZ(0);
+            transition: transform 0.2s ease;
+        }
+
+        img:hover {
+            transform: translateZ(0) scaleX(2) scaleY(2);
+        }
+    </style>
+</head>
+<body>
+<div id="gl-header">
+    <h1>This is first HTML-VR object</h1>
+    <h2 id="is-layer">Is a layer</h2>
+    <h2>Not a layer</h2>
+
+    <img src="./img/golf/club1.jpeg">
+    <img src="./img/golf/club2.jpeg">
+    <img src="./img/golf/club3.jpeg">
+    <img src="./img/golf/club4.jpeg">
+</div>
+<script type="x-shader/x-vertex" id="vertexShader">
+    varying vec2 vUv;
+    uniform float time;
+
+    void main() {
+        vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+
+        vUv = uv;
+
+        gl_Position = projectionMatrix * mvPosition;
+    }
+</script>
+
+<script type="x-shader/x-fragment" id="fragmentShader">
+    varying vec2 vUv;
+    uniform float time;
+    uniform float volume;
+
+    const float GRID_COUNT = 5.0;
+
+    void main() {
+
+      float GRID_SIZE = 1.0 / GRID_COUNT;
+
+      vec3 colors[5];
+
+      colors[0] = vec3(131,184,170);
+      colors[1] = vec3(255,179,80);
+      colors[2] = vec3(255,106,90);
+      colors[3] = vec3(184,53,100);
+      colors[4] = vec3(39,45,77);
+
+      int cellNumber = int(floor(vUv.y / GRID_SIZE));
+
+      vec3 color;
+      vec3 defaultColor = vec3(39,45,77) / 255.;
+
+      for (int i = 0; i < 5; i++) {
+        if (i == cellNumber) {
+          color = colors[i] / 255.;
+        }
+      }
+
+      float volumeLimiter = step(float(cellNumber + 1) * GRID_SIZE, volume);
+
+      vec4 resultColor = vec4(color, 1.0) * volumeLimiter + vec4(defaultColor, 1.0) * (1.0 - volumeLimiter);
+
+      gl_FragColor = resultColor;
+    }
+</script>
+<script src="../../dist/html-gl.js"></script>
+<script src="../../node_modules/webvr-polyfill/build/webvr-polyfill.js"></script>
+<script src="../../node_modules/three-js/three.js"></script>
+<script src="../../node_modules/tween.js/src/Tween.js"></script>
+<script src="../../node_modules/three-firstperson-vr-controls/FirstPersonVRControls.js"></script>
+<script src="./js/vendor/threestrap.js"></script>
+<script src="./js/vendor/VRControls.js"></script>
+<script src="./js/vendor/effects/EffectComposer.js"></script>
+<script src="./js/vendor/effects/ShaderPass.js"></script>
+<script src="./js/vendor/effects/RenderPass.js"></script>
+<script src="./js/vendor/shaders/CopyShader.js"></script>
+<script src="./js/vendor/effects/MaskPass.js"></script>
+<script src="./js/vendor/effects/BloomBlendPass.js"></script>
+<script src="./js/vendor/effects/BloomPass.js"></script>
+<script src="./js/vendor/shaders/ConvolutionShader.js"></script>
+
+<script src="../../node_modules/three.terrain.js/build/THREE.Terrain.min.js"></script>
+<script src="./js/world/skyeq.js"></script>
+<script src="./js/world/landscape.js"></script>
+<script src="./js/world/eye.js"></script>
+<script src="./js/main.js"></script>
+</body>
+</html>

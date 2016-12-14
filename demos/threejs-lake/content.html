@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Selling yachts app</title>
+    <link rel="stylesheet" href="assets/css/content.css">
+    <script src="assets/libs/jquery.min.js"></script>
+</head>
+<body>
+<header>
+    <h1>BOAT</h1> <h2>Yachts for sale</h2>
+</header>
+<main>
+    <div class="yacht">
+        <div class="image"><img src="./assets/pic/achilles.jpg"></div>
+        <div class="info">
+            <p>Achiless</p>
+            <p class="price">1.250.000 EUR</p>
+            <p class="small">Perini Navi | 55.9 m | 12 guests</p>
+        </div>
+    </div>
+    <div class="yacht">
+        <div class="image"><img src="./assets/pic/arcana.jpg"></div>
+        <div class="info">
+            <p>Arcana</p>
+            <p class="price">2.050.000 EUR</p>
+            <p class="small">Heesen Yachts $9,250,000 43.59m 1988</p>
+        </div>
+    </div>
+    <div class="yacht">
+        <div class="image"><img src="./assets/pic/flyingdragon.jpg"></div>
+        <div class="info">
+            <p>Flying Dragon</p>
+            <p class="price">10.800.000 EUR</p>
+            <p class="small">Heesen Yachts $9,250,000 43.59m 1988</p>
+        </div>
+    </div>
+    <div class="yacht">
+        <div class="image"><img src="./assets/pic/ladysheridan.jpg"></div>
+        <div class="info">
+            <p>ladysheridan</p>
+            <p class="price">6.200.000 EUR</p>
+            <p class="small">Heesen Yachts $9,250,000 43.59m 1988</p>
+        </div>
+    </div>
+    <div class="yacht">
+        <div class="image"><img src="./assets/pic/mylo.jpg"></div>
+        <div class="info">
+            <p>mylo</p>
+            <p class="price">4.150.000 EUR</p>
+            <p class="small">Heesen Yachts $9,250,000 43.59m 1988</p>
+        </div>
+    </div>
+    <div class="yacht">
+        <div class="image"><img src="./assets/pic/mysecret.jpg"></div>
+        <div class="info">
+            <p>mysecret</p>
+            <p class="price">7.750.000 EUR</p>
+            <p class="small">Heesen Yachts $9,250,000 43.59m 1988</p>
+        </div>
+    </div>
+    <script>
+        var yachts = Array.prototype.slice.apply(document.getElementsByClassName('yacht'));
+
+        yachts.forEach(function(yacht){
+            yacht.addEventListener('mouseover', function(e){
+                e.currentTarget.style.transform = 'translateZ(100px) scaleX(1.5) scaleY(1.5)';
+            });
+
+            yacht.addEventListener('mouseleave', function(e){
+                e.currentTarget.style.transform = 'translateZ(0px) scaleX(1) scaleY(1)';
+            });
+        });
+    </script>
+</main>
+
+</body>
+</html>

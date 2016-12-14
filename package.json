@@ -32,11 +32,14 @@
     "webpack-visualizer-plugin": "^0.1.5"
   },
   "dependencies": {
+    "imagesready": "^0.2.2",
+    "lodash": "^4.16.1",
+    "object-diff": "0.0.3",
     "rasterizehtml": "^1.2.2",
     "three-firstperson-vr-controls": "^0.1.0",
     "three-js": "^79.0.0",
     "three.terrain.js": "^1.4.0",
-    "tween.js": "^16.3.4",
+    "tween.js": "^16.3.5",
     "webpack-uglify-js-plugin": "^1.1.9",
     "webvr-polyfill": "^0.9.14"
   }

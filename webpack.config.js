@@ -22,7 +22,7 @@ module.exports = {
             }
         }]
     },
-    plugins: [
+    /* plugins: [
         //new Visualizer(),
         new uglifyJsPlugin({
             minimize: true,
@@ -34,5 +34,5 @@ module.exports = {
                 warnings: false
             }
         })
-    ]
+    ] */
 }
