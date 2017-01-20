@@ -32,6 +32,7 @@
     "webpack-visualizer-plugin": "^0.1.5"
   },
   "dependencies": {
+    "babel-preset-es2015": "^6.22.0",
     "imagesready": "^0.2.2",
     "lodash": "^4.16.1",
     "object-diff": "0.0.3",
