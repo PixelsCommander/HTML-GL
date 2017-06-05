@@ -10,6 +10,8 @@ var MutationObserver = require('./mutation-observer');
 var StyleObserver = require('./style-observer');
 var TransitionObserver = require('./transition-observer');
 var helpers = require('./helpers');
+var elementHelpers = require('../helpers');
+var logger = require('js-logger');
 
 class GLObserver {
     constructor(glElement) {
@@ -23,7 +25,7 @@ class GLObserver {
 
     onDOMChanged(mutations) {
 
-        console.log('DOM changed', mutations);
+        logger.info('DOM changed', mutations);
 
         //If there are style mutations
         if (mutations.filter(helpers.isStyleMutation).length) {
@@ -36,18 +38,42 @@ class GLObserver {
             return;
         }
 
-        //Rerender
-        this.glElement.updateTexture();
-
         if (mutations[0].addedNodes.length) {
-            this.glElement.update('children');
+            this.processAddedNodes(mutations[0].addedNodes);
         }
 
-        //TODO Handle node removal
+        if (mutations[0].removedNodes.length) {
+            this.processRemovedNodes(mutations[0].removedNodes)
+        }
+
+        //Rerender
+        this.glElement.updateTexture();
+    }
+
+    processAddedNodes(addedNodes) {
+        this.glElement.update('children');
+    }
+
+    processRemovedNodes(removedNodes) {
+        for (var i = 0; i < removedNodes.length; i++) {
+            if (elementHelpers.isGLNode(removedNodes[i])) {
+                logger.info('Processing node removal ' + removedNodes[i]);
+
+                //TODO Move to delayed queue executed after the loop to avoid duplication of updates
+
+                //Reflow from the root
+                var GLRootToReflow = elementHelpers.getGLRoot(this.glElement);
+                GLRootToReflow.update('children');
+
+                //Actual removal
+                var nodeGLElement = elementHelpers.getGLElement(removedNodes[i]);
+                this.glElement.removeChild(nodeGLElement);
+            }
+        }
     }
 
     onStyleChanged(diff, prevStyle, nextStyle) {
-        console.log('Style changed ');
+        logger.info('Style changed ');
 
         var diffPropertiesNames = Object.keys(diff);
 
@@ -63,7 +89,7 @@ class GLObserver {
     }
 
     onTransitionStarted(propertyName, prevValue, nextValue, options) {
-        console.log('Transition started ', propertyName, prevValue, ' > ', nextValue, options);
+        logger.info('Transition started ', propertyName, prevValue, ' > ', nextValue, options);
 
         //Tween from A to B
     }
@@ -73,6 +99,15 @@ class GLObserver {
             var propertyName = properties[i];
             this.glElement.update(propertyName);
         }
+    }
+
+    dispose() {
+        this.glElement = null;
+        this.node = null;
+
+        this.mutationObserver.dispose();
+        this.styleObserver.dispose();
+        this.transitionObserver.dispose();
     }
 }
 

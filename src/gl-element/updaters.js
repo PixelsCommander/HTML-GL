@@ -11,6 +11,7 @@ var utils = require('../utils/index');
 var constants = require('./../constants');
 var helpers = require('./helpers');
 var GLElement = require('./index');
+var objectDiff = require('object-diff');
 
 module.exports = {
     transform: function() {
@@ -41,6 +42,7 @@ module.exports = {
     boundingRect: function() {
 
         var boundingRect = this.node.getBoundingClientRect();
+        var oldBoundingRect = this.boundingRect;
 
         this.boundingRect = {
             left: boundingRect.left,
@@ -56,14 +58,22 @@ module.exports = {
             this.boundingRect.top -= this.parent.boundingRect.top;
         }
 
-        this.boundingRect.left = parseFloat(this.boundingRect.left) - this.transformObject.translateX;
-        this.boundingRect.top = parseFloat(this.boundingRect.top) - this.transformObject.translateY;
+        if (Object.keys(this.transformObject).length) {
+            this.boundingRect.left = parseFloat(this.boundingRect.left) - this.transformObject.translateX;
+            this.boundingRect.top = parseFloat(this.boundingRect.top) - this.transformObject.translateY;
+        }
+
+        //If size changed then update texture
+        var diff = objectDiff(oldBoundingRect, this.boundingRect);
+        if (Object.keys(diff).length) {
+            this.updateTexture();
+        }
     },
     texture: function() {
 
-        this.update('boundingRect');
-        return this.rasterizer.rasterize(this)
-            .then(this.onTextureRendered.bind(this));
+        this.rasterizing = true;
+        //this.update('boundingRect');
+        return this.rasterizer.rasterize(this).then(this.onTextureRendered.bind(this));
     },
     children: function() {
 

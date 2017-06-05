@@ -20,6 +20,9 @@ module.exports = {
     isGLNode: function (node) {
         return node[constants.GL_ELEMENT_PROPERTY_NAME];
     },
+    getGLElement: function (node) {
+        return node[constants.GL_ELEMENT_PROPERTY_NAME];
+    },
     getGLParent: function (glElement) {
         var parent = glElement.node || glElement;
 
@@ -32,6 +35,20 @@ module.exports = {
                 return null;
             }
         }
+    },
+    getGLRoot: function (glElement) {
+        var parent = glElement.node || glElement;
+        var result = glElement;
+
+        while (parent) {
+            parent = parent.parentNode || parent.defaultView.frameElement;
+
+            if (parent && parent[constants.GL_ELEMENT_PROPERTY_NAME]) {
+                result = parent[constants.GL_ELEMENT_PROPERTY_NAME];
+            }
+        }
+
+        return result;
     },
     getTransformObject(glElement) {
         if (glElement.settings && glElement.settings.heavyDiff) {

@@ -42,18 +42,23 @@ class GLTransitionManager {
         var tweenConfig = {};
         tweenConfig[propertyName] = newValue;
 
-        console.log('Starting transition ', propertyName, oldValue, newValue);
+        logger.info('Starting transition ', propertyName, oldValue, newValue);
 
         this.transitions[propertyName].to(tweenConfig, 200)
             //.easing(TWEEN.Easing.Elastic.InOut)
             .onUpdate(function (e, b) {
-                console.log('Tweening ', propertyName, ' progress ', e);
+                logger.info('Tweening ', propertyName, ' progress ', e);
                 self.glElement[propertyName] = e * newValue;
             })
             .onComplete(function () {
                 self.transitions[propertyName] = null;
             })
             .start();
+    }
+
+    dispose() {
+        this.glElement = null;
+        this.node = null;
     }
 }
 

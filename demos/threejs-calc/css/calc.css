@@ -3413,7 +3413,6 @@ html {
 body {
     height: 100%;
     background-color: white;
-    background-image: linear-gradient(black, transparent 75%);
     position: relative; }
 
 .container {

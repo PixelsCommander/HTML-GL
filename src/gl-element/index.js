@@ -15,6 +15,7 @@ var helpers = require('./helpers');
 var constants = require('../constants');
 var utils = require('../utils/');
 var ImagesLoaded = require('../utils/images-loaded');
+var logger = require('js-logger');
 
 class GLElement {
 
@@ -22,10 +23,11 @@ class GLElement {
 
         if (!node) throw('HTML node is not specified for GLElement');
 
-        console.log(`Creating GLElement on node with innerHTML=${node.innerHTML}`);
+        logger.info(`Creating GLElement on node with innerHTML=${node.innerHTML}`);
 
         this.processChildren = GLElement.processChildren;
 
+        this.rasterizing = false;
         this.settings = settings || {};
         this.parent = {};
         this.boundingRect = {};
@@ -43,19 +45,28 @@ class GLElement {
         this.observer = new GLObserver(this);
 
         //Throttling rendering
-        this.updateTexture = utils.throttle(this.updateTexture, 500, this);
+        //this.updateTexture = utils.throttle(this.updateTexture, 500, this);
 
         //Initial update
         new ImagesLoaded(this.node).then(() => {
+                //Children should be processed before rendering to know which nodes to igonre when rasterizing
+                var children = utils.getNodeChildren(this.node);
+                children.forEach((child) => {
+                    GLElement.processChildren(child, this);
+                });
+
                 //console.log('Images ready', this.node);
                 this.update('boundingRect');
                 this.update('updateStyles');
 
-                //Children should be processed before rendering to know which nodes to igonre when rasterizing
-                GLElement.processChildren(this.node, this);
+                logger.info('Updating texture for ', this.node);
+                var updateTexturePromise = this.updateTexture();
 
-                console.log('Updating texture for ', this.node);
-                this.updateTexture();
+                updateTexturePromise.then(() => {
+                    if (this.settings.oninitialized && this.settings.oninitialized instanceof Function) {
+                        this.settings.oninitialized.apply(this);
+                    }
+                });
             }
         )
 
@@ -64,7 +75,12 @@ class GLElement {
     }
 
     addChild(glElement) {
-        this.renderer.addTo(glElement, this);
+        this.renderer.addTo(this, glElement);
+    }
+
+    removeChild(glElement) {
+        this.renderer.removeFrom(this, glElement);
+        glElement.dispose();
     }
 
     setNode(node) {
@@ -85,6 +101,7 @@ class GLElement {
 
     markAsChanged() {
         this.isChanged = true;
+        requestAnimationFrame(this.syncTransform);
     }
 
     syncTransform() {
@@ -111,7 +128,6 @@ class GLElement {
 
             this.isChanged = false;
         }
-        requestAnimationFrame(this.syncTransform);
     }
 
     get styleObject() {
@@ -120,64 +136,59 @@ class GLElement {
 
     update(updaterName, styleObject) {
         if (this.updaters[updaterName]) {
-            this.updaters[updaterName].apply(this, [styleObject]);
+            logger.info('Updated ' + updaterName + ' on ' + this.node.tagName + '-' + (this.node.id + this.node.className));
+            return this.updaters[updaterName].apply(this, [styleObject]);
         }
     }
 
     updateTexture() {
-        var self = this;
-        //setTimeout(function () {
-            self.update('texture')
-        //}, 0);
+        return this.update('texture');
     }
 
     onTextureRendered(imageData) {
         this.renderer.setTexture(this, imageData);
-        console.log('Finished rendering', this.node);
+        this.rasterizing = false;
+        logger.info('Finished rendering', this.node);
     }
 
     static processChildren(node, rootGLElement) {
+
+        logger.info('Processing child ' + node.tagName + '-' + (node.id || node.className));
 
         if (!utils.isHTMLNode(node)) {
             return;
         }
 
-        //Iterate and create glNodes if condition works
+        var createdElement = false;
+
+        //Iterate and create glNodes if should be created
         if (helpers.shouldBeGLNode(node)) {
+
             if (!helpers.isGLNode(node)) {
                 new GLElement(node, rootGLElement.settings);
+                createdElement = true;
             } else {
-                //node.GLElement.updateTexture();
+                node.GLElement.update('boundingRect');
                 node.GLElement.update('transform');
             }
-        } else if (node.children.length > 0 || node.tagName === 'IFRAME') {
-
-            var children = [];
-
-            if (node.tagName === 'IFRAME') {
-
-                /* if (!node.contentDocument.body) {
-                    node.onload = function(){
-
-                        children = node.contentDocument.body.children;
-                        for (var childIndex in children) {
-                            var child = children[childIndex];
-                            GLElement.processChildren(child, rootGLElement);
-                        }
-                    }
-                    return;
-                } else { */
-                    children = node.contentDocument.body.children;
-                //}
-            } else {
-                children = node.children;
-            }
-
-            for (var childIndex in children) {
-                var child = children[childIndex];
-                GLElement.processChildren(child, rootGLElement);
-            }
         }
+
+        if (!createdElement && (node.children.length > 0 || node.tagName === 'IFRAME')) {
+
+            var children = utils.getNodeChildren(node);
+            children.forEach((child) => {
+                GLElement.processChildren(child, rootGLElement);
+            });
+        }
+    }
+
+    dispose() {
+        this.node = null;
+        this.parent = null;
+        this.renderer = null;
+        this.rasterizer = null;
+        this.displayObject = null;
+        this.observer.dispose();
     }
 }
 

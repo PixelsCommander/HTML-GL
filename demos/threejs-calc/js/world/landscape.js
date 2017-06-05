@@ -5,14 +5,15 @@
         scene.add( light );
 
         var material = new THREE.MeshPhongMaterial( {
-            color: 'rgb(39,45,77)',
+            color: 'rgb(131,184,170)',
             shininess: 0,
+            wireframe: true
             //specular: 'rgb(39,45,77)'
         } );
 
         material.shading = THREE.FlatShading;
 
-        var xS = 63, yS = 63;
+        var xS = 20, yS = 20;
         terrainScene = THREE.Terrain({
             easing: THREE.Terrain.Linear,
             frequency: 2.5,
@@ -25,9 +26,10 @@
             xSegments: xS,
             xSize: 300,
             ySegments: yS,
-            ySize: 300,
+            ySize: 300
         });
         scene.add(terrainScene);
+        terrainScene.position.set(0, -5, 0);
         return terrainScene;
     }
 

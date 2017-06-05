@@ -5,10 +5,11 @@
  * http://htmlgl.com
  */
 
-var rasterizeHTMLRasterizer = require('./rasterizers/rasterizehtml-rasterizer');
+var domtoimageRasterizer = require('./rasterizers/dom-to-image-rasterizer');
 var html2canvasRasterizer = require('./rasterizers/html2canvas-rasterizer');
 var threeRenderer = require('./renderers/threejs-renderer');
 var InteractionController = require('./interaction-controller');
+var logger = require('js-logger');
 
 var GLElement = require('./gl-element/');
 
@@ -32,5 +33,8 @@ var GLCore = {
 window.HTMLGL = GLCore;
 module.exports = GLCore;
 
-GLCore.setRasterizer(html2canvasRasterizer);
+GLCore.setRasterizer(domtoimageRasterizer);
 GLCore.setRenderer(threeRenderer);
+
+logger.useDefaults();
+logger.setLevel(logger.WARN);

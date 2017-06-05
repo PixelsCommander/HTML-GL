@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="css/calc.css">
+</head>
+<body>
+
+<audio autoplay loop control="false" style="display: none; position: absolute; top:0; left: 0;" id="player" controls crossorigin>
+    <source src="./music.mp3" type="audio/mpeg">
+    <source src="./music.ogg" type="audio/ogg">
+    Your browser does not support the audio tag.
+</audio>
+
+<div class="container" id="gl-element">
+    <div class="calc-row controls display transparent-blur">
+        <!--<div id="control-bar" class="calc-top">
+          <ul>
+            <li class="control-button calc-quit"></li>
+            <li class="control-button calc-min"></li>
+            <li class="control-button calc-max"></li>
+          </ul>1
+        </div>-->
+        <div id="display" class="calc-top">
+            <span id="display-window">0</span>
+        </div>
+    </div>
+    <!-- PREPARING TO BUILD SCIENTIFIC CALC HTML-->
+    <div class="calc-row buttons">
+
+        <div id="calc-clear" class="calc-button-perm bg-gray">AC</div><!-- clear values -->
+        <div id="plus-minus" class="calc-button-perm bg-gray">&plusmn;</div><!-- +/- toggle ( dispVal * -1 ) -->
+        <div id="percent" class="calc-button-perm bg-gray">&percnt;</div><!-- percent (dispVal / 100 ) -->
+        <div id="divide" class="calc-button-perm bg-orange">&divide;</div><!-- divide -->
+    </div>
+    <div class="calc-row buttons">
+
+        <div class="calc-button-perm bg-gray calc-num">7</div>
+        <div class="calc-button-perm bg-gray calc-num">8</div>
+        <div class="calc-button-perm bg-gray calc-num">9</div>
+        <div id="multiply" class="calc-button-perm bg-orange">&times;</div><!-- multiply -->
+    </div>
+    <div class="calc-row buttons">
+
+        <div class="calc-button-perm bg-gray calc-num">4</div>
+        <div class="calc-button-perm bg-gray calc-num">5</div>
+        <div class="calc-button-perm bg-gray calc-num">6</div>
+        <div id="subtract" class="calc-button-perm bg-orange">&minus;</div><!-- subtract -->
+    </div>
+    <div class="calc-row buttons">
+
+        <div class="calc-button-perm bg-gray calc-num">1</div>
+        <div class="calc-button-perm bg-gray calc-num">2</div>
+        <div class="calc-button-perm bg-gray calc-num">3</div>
+        <div id="add" class="calc-button-perm bg-orange">&plus;</div>
+    </div>
+    <div class="calc-row buttons">
+
+        <div class="calc-button-perm-wide bg-gray btn-zero calc-num">0</div>
+        <div id="calc-decimal" class="calc-button-perm bg-gray">&period;</div>
+        <div id="evaluate" class="calc-button-perm bg-orange btn-equal">&equals;</div>
+    </div>
+    <!-- <div class="calc-row controls display transparent-blur">
+      <span id="debug-window">0</span>
+    </div> -->
+</div>
+
+<script type="text/javascript" src="js/calc.js"></script>
+</body>
+</html>

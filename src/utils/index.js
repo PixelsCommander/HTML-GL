@@ -101,13 +101,37 @@ var utils = {
                 clearTimeout(deferTimer);
                 deferTimer = setTimeout(function () {
                     last = now;
-                    fn.apply(context, args);
+                    return fn.apply(context, args);
                 }, threshhold);
             } else {
                 last = now;
-                fn.apply(context, args);
+                return fn.apply(context, args);
             }
         };
+    },
+    getNodeChildren(node) {
+        var children = [];
+
+        if (node.tagName === 'IFRAME') {
+
+            /* if (!node.contentDocument.body) {
+             node.onload = function(){
+
+             children = node.contentDocument.body.children;
+             for (var childIndex in children) {
+             var child = children[childIndex];
+             GLElement.processChildren(child, rootGLElement);
+             }
+             }
+             return;
+             } else { */
+            children = node.contentDocument.body.children;
+            //}
+        } else {
+            children = node.children;
+        }
+
+        return Array.prototype.slice.call(children);
     }
 };
 

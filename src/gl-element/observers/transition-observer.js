@@ -79,6 +79,14 @@ class GLTransitionObserver {
     getTransitionByComputingStyle() {
         return window.getComputedStyle(this.node).transition;
     }
+
+    dispose() {
+        this.glElement = null;
+        this.node = null;
+        this.callback = null;
+        this.transitionManager.dispose();
+        this.transitionManager = null;
+    }
 }
 
 module.exports = GLTransitionObserver;

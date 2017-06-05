@@ -69,11 +69,11 @@
                     analyser = audioContext.createAnalyser();
 
                     var mediaElement = document.getElementById('player');
-                    var microphone = audioContext.createMediaElementSource(mediaElement);
+                    //var microphone = audioContext.createMediaElementSource(mediaElement);
 
 
 
-                    //microphone = audioContext.createMediaStreamSource(stream);
+                    var microphone = audioContext.createMediaStreamSource(stream);
                     javascriptNode = audioContext.createScriptProcessor(512, 1, 1);
 
                     filter = audioContext.createBiquadFilter();

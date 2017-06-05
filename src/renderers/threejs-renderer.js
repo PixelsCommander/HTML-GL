@@ -5,12 +5,7 @@ var InteractionController = require('../interaction-controller');
 var scene = null;
 var camera = null;
 var raycaster = null;
-
-//TODO carefully remove from here
 var sprites = [];
-
-//TODO Move to interaction controller
-var oldIntersects = [];
 
 var VRClickEnabled = false;
 
@@ -20,6 +15,8 @@ var ThreeRenderer = {
         //Creating container
         glElement.displayObject = new THREE.Object3D();
         glElement.container = new THREE.Object3D();
+
+        glElement.displayObject.name = glElement.node.tagName + '_' + (glElement.node.id || glElement.node.className);
 
         //Creating plane
         var geometry = new THREE.PlaneGeometry(glElement.boundingRect.width, glElement.boundingRect.height);
@@ -37,6 +34,10 @@ var ThreeRenderer = {
         glElement.container.add(glElement.sprite);
 
         sprites.push(glElement.sprite);
+
+        //glElement.displayObject.castShadow = true;
+        //glElement.container.castShadow = true;
+        glElement.sprite.castShadow = true;
 
         return glElement.displayObject;
     },
@@ -66,8 +67,6 @@ var ThreeRenderer = {
         texture.anisotropy = 16;
 
         glElement.sprite.material.map = texture;
-        glElement.sprite.material.bumpMap = texture;
-        glElement.sprite.material.bompScale = 0.7;
     },
 
     /*
@@ -113,12 +112,26 @@ var ThreeRenderer = {
         });
     },
 
-    addTo: function (glElement, parentGLElement) {
+    addTo: function (parentGLElement, glElement) {
 
         parentGLElement.displayObject.add(glElement.displayObject);
     },
 
+    removeFrom: function (parentGLElement, glElement) {
+        parentGLElement.displayObject.remove(glElement.displayObject);
+        sprites.splice(sprites.indexOf(glElement.sprite), 1);
+    },
+
     objectsAtPoint (x, y) {
+
+        var intersects = ThreeRenderer.intersectionsAtPoint(x, y).map((intersect) => {
+            return intersect.object;
+        });
+
+        return intersects;
+    },
+
+    intersectionsAtPoint (x, y) {
 
         var mouse = {
             x: ( x / window.innerWidth ) * 2 - 1,
@@ -126,12 +139,7 @@ var ThreeRenderer = {
         }
 
         raycaster.setFromCamera( mouse, camera );
-
-        var intersects = raycaster.intersectObjects( sprites ).map((intersect) => {
-            return intersect.object;
-        });
-
-        return intersects;
+        return raycaster.intersectObjects( sprites );
     },
 
     registerScene: function (sceneArg, cameraArg) {

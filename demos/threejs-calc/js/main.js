@@ -23,11 +23,11 @@ three.on('update', function (timestamp) {
 window.elementToAddToScene = document.getElementById('gl-element');
 var htmlglNode = window.HTMLGL.createElement(elementToAddToScene, {
     material: new THREE.MeshPhongMaterial({
-        color: 'rgb(255,255,255)',
-        shininess: 50,
-        combine: THREE.MixOperation,
-        reflectivity: 40.6,
-        specular: 0xffffff,
+        //color: 'rgb(255,255,255)',
+        //shininess: 50,
+        //combine: THREE.MixOperation,
+        //reflectivity: 40.6,
+        //specular: 0xffffff,
     }),
     heavyDiff: true
 });

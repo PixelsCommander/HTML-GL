@@ -16,7 +16,6 @@ var rasterizer = {
         scaledCanvas.style.height = height + "px";
 
         var scaledContext = scaledCanvas.getContext("2d");
-        //scaledContext.scale(scale, scale);
 
         scaledContext.mozImageSmoothingEnabled = false;
         scaledContext.imageSmoothingEnabled = false;

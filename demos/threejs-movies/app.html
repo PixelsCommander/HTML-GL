@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="container" id="gl-element">
+    <div class="movies-list">
+        <div class="item">
+            <img src="./img/1.jpeg" class="thumb">
+            <div class="info">
+                <p class="header">La La Land</p>
+                <p class="description">2016 American romantic musical comedy-drama film</p>
+            </div>
+        </div>
+        <div class="item">
+            <img src="./img/2.jpeg" class="thumb">
+            <div class="info">
+                <p class="header">Moonlight</p>
+                <p class="description">2016 American drama film</p>
+            </div>
+        </div>
+        <div class="item">
+            <img src="./img/3.jpeg" class="thumb">
+            <div class="info">
+                <p class="header">Manchester by the Sea</p>
+                <p class="description">Upcoming 2016 American drama film</p>
+            </div>
+        </div>
+        <div class="item">
+            <img src="./img/4.jpeg" class="thumb">
+            <div class="info">
+                <p class="header">Arrival</p>
+                <p class="description">2016 American science fiction drama film</p>
+            </div>
+        </div>
+        <div class="item">
+            <img src="./img/5.jpeg" class="thumb">
+            <div class="info">
+                <p class="header">Hell or High Water</p>
+                <p class="description">2016 American heist crime film</p>
+            </div>
+        </div>
+        <div class="item">
+            <img src="./img/6.jpeg" class="thumb">
+            <div class="info">
+                <p class="header">Zootopia</p>
+                <p class="description">3D buddy comedy adventure film</p>
+            </div>
+        </div>
+        <div class="item">
+            <img src="./img/7.jpeg" class="thumb">
+            <div class="info">
+                <p class="header">Silence</p>
+                <p class="description">Upcoming historical drama film</p>
+            </div>
+        </div>
+        <div class="item">
+            <img src="./img/8.jpeg" class="thumb">
+            <div class="info">
+                <p class="header">Jackie</p>
+                <p class="description">2016 Biographical drama film</p>
+            </div>
+        </div>
+        <div class="item">
+            <img src="./img/9.jpeg" class="thumb">
+            <div class="info">
+                <p class="header">Deadpool</p>
+                <p class="description">2016 American comedy superhero film</p>
+            </div>
+        </div>
+        <div class="item">
+            <img src="./img/10.jpeg" class="thumb">
+            <div class="info">
+                <p class="header">Rogue One: A Star Wars Story</p>
+                <p class="description">Epic space opera film</p>
+            </div>
+        </div>
+    </div>
+    <div class="details">
+        <h1 id="film-name">Film name</h1>
+        <p>Some description</p>
+        <video>
+
+        </video>
+    </div>
+</div>
+<script>
+    var items = Array.prototype.slice.apply(document.getElementsByClassName('item'));
+
+    items.forEach(function(yacht){
+        yacht.addEventListener('mouseover', function(e){
+            e.currentTarget.style.transform = 'translateZ(1px)';
+        });
+
+        yacht.addEventListener('mouseleave', function(e){
+            e.currentTarget.style.transform = 'translateZ(0px)';
+        });
+    });
+</script>
+</body>
+</html>

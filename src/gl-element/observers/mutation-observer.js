@@ -39,9 +39,17 @@ class GLMutationObserver {
 
         //Filter out mutations from other GLElements
         mutations = mutations.filter(function(mutation){
-            var isMe = mutation.target == self.node;
-            var isNotGLNode = !elementHelpers.isGLNode(mutation.target);
-            var iAmGLParent = elementHelpers.getGLParent(mutation.target) === self.node;
+            var mutatedNode = mutation.target;
+
+            /*if (mutation.addedNodes.length) {
+                mutatedNode = mutation.addedNodes[0];
+            } else if (mutation.removedNodes.length) {
+                mutatedNode = mutation.removedNodes[0];
+            }*/
+
+            var isMe = mutatedNode == self.node;
+            var isNotGLNode = !elementHelpers.isGLNode(mutatedNode);
+            var iAmGLParent = elementHelpers.getGLParent(mutatedNode) === self.glElement;
 
             return isMe || (iAmGLParent && isNotGLNode);
         });
@@ -49,6 +57,14 @@ class GLMutationObserver {
         if (mutations.length) {
             this.callback(mutations);
         }
+    }
+
+    dispose() {
+        this.glElement = null;
+        this.node = null;
+        this.callback = null;
+        this.observer.disconnect();
+        this.observer = null;
     }
 }
 
