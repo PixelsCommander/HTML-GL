@@ -1,0 +1,8 @@
+import * as rasterizeHTML from 'rasterizehtml';
+
+export function(glElement) {
+    return rasterizeHTML.drawHTML(glElement.node, undefined, {
+        width: glElement.boundingRect.width,
+        height: glElement.boundingRect.height
+    }).then((e) => e.image);
+};

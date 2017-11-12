@@ -1,38 +1,34 @@
 var webpack = require('webpack');
 var path = require('path');
-var uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+//var uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 //var Visualizer = require('webpack-visualizer-plugin');
 
 module.exports = {
-    entry: './src/gl-core.js',
-    output: {
-        path: './dist',
-        filename: 'html-gl.js',
-        sourceMapFilename: "main.js.map"
+    entry: {
+        'html-gl': './src/bootstrap',
+        //'html-gl.min': './src/bootstrap.ts'
     },
-    devtool: "#inline-source-map",
+    resolve: {
+        extensions: [ '.ts', '.js', '*', '' ]
+    },
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: '[name].js',
+        sourceMapFilename: 'main.js.map'
+    },
+    devtool: 'inline-source-map',
     module: {
         loaders: [{
-            test: /\.js$/,
+            test: /\.tsx?$/,
+            loader: 'ts-loader',
             exclude: /node_modules/,
-            loader: 'babel-loader',
-            query: {
-                //plugins: ['transform-runtime'],
-                presets: ['es2015'],
-            }
         }]
     },
-    /* plugins: [
-        //new Visualizer(),
-        new uglifyJsPlugin({
+    plugins: [
+        new webpack.optimize.UglifyJsPlugin({
             minimize: true,
             sourceMap: true,
-            output: {
-                comments: false
-            },
-            compressor: {
-                warnings: false
-            }
+            include: /\.min\.js$/,
         })
-    ] */
+    ],
 }
