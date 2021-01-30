@@ -5,9 +5,9 @@
  * http://htmlgl.com
  */
 
-import * as diff from 'object-diff';
-import constants from '../../constants';
+import { diff } from 'deep-object-diff';
 import GLElement from '../GLElement';
+import {SKIP_FRAMES} from "../../constants";
 
 export class GLStyleObserver {
 
@@ -57,7 +57,7 @@ export class GLStyleObserver {
                 }
             }
 
-            this.step = this.step < constants.SKIP_FRAMES ? this.step + 1 : 0;
+            this.step = this.step < SKIP_FRAMES ? this.step + 1 : 0;
 
             if (!this.glElement.settings.styleObserverDisabled) {
                 requestAnimationFrame(this.update);

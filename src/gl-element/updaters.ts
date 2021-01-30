@@ -1,18 +1,7 @@
-/*
- * GLUpdater is a part of HTML GL library holding GLElement updating functions
- * Copyright (c) 2016 http://pixelscommander.com
- * Distributed under MIT license
- * http://htmlgl.com
- *
- * Please, take into account: all functions are executes in GLElement context
- */
-
-import * as utils from '../utils/index';
-import * as constants from './../constants';
 import * as helpers from './helpers';
-import GLElement from './GLElement';
 import { getCurrentContext } from '../GLContext';
-import * as objectDiff from 'object-diff';
+import { diff } from 'deep-object-diff';
+import GLElement from "./GLElement";
 
 module.exports = {
     transform: function() {
@@ -62,20 +51,14 @@ module.exports = {
         }
 
         //If size changed then update texture
-        var diff = objectDiff(oldBoundingRect, this.boundingRect);
-        if (Object.keys(diff).length) {
+        if (JSON.stringify(oldBoundingRect) !== JSON.stringify(this.boundingRect)) {
             this.updateTexture();
         }
 
-        console.log('Updated bounding rect ', diff);
-    },
-    texture: function() {
-        this.rasterizing = true;
-        //this.update('boundingRect');
-        return this.context.rasterizer(this).then(this.onTextureRendered.bind(this));
+        //console.log('Updated bounding rect ', diff);
     },
     children: function() {
-        this.processChildren(this.node);
+        GLElement.processChildren(this.node, this.node);
     },
     updateStyles: function() {
         this.update('transform');

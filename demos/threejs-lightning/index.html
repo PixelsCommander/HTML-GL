@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <title>HTML GL nested content</title>
+    <meta name="viewport" content="width=1024 maximum-scale=1.0 minimum-scale=1.0 initial-scale=1.0, user-scalable=no"/>
+    <script>
+        window.devicePixelRatio = 2;
+    </script>
+    <script src="../../node_modules/three/build/three.min.js"></script>
+    <script src="../../dist/html-gl.js"></script>
+</head>
+<body>
+<div class="content_wrapper">
+    <h1>MENU RENDERED IN DOM</h1>
+    <nav class="top_nav">
+        <ul class="menu expanded">
+            <li><a target="_blank"
+                   href="http://pixelscommander.com/en/web-applications-performance/render-html-css-in-webgl-to-get-highest-performance-possibl/">ABOUT
+                HTML-GL</a></li>
+            <li><a target="_blank" href="https://github.com/PixelsCommander/HTML-GL">GITHUB REPO</a></li>
+            <li><a target="_blank" href="https://github.com/PixelsCommander/HTML-GL/archive/master.zip">DOWNLOAD</a>
+            </li>
+        </ul>
+        <html-gl>
+            <ul class="submenu">
+                <li>MOVIES</li>
+                <li>TV</li>
+                <li>KIDS</li>
+            </ul>
+        </html-gl>
+
+    </nav>
+    <section class="broadcasts_list">
+        <h1>SLIDER BELOW IS RENDERED IN WEBGL, DRAG IT</h1>
+        <html-gl id="slider" class="horizontal_carusel">
+            <li class="broadcast" onclick="alert('Clicked Argo')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_argo.png" width="186px" height="270px">
+
+                <p>
+                    Select me with DevTools
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>7.8<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Clicked Avatar')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_avatar.png" width="186px" height="270px">
+
+                <p>
+                    Change me in DevTools
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>8.0<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Clicked Breaking Bad')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_breaking_bad.png" width="186px" height="270px">
+
+                <p>
+                    Breaking bad
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>9.6<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Quantum of solace')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
+
+                <p>
+                    Quantum of solace
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>6.7<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Quantum of solace')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
+
+                <p>
+                    Quantum of solace
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>7.4<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Quantum of solace')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
+
+                <p>
+                    Quantum of solace
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>7.4<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Quantum of solace')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
+
+                <p>
+                    Quantum of solace
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>7.4<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Quantum of solace')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
+
+                <p>
+                    Quantum of solace
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>7.4<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Quantum of solace')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
+
+                <p>
+                    Quantum of solace
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>7.4<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Quantum of solace')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
+
+                <p>
+                    Quantum of solace
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>7.4<span>/10</span></span>
+                </p>
+            </li>
+            <div class="">
+
+            </div>
+        </html-gl>
+        <script>
+            var intersection = null;
+
+            window.addEventListener('mousemove', function (e) {
+                var intersections = window.HTMLGL.renderer.intersectionsAtPoint(e.clientX, e.clientY);
+
+                if (intersections.length) {
+                    var target = intersection = intersections[0].point;
+                    target.x = target.x / 1;
+                    target.y = target.y / 1;
+                    spotLight.target.position.copy(target);
+                } else {
+                    intersection = null;
+                }
+            });
+
+            var ambientLight = new THREE.AmbientLight(0xffffff);
+            ambientLight.intensity = 1;
+            ambientLight.position.z = 100;
+            ambientLight.position.y = 50;
+            HTMLGL.document.add(ambientLight);
+
+            var spotLight = new THREE.SpotLight();
+            spotLight.position.z = 100;
+            spotLight.position.x = window.innerWidth / 2;
+            spotLight.position.y = -200;
+            spotLight.exponent = 100;
+            spotLight.angle = Math.PI / 10;
+            spotLight.intensity = 20.5;
+
+            HTMLGL.document.add(spotLight);
+            HTMLGL.document.add(spotLight.target);
+
+            var sphere = new THREE.SphereGeometry(10, 16, 8);
+            var light1 = new THREE.PointLight(0xff0040, 100, 300);
+            light1.add(new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({color: 0xff0040})));
+            HTMLGL.document.add(light1);
+            var light2 = new THREE.PointLight(0x0040ff, 100, 300);
+            light2.add(new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({color: 0x0040ff})));
+            HTMLGL.document.add(light2);
+            var light3 = new THREE.PointLight(0x80ff80, 100, 300);
+            light3.add(new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({color: 0x80ff80})));
+            HTMLGL.document.add(light3);
+            var light4 = new THREE.PointLight(0xffaa00, 100, 300);
+            light4.add(new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({color: 0xffaa00})));
+            HTMLGL.document.add(light4);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                render();
+            }
+
+            var xOffset = window.innerWidth / 2;
+            var yOffset = window.innerHeight / 2;
+            var zOffset = 50;
+
+            function render() {
+                var time = Date.now() * 0.0005;
+                light1.position.x = xOffset + 10 * Math.sin(time * 0.7) * 30;
+                light1.position.y = -yOffset + 10 * Math.cos(time * 0.5) * 40;
+                light1.position.z = zOffset + Math.cos(time * 0.3) * 30;
+                light2.position.x = xOffset + 10 * Math.cos(time * 0.3) * 30;
+                light2.position.y = -yOffset + 10 * Math.sin(time * 0.5) * 40;
+                light2.position.z = zOffset + Math.sin(time * 0.7) * 30;
+                light3.position.x = xOffset + 10 * Math.sin(time * 0.7) * 30;
+                light3.position.y = -yOffset + 10 * Math.cos(time * 0.3) * 40;
+                light3.position.z = zOffset + Math.sin(time * 0.5) * 30;
+                light4.position.x = xOffset + 10 * Math.sin(time * 0.3) * 30;
+                light4.position.y = -yOffset + 10 * Math.cos(time * 0.7) * 40;
+                light4.position.z = zOffset + Math.sin(time * 0.5) * 30;
+            }
+
+            animate();
+        </script>
+    </section>
+</div>
+<script src="./js/slider.js"></script>
+</body>
+</html>

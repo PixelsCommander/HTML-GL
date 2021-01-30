@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import * as utils from '../../utils';
-import { getCurrentContext } from '../../GLContext';
-import { IGLRenderer } from '../IGLRenderer';
-import { IGLRendererView } from '../IGLRendererView';
-import { Vec2 } from '../../types';
+import {getCurrentContext} from '../../GLContext';
+import {IGLRenderer} from '../IGLRenderer';
+import {IGLRendererView} from '../IGLRendererView';
+import {Vec2} from '../../types';
+import { debounce } from "debounce";
 
 class ThreeGLRendererView implements IGLRendererView {
 
@@ -17,7 +18,6 @@ class ThreeGLRendererView implements IGLRendererView {
     constructor(renderer) {
         this.renderer = renderer;
         this.createDocument();
-
 
         // @ts-ignore
         utils.waitForDocumentLoaded()
@@ -39,9 +39,8 @@ class ThreeGLRendererView implements IGLRendererView {
             width = window.innerWidth * pixelRatio,
             height = window.innerHeight * pixelRatio;
 
-        this.engineRenderer = new THREE.WebGLRenderer({ alpha: true });
-        this.engineRenderer.setClearColor( 0x000000, 0 );
-
+        this.engineRenderer = new THREE.WebGLRenderer({alpha: true});
+        this.engineRenderer.setClearColor(0x000000, 0);
 
         this.engineRenderer.domElement.style.position = 'fixed';
         this.engineRenderer.domElement.style.top = '0px';
@@ -51,11 +50,10 @@ class ThreeGLRendererView implements IGLRendererView {
     }
 
     append() {
-        document.body.appendChild( this.engineRenderer.domElement );
-        //requestAnimationFrame(this.redrawStage.bind(this));
+        document.body.appendChild(this.engineRenderer.domElement);
     }
 
-    resize() {
+    resize = () => {
         console.log('Resized');
         var self = this,
             pixelRatio = getCurrentContext().getPixelRatio(),
@@ -90,7 +88,7 @@ class ThreeGLRendererView implements IGLRendererView {
     initListeners() {
         //window listeners
         document.addEventListener('scroll', this.updateScrollPosition.bind(this));
-        window.addEventListener('resize', utils.debounce(this.resize.bind(this), 500, false));
+        window.addEventListener('resize', debounce(this.resize, 500));
         window.addEventListener('resize', this.updateElementsPositions.bind(this));
     }
 
@@ -131,8 +129,7 @@ class ThreeGLRendererView implements IGLRendererView {
             height = window.innerHeight * pixelRatio;
 
         getCurrentContext().document = this.document = new THREE.Object3D();
-
-        getCurrentContext().camera = this.camera = new THREE.OrthographicCamera( 0, width / pixelRatio, 0, -height / pixelRatio, 1, 10000 );
+        getCurrentContext().camera = this.camera = new THREE.OrthographicCamera(0, width / pixelRatio, 0, -height / pixelRatio, 1, 10000);
         this.camera.position.z = 100;
     }
 
@@ -155,7 +152,6 @@ class ThreeGLRendererView implements IGLRendererView {
 
         getCurrentContext().elements.forEach(function (element) {
             setTimeout(() => {
-                element.update('boundingRect');
                 updatePromises.push(element.updateTexture());
             }, 0);
         });

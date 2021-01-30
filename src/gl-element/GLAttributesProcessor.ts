@@ -21,7 +21,7 @@ export class GLAttributesProcessor {
         }
     }
 
-    shader(value) {
+    shader(value: string) {
         this.glElement.setShader(value);
     }
 }

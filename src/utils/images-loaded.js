@@ -11,12 +11,12 @@
 
 
 var ImagesLoaded = function (element) {
-
     return new Promise((resolve, reject) => {
-
         this.resolve = resolve;
         this.element = element;
-        this.images = this.element.parentNode.querySelectorAll('img, iframe');
+
+        const nodeToLoadOn = this.element.parentNode || this.element;
+        this.images = nodeToLoadOn.querySelectorAll('img, iframe');
 
         this.onImageLoaded = this.onImageLoaded.bind(this);
 

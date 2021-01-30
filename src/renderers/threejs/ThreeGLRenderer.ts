@@ -1,10 +1,9 @@
 import * as THREE from 'three';
 import IGLRenderer from '../IGLRenderer';
-import { getCurrentContext } from '../../GLContext';
+import {getCurrentContext} from '../../GLContext';
 import ThreeGLRendererView from './ThreeGLRendererView';
-import * as constants from '../../constants';
 import * as utils from '../../utils';
-import GLInteractionController from '../../GLInteractionController';
+import * as ShaderToyMaterial from 'three-shadertoy-material';
 
 export class ThreeGLRenderer implements IGLRenderer {
     public sprites = [];
@@ -18,33 +17,24 @@ export class ThreeGLRenderer implements IGLRenderer {
     }
 
     createDisplayObject(glElement) {
+        //this.disposeDisplayObject(glElement);
 
         //Creating container
         glElement.displayObject = new THREE.Object3D();
-        glElement.container = new THREE.Object3D();
-
         glElement.displayObject.name = glElement.node.tagName + '_' + (glElement.node.id || glElement.node.className);
 
         //Creating plane
-        var geometry = new THREE.PlaneGeometry(glElement.boundingRect.width, glElement.boundingRect.height);
-        /* var material = (glElement.settings.material && glElement.settings.material.clone()) || new THREE.MeshPhongMaterial({
-                color: 0x555555,
-                specular: 0x111111,
-                shininess: 50
-        }); */
-
-        var material = new THREE.MeshBasicMaterial();
-
+        var geometry = new THREE.PlaneGeometry(0, 0);
+        var material = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            specular: 0xffffff,
+        });
         material.transparent = true;
         material.depthTest = false;
 
         glElement.sprite = new THREE.Mesh(geometry, material);
-
-        //We need a reference from ThreeJS to glElement
         glElement.sprite.glElement = glElement;
-
-        glElement.displayObject.add(glElement.container);
-        glElement.container.add(glElement.sprite);
+        glElement.displayObject.add(glElement.sprite);
 
         this.sprites.push(glElement.sprite);
 
@@ -53,43 +43,52 @@ export class ThreeGLRenderer implements IGLRenderer {
         return glElement.displayObject;
     }
 
+    disposeDisplayObject(glElement) {
+        if (glElement.displayObject) {
+            const object = glElement.displayObject;
+            object.geometry?.dispose();
+            object.material?.dispose();
+            this.scene?.remove(object);
+        }
+    }
+
     // imageData is a HTMLCanvas instance or HTMLImage
     setTexture(glElement, imageData) {
-
         glElement.sprite.geometry.dispose();
         glElement.sprite.material.dispose();
 
-        var width = glElement.scale * glElement.boundingRect.width;
-        var height = glElement.scale * glElement.boundingRect.height;
-
+        var width = glElement.boundingRect.width;
+        var height = glElement.boundingRect.height;
         var geometry = new THREE.PlaneGeometry(width, height);
         geometry.translate(width / 2, -height / 2, 0);
+
         glElement.sprite.geometry = geometry;
 
         var texture = new THREE.Texture(imageData);
         texture.needsUpdate = true;
         texture.minFilter = THREE.LinearMipMapNearestFilter;
-
         texture.anisotropy = 16;
 
         glElement.sprite.material.map = texture;
+
+        if (glElement.shader) {
+            glElement.sprite.material?.dispose();
+            glElement.sprite.material = new ShaderToyMaterial(glElement.shader, {
+                map: texture,
+                width,
+                height,
+                //transparentize: true,
+            });
+            glElement.sprite.material.transparent = true;
+        }
     }
 
     setTransform(glElement, transformObject) {
-        //Speed up and rethink this mess
+        const x = transformObject.translateX + glElement.boundingRect.left;
+        const y = transformObject.translateY + glElement.boundingRect.top;
+
         var displayObject = glElement.displayObject;
-        var scale = glElement.scale;
-
-        var sprite = glElement.sprite;
-        var container = glElement.container;
-        var offsetX = glElement.boundingRect.width / 2;
-        var offsetY = glElement.boundingRect.height / 2;
-        container.position.set(-offsetX * scale, offsetY * scale, 0);
-
-        var addx = glElement.parent ? glElement.parent.boundingRect.width / 2 : 0;
-        var addy = glElement.parent ? glElement.parent.boundingRect.height / 2 : 0;
-
-        displayObject.position.set((transformObject.translateX + offsetX - addx) * scale, (-transformObject.translateY - offsetY + addy) * scale, transformObject.translateZ);
+        displayObject.position.set(x, -y, transformObject.translateZ);
         displayObject.scale.set(transformObject.scaleX, transformObject.scaleY, transformObject.scaleZ);
     }
 
@@ -103,7 +102,9 @@ export class ThreeGLRenderer implements IGLRenderer {
     }
 
     setShader(glElement, shaderCode) {
-        // TODO
+        //this.createDisplayObject(glElement);
+        glElement.updateTexture();
+        console.log('SET SHADER');
     }
 
     updateUniform(glElement, uniformName, uniformValue) {
@@ -124,35 +125,23 @@ export class ThreeGLRenderer implements IGLRenderer {
     }
 
     nodesAtPoint(x, y) {
-
         var node,
             result = [];
 
         getCurrentContext().elements.forEach(function (glelement) {
-            node = document.elementFromPoint(x - parseInt(glelement.transformObject.translateX || 0), y - parseInt(glelement.transformObject.translateY || 0))
+            node = document.elementFromPoint(x - (glelement.transformObject.translateX || 0), y - (glelement.transformObject.translateY || 0))
             if (utils.isChildOf(node, glelement)) {
                 result.push(node);
             }
         });
 
         return result;
-
-        /*
-
-        This is implementation of nodes when hovering 3d transformed scene will be useful for free 3d mode
-
-        var intersects = ThreeRenderer.intersectionsAtPoint(x, y).map((intersect) => {
-            return intersect.object;
-        });
-
-        return intersects; */
     }
 
     intersectionsAtPoint(x, y) {
-
         var mouse = {
-            x: ( x / window.innerWidth ) * 2 - 1,
-            y: -( y / window.innerHeight ) * 2 + 1
+            x: (x / window.innerWidth) * 2 - 1,
+            y: -(y / window.innerHeight) * 2 + 1
         }
 
         this.raycaster.setFromCamera(mouse, this.view.camera);
@@ -172,7 +161,7 @@ export class ThreeGLRenderer implements IGLRenderer {
         requestAnimationFrame(this.redrawLoop);
     }
 
-    redrawStage() {
+    redrawStage = () => {
         if (this.view.engineRenderer && getCurrentContext().enabled) {
             this.view.engineRenderer.render(this.scene, this.camera);
             getCurrentContext().isChanged = false;

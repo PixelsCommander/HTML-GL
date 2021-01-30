@@ -6,10 +6,10 @@ export interface IGLRenderer {
     scene: any;
     camera: any;
     createDisplayObject(glElement: GLElement);
-    setTexture(glElement: GLElement, imageData: HTMLCanvasElement);
+    setTexture(glElement: GLElement, imageData: ImageData);
     setTransform(glElement: GLElement, transformObject: any);
     setOpacity(glElement: GLElement, opacityValue: number);
-    setShader(glElement: GLElement, opacityValue: number);
+    setShader(glElement: GLElement, shaderCode: string);
     updateUniform(glElement: GLElement, uniformName: string, uniformValue: number);
     addTo(parentGLElement: GLElement, glElement: GLElement);
     removeFrom(parentGLElement: GLElement, glElement: GLElement);

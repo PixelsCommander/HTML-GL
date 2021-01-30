@@ -1,66 +1,54 @@
-/*
- * GLElement is a part of HTML GL library describing single HTML-GL element
- * Copyright (c) 2016 http://pixelscommander.com
- * Distributed under MIT license
- * http://htmlgl.com
- *
- * Please, take into account:
- * - updateTexture is expensive
- * - updateTransform is cheap
- */
-
-import IGLRenderer from '../renderers/IGLRenderer';
-import { GLContext, getCurrentContext } from '../GLContext';
-import { BoundingRect, TransformObject } from '../types';
+import {GLContext, getCurrentContext} from '../GLContext';
+import {BoundingRect, TransformObject} from '../types';
 import GLObserver from './GLObserver';
 import * as updaters from './updaters';
 import * as helpers from './helpers';
-import constants from '../constants';
 import * as utils from '../utils/';
 import GLAttributesProcessor from './GLAttributesProcessor';
 import * as ImagesLoaded from '../utils/images-loaded';
-
-const JQ_PLUGIN_NAME = 'htmlgl';
+import {getGLParent, isGLNode} from "./helpers";
+import {
+    GL_ELEMENT_PROPERTY_NAME,
+    GL_RENDERER_ATTRIBUTE_NAME,
+    GL_RENDERER_ATTRIBUTE_VALUE,
+} from "../constants";
+import debounce from 'awesome-debounce-promise';
 
 export class GLElement {
     public settings: any = {};
-
     public context: GLContext;
-    public node:HTMLElement;
+    public node: HTMLElement;
     public parent: GLElement;
     public observer: GLObserver;
-
     public displayObject: any;
     public opacity: number;
     public scale: number;
+    public ready: boolean = false;
     public boundingRect: BoundingRect = new BoundingRect();
     public transformObject: TransformObject = new TransformObject();
     private isChanged: boolean = false;
     private rasterizing: boolean = false;
     private updaters = updaters;
     private attributesProcessor: GLAttributesProcessor;
-
     private shader: string;
 
     constructor(node, settings: any) {
         if (!node) throw('HTML node is not specified for GLElement');
 
-        this.scale = this.settings.scale || constants.GL_SCALE;
-
-        this.context = getCurrentContext();
-
         this.setNode(node);
+        this.context = getCurrentContext();
+        this.context.elements.push(this);
         this.observer = new GLObserver(this);
-        this.displayObject = this.context.renderer.createDisplayObject(this);
-        this.initParent();
-
-        //Debouncing rendering
-        this.updateTexture = utils.debounce(this.updateTexture, 500, false);
-
         this.attributesProcessor = new GLAttributesProcessor(this);
-        this.updateTimeInShader = this.updateTimeInShader.bind(this);
+        this.displayObject = this.context.renderer.createDisplayObject(this);
 
-        //Initial update
+        this.initParent();
+        this.init();
+
+        //this.updateTexture = utils.debounce(this.updateTexture, 500, false);
+    }
+
+    init = () => {
         // @ts-ignore
         new ImagesLoaded(this.node).then(() => {
                 //Children should be processed before rendering to know which nodes to igonre when rasterizing
@@ -69,25 +57,17 @@ export class GLElement {
                     GLElement.processChildren(child, this);
                 });
 
-                //console.log('Images ready', this.node);
                 this.update('boundingRect');
                 this.update('updateStyles');
 
-                //console.log('Updating texture for ', this.node);
-                var updateTexturePromise = this.update('texture');
-
-                updateTexturePromise.then(() => {
-                    console.log(1);
+                this.updateTexture().then(() => {
+                    this.ready = true;
                     if (this.settings.oninitialized && this.settings.oninitialized instanceof Function) {
                         this.settings.oninitialized.apply(this);
                     }
                 });
             }
-        )
-
-        this.syncTransform();
-
-        getCurrentContext().elements.push(this);
+        );
     }
 
     addChild(glElement) {
@@ -101,19 +81,17 @@ export class GLElement {
 
     setNode(node) {
         this.node = node;
-        node[constants.GL_ELEMENT_PROPERTY_NAME] = this;
-        node.setAttribute(constants.GL_RENDERER_ATTRIBUTE_NAME, constants.GL_RENDERER_ATTRIBUTE_VALUE);
+        node[GL_ELEMENT_PROPERTY_NAME] = this;
+        node.setAttribute(GL_RENDERER_ATTRIBUTE_NAME, GL_RENDERER_ATTRIBUTE_VALUE);
+        this.hideDOM();
     }
 
     hideDOM() {
-        if (this.node.style.opacity !== "0") {
-            this.node.style.opacity = "0";
-            // this.node.style.visibility = 'hidden';
-        }
+        this.node.style.opacity = "0";
     }
 
     initParent() {
-        this.parent = helpers.getGLParent(this);
+        this.parent = getGLParent(this.node);
         if (this.parent) {
             this.parent.addChild(this);
         } else {
@@ -124,8 +102,7 @@ export class GLElement {
     markAsChanged() {
         this.isChanged = true;
         requestAnimationFrame(this.syncTransform);
-
-        //getCurrentContext().renderer.markStageAsChanged();
+        getCurrentContext().renderer.markStageAsChanged();
     }
 
     syncTransform = () => {
@@ -133,8 +110,8 @@ export class GLElement {
 
             //Composing element page coordinates with transforms
             var composedTransform = {
-                translateX: this.transformObject.translateX + this.boundingRect.left,
-                translateY: this.transformObject.translateY + this.boundingRect.top,
+                translateX: this.transformObject.translateX,
+                translateY: this.transformObject.translateY,
                 translateZ: this.transformObject.translateZ,
                 scaleX: this.transformObject.scaleX,
                 scaleY: this.transformObject.scaleY,
@@ -160,40 +137,48 @@ export class GLElement {
 
     update(updaterName, styleObject?) {
         if (this.updaters[updaterName]) {
-
-            console.log('Updating ' + updaterName + ' on ' + this.node.tagName + '-' + (this.node.id + this.node.className));
+            //console.log('Updating ' + updaterName + ' on ' + this.node.tagName + '-' + (this.node.id + this.node.className));
             return this.updaters[updaterName].apply(this, [styleObject]);
         }
     }
 
-    updateTexture() {
-        return this.update('texture');
-    }
-
-    onTextureRendered(imageData) {
-        this.context.renderer.setTexture(this, imageData);
-        this.rasterizing = false;
-        this.hideDOM();
-        console.log('Finished rendering', this.node);
-    }
-
-    setShader(shaderCode) {
-        if (!shaderCode || !shaderCode.length) {
-            this.context.renderer.setShader(this, null);
-            this.shader = null;
+    updateTexture = debounce((): Promise<ImageData | void> => {
+        if (!this.rasterizing) {
+            console.log('Updating texture', this.node);
+            this.update('boundingRect');
+            this.update('updateStyles');
+            this.rasterizing = true;
+            return new Promise(resolve => this.context.rasterizer(this).then(this.onTextureRendered).then(resolve));
         } else {
-            this.context.renderer.setShader(this, shaderCode);
-            this.shader = shaderCode;
-            this.updateTimeInShader();
+            return Promise.resolve();
+        }
+    }, 500)
+
+    onTextureRendered = (imageData?: ImageData) => {
+        if (imageData) {
+            this.rasterizing = false;
+            this.context.renderer.setTexture(this, imageData);
+            console.log('Finished rendering', this.node);
         }
     }
 
-    updateTimeInShader() {
+    setShader(shaderCode: string) {
+        if (!shaderCode || !shaderCode.length) {
+            this.shader = null;
+            this.context.renderer.setShader(this, null);
+        } else {
+            this.shader = shaderCode;
+            this.context.renderer.setShader(this, shaderCode);
+            //this.updateTimeInShader();
+        }
+    }
+
+    /*updateTimeInShader() {
         if (this.shader) {
             requestAnimationFrame(this.updateTimeInShader);
             this.context.renderer.updateUniform(this, 'uTime', performance.now());
         }
-    }
+    }*/
 
     static processChildren(node, rootGLElement) {
         if (!utils.isHTMLNode(node)) {
@@ -231,56 +216,26 @@ export class GLElement {
     }
 }
 
-class GLHTMLElement extends HTMLDivElement {
-    attachedCallback () {
+class GLHTMLElement extends HTMLElement {
+    static get observedAttributes() {
+        return ['shader'];
+    }
+
+    connectedCallback() {
+        this.style.display = "block";
         new GLElement(this, {
-            heavyDiff: true,
+            heavyDiff: false,
         });
     }
 
-    attributeChangedCallback(attributeName, data, value) {
-        if (this[constants.GL_ELEMENT_PROPERTY_NAME] && this[constants.GL_ELEMENT_PROPERTY_NAME].attributesProcessor) {
-            this[constants.GL_ELEMENT_PROPERTY_NAME].attributesProcessor.process(attributeName, value);
+    attributeChangedCallback(attributeName, oldValue, newValue) {
+        if (this[GL_ELEMENT_PROPERTY_NAME] && this[GL_ELEMENT_PROPERTY_NAME].attributesProcessor) {
+            this[GL_ELEMENT_PROPERTY_NAME].attributesProcessor.process(attributeName, newValue);
         }
     }
 }
 
-//Wrap to jQuery plugin
-const jQuery = (<any>window).jQuery;
-if (jQuery !== undefined) {
-    jQuery[JQ_PLUGIN_NAME] = {};
-    jQuery[JQ_PLUGIN_NAME].elements = [];
-
-    jQuery.fn[JQ_PLUGIN_NAME] = function () {
-        return this.each(function () {
-            if (!jQuery.data(this, 'plugin_' + JQ_PLUGIN_NAME)) {
-                var htmlGLobj = new GLElement(this, {
-                    heavyDiff: true,
-                });
-
-                jQuery.data(this, 'plugin_' + JQ_PLUGIN_NAME, htmlGLobj);
-                jQuery[JQ_PLUGIN_NAME].elements.push(htmlGLobj);
-            }
-        });
-    };
-}
-
 // @ts-ignore
-document.registerElement('html-gl', {
-    prototype: GLHTMLElement.prototype
-})
-
-// Here for testing purposes
-var GLHTMLElementOld = Object.create(HTMLElement.prototype);
-
-GLHTMLElementOld.attachedCallback = function () {
-    this.style.opacity = 0;
-    this.style.visibility = "hidden";
-}
-
-// @ts-ignore
-document.registerElement('old-html-gl', {
-    prototype: GLHTMLElementOld
-})
+customElements.define('html-gl', GLHTMLElement);
 
 export default GLElement;

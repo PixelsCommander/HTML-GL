@@ -29,6 +29,10 @@ export class GLObserver {
     onDOMChanged(mutations) {
         //console.log('DOM changed', mutations);
 
+        if (!this.glElement.ready) {
+            return;
+        }
+
         //If there are style mutations
         if (mutations.filter(helpers.isStyleMutation).length) {
 

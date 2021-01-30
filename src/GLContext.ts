@@ -1,9 +1,3 @@
-/*
- * This is a part of HTML GL library
- * Copyright (c) 2016 http://pixelscommander.com
- * Distributed under MIT license
- * http://htmlgl.com
- */
 
 import GLElement from './gl-element/GLElement';
 import IGLRenderer from './renderers/IGLRenderer';
@@ -35,8 +29,8 @@ export class GLContext {
 
         this.shouldCreateStage = shouldCreateStage;
 
-        this.setRenderer(renderer);
-        this.setRasterizer(rasterizer);
+        this.renderer = new renderer();
+        this.rasterizer = rasterizer;
 
         // @ts-ignore
         utils.waitForDocumentLoaded()
@@ -47,28 +41,12 @@ export class GLContext {
         this.interactionController = new GLInteractionController(document.body);
     }
 
-    setRasterizer(rasterizer) {
-        this.rasterizer = rasterizer;
-    }
-
-    setRenderer(Renderer) {
-        this.renderer = new Renderer();
-    }
-
     getPixelRatio() {
         return (<any>window).devicePixelRatio || 1;
     }
 
     createElement(node, settings) {
         return new GLElement(node, settings);
-    }
-
-    disable() {
-        this.enabled = true;
-    }
-
-    enable() {
-        this.enabled = false;
     }
 }
 

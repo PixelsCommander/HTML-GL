@@ -1,12 +1,6 @@
-/*
- * GLElementHelper is a part of HTML GL library
- * Copyright (c) 2016 http://pixelscommander.com
- * Distributed under MIT license
- * http://htmlgl.com
- */
-
-import constants from '../constants';
 import * as utils from '../utils/index';
+import {GL_ELEMENT_PROPERTY_NAME} from "../constants";
+import GLElement from "./GLElement";
 
 export function isStyleMutation(mutation) {
     if (mutation.attributeName === 'style') {
@@ -23,22 +17,22 @@ export function shouldBeGLNode(node) {
     }
 }
 
-export function isGLNode(node) {
-    return node[constants.GL_ELEMENT_PROPERTY_NAME];
+export function isGLNode(node): boolean {
+    return node[GL_ELEMENT_PROPERTY_NAME];
 }
 
-export function getGLElement(node) {
-    return node[constants.GL_ELEMENT_PROPERTY_NAME];
+export function getGLElement(node): GLElement {
+    return node[GL_ELEMENT_PROPERTY_NAME];
 }
 
-export function getGLParent(glElement) {
-    var parent = glElement.node || glElement;
+export function getGLParent(glElement: Node): GLElement {
+    let parent = glElement;
 
     while (parent) {
-        parent = parent.parentNode || parent.defaultView.frameElement;
+        parent = parent.parentNode || parent.ownerDocument;
 
-        if (parent && parent[constants.GL_ELEMENT_PROPERTY_NAME]) {
-            return parent[constants.GL_ELEMENT_PROPERTY_NAME];
+        if (parent && parent[GL_ELEMENT_PROPERTY_NAME]) {
+            return parent[GL_ELEMENT_PROPERTY_NAME];
         } else if (parent === window.document) {
             return null;
         }
@@ -52,8 +46,8 @@ export function getGLRoot(glElement) {
     while (parent) {
         parent = parent.parentNode || parent.defaultView.frameElement;
 
-        if (parent && parent[constants.GL_ELEMENT_PROPERTY_NAME]) {
-            result = parent[constants.GL_ELEMENT_PROPERTY_NAME];
+        if (parent && parent[GL_ELEMENT_PROPERTY_NAME]) {
+            result = parent[GL_ELEMENT_PROPERTY_NAME];
         }
     }
 
