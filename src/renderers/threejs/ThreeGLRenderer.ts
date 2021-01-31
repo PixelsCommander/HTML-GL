@@ -17,34 +17,40 @@ export class ThreeGLRenderer implements IGLRenderer {
     }
 
     createDisplayObject(glElement) {
-        //this.disposeDisplayObject(glElement);
-
         //Creating container
         glElement.displayObject = new THREE.Object3D();
         glElement.displayObject.name = glElement.node.tagName + '_' + (glElement.node.id || glElement.node.className);
 
         //Creating plane
         var geometry = new THREE.PlaneGeometry(0, 0);
-        var material = new THREE.MeshBasicMaterial({
+        var material = new THREE.MeshPhongMaterial({
             color: 0xffffff,
             specular: 0xffffff,
         });
         material.transparent = true;
         material.depthTest = false;
 
+
         glElement.sprite = new THREE.Mesh(geometry, material);
         glElement.sprite.glElement = glElement;
         glElement.displayObject.add(glElement.sprite);
+        glElement.sprite.castShadow = false;
+
+
 
         this.sprites.push(glElement.sprite);
-
-        glElement.sprite.castShadow = true;
 
         return glElement.displayObject;
     }
 
     disposeDisplayObject(glElement) {
         if (glElement.displayObject) {
+
+            const index = this.sprites.indexOf(glElement.sprite);
+            if (index > -1) {
+                this.sprites.splice(index, 1);
+            }
+
             const object = glElement.displayObject;
             object.geometry?.dispose();
             object.material?.dispose();
@@ -77,7 +83,7 @@ export class ThreeGLRenderer implements IGLRenderer {
                 map: texture,
                 width,
                 height,
-                //transparentize: true,
+                transparentize: glElement.settings.transparentize,
             });
             glElement.sprite.material.transparent = true;
         }

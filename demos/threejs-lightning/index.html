@@ -184,12 +184,6 @@
                 }
             });
 
-            var ambientLight = new THREE.AmbientLight(0xffffff);
-            ambientLight.intensity = 1;
-            ambientLight.position.z = 100;
-            ambientLight.position.y = 50;
-            HTMLGL.document.add(ambientLight);
-
             var spotLight = new THREE.SpotLight();
             spotLight.position.z = 100;
             spotLight.position.x = window.innerWidth / 2;

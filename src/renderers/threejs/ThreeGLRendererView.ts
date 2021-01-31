@@ -4,7 +4,7 @@ import {getCurrentContext} from '../../GLContext';
 import {IGLRenderer} from '../IGLRenderer';
 import {IGLRendererView} from '../IGLRendererView';
 import {Vec2} from '../../types';
-import { debounce } from "debounce";
+import {debounce} from "debounce";
 
 class ThreeGLRendererView implements IGLRendererView {
 
@@ -53,7 +53,7 @@ class ThreeGLRendererView implements IGLRendererView {
         document.body.appendChild(this.engineRenderer.domElement);
     }
 
-    resize = () => {
+    resize = (event?) => {
         console.log('Resized');
         var self = this,
             pixelRatio = getCurrentContext().getPixelRatio(),
@@ -77,16 +77,16 @@ class ThreeGLRendererView implements IGLRendererView {
         this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
 
-        if (this.engineRenderer.domElement.parentNode) { //No need to update textures when is not mounted yet
+        //If comes from event listener and has parent
+        if (event && this.engineRenderer.domElement.parentNode) {
             this.updateTextures();
         }
 
         this.updateElementsPositions();
-        //this.renderer.markStageAsChanged();
+        this.renderer.markStageAsChanged();
     }
 
     initListeners() {
-        //window listeners
         document.addEventListener('scroll', this.updateScrollPosition.bind(this));
         window.addEventListener('resize', debounce(this.resize, 500));
         window.addEventListener('resize', this.updateElementsPositions.bind(this));
@@ -120,7 +120,7 @@ class ThreeGLRendererView implements IGLRendererView {
         getCurrentContext().scrollX = scrollOffset.x;
         getCurrentContext().scrollY = scrollOffset.y;
 
-        //this.markStageAsChanged();
+        this.renderer.markStageAsChanged();
     }
 
     createDocument() {
@@ -137,12 +137,8 @@ class ThreeGLRendererView implements IGLRendererView {
         // Is here for compatibility reasons with PIXI renderer
         (<any>window).scene = getCurrentContext().scene = this.scene = new THREE.Scene();
         this.scene.add(this.document);
-
-        /* var directionalLight = new THREE.DirectionalLight( 0xffffff, 1.5 );
-        directionalLight.position.z = 100;
-        this.scene.add( directionalLight );
-        directionalLight.target = HTMLGL.document; */
-
+        var ambientLight = new THREE.AmbientLight(0xffffff);
+        this.document.add(ambientLight);
         this.renderer.registerScene(this.scene, this.camera);
         this.updateScrollPosition();
     }

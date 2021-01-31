@@ -12,7 +12,7 @@ import {
     GL_RENDERER_ATTRIBUTE_NAME,
     GL_RENDERER_ATTRIBUTE_VALUE,
 } from "../constants";
-import debounce from 'awesome-debounce-promise';
+import * as debounce from 'debounce-promise';
 
 export class GLElement {
     public settings: any = {};
@@ -44,7 +44,6 @@ export class GLElement {
 
         this.initParent();
         this.init();
-
         //this.updateTexture = utils.debounce(this.updateTexture, 500, false);
     }
 
@@ -57,10 +56,11 @@ export class GLElement {
                     GLElement.processChildren(child, this);
                 });
 
-                this.update('boundingRect');
-                this.update('updateStyles');
+                //this.update('updateStyles');
+                //this.update('boundingRect');
 
                 this.updateTexture().then(() => {
+                    this.hideDOM();
                     this.ready = true;
                     if (this.settings.oninitialized && this.settings.oninitialized instanceof Function) {
                         this.settings.oninitialized.apply(this);
@@ -83,7 +83,6 @@ export class GLElement {
         this.node = node;
         node[GL_ELEMENT_PROPERTY_NAME] = this;
         node.setAttribute(GL_RENDERER_ATTRIBUTE_NAME, GL_RENDERER_ATTRIBUTE_VALUE);
-        this.hideDOM();
     }
 
     hideDOM() {

@@ -205,6 +205,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     fragColor = vec4(col, texture( iChannel0, myuv ).a + max(max(col.r, col.g),col.b));
 }
+
+
         </script>
         <script>
             const shader = document.getElementById("shader").textContent;
