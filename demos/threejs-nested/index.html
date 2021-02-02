@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <title>HTML GL nested content</title>
+    <meta name="viewport" content="width=1024 maximum-scale=1.0 minimum-scale=1.0 initial-scale=1.0, user-scalable=no"/>
+    <script>
+        window.devicePixelRatio = 2;
+    </script>
+    <script src="../../node_modules/three/build/three.min.js"></script>
+    <script src="../../dist/html-gl.js"></script>
+</head>
+<body>
+<div class="content_wrapper">
+    <h1>MENU RENDERED IN DOM</h1>
+    <nav class="top_nav">
+        <ul class="menu expanded">
+            <li><a target="_blank"
+                   href="http://pixelscommander.com/en/web-applications-performance/render-html-css-in-webgl-to-get-highest-performance-possibl/">ABOUT
+                HTML-GL</a></li>
+            <li><a target="_blank" href="https://github.com/PixelsCommander/HTML-GL">GITHUB REPO</a></li>
+            <li><a target="_blank" href="https://github.com/PixelsCommander/HTML-GL/archive/master.zip">DOWNLOAD</a>
+            </li>
+        </ul>
+        <html-gl>
+            <ul class="submenu">
+                <html-gl>
+                    <li>MOVIES</li>
+                </html-gl>
+                <html-gl>
+                    <li>TV</li>
+                </html-gl>
+                <html-gl>
+                    <li>KIDS</li>
+                </html-gl>
+            </ul>
+        </html-gl>
+
+    </nav>
+    <section class="broadcasts_list">
+        <h1>SLIDER BELOW IS RENDERED IN WEBGL, DRAG IT</h1>
+        <html-gl id="slider" class="horizontal_carusel">
+            <html-gl class="item">
+                <li class="broadcast" onclick="alert('Clicked Argo')">
+                    <div class="image_background"></div>
+                    <img src="./pic/boxes/box_argo.png" width="186px" height="270px">
+
+                    <p>
+                        Select me with DevTools
+                    </p>
+
+                    <p>
+                        <img src="./assets/img/imdb.png" width="52px" height="24px">
+                        <span>7.8<span>/10</span></span>
+                    </p>
+                </li>
+            </html-gl>
+            <li class="broadcast" onclick="alert('Clicked Avatar')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_avatar.png" width="186px" height="270px">
+
+                <p>
+                    Change me in DevTools
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>8.0<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Clicked Breaking Bad')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_breaking_bad.png" width="186px" height="270px">
+
+                <p>
+                    Breaking bad
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>9.6<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Quantum of solace')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
+
+                <p>
+                    Quantum of solace
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>6.7<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Quantum of solace')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
+
+                <p>
+                    Quantum of solace
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>7.4<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Quantum of solace')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
+
+                <p>
+                    Quantum of solace
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>7.4<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Quantum of solace')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
+
+                <p>
+                    Quantum of solace
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>7.4<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Quantum of solace')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
+
+                <p>
+                    Quantum of solace
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>7.4<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Quantum of solace')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
+
+                <p>
+                    Quantum of solace
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>7.4<span>/10</span></span>
+                </p>
+            </li>
+            <li class="broadcast" onclick="alert('Quantum of solace')">
+                <div class="image_background"></div>
+                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
+
+                <p>
+                    Quantum of solace
+                </p>
+
+                <p>
+                    <img src="./assets/img/imdb.png" width="52px" height="24px">
+                    <span>7.4<span>/10</span></span>
+                </p>
+            </li>
+        </html-gl>
+    </section>
+</div>
+<script src="./js/slider.js"></script>
+<script>
+    Array.from(document.getElementsByClassName('item')).forEach(node => {
+        node.addEventListener('mouseenter', onOver);
+        node.addEventListener('mouseleave', onLeave);
+    });
+
+    function onLeave(e) {
+        e.target.setAttribute('shader', ``);
+    }
+
+    function onOver(e) {
+        e.target.setAttribute('shader', `void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+\t// distance from center of image, used to adjust blur
+\tvec2 uv = fragCoord.xy / iResolution.xy;
+\tfloat d = length(uv - vec2(0.5,0.5));
+
+\t// blur amount
+\tfloat blur = 0.02;
+\tblur = (1.0 + sin(iTime*6.0)) * 0.5;
+\tblur *= 1.0 + sin(iTime*16.0) * 0.5;
+\tblur = pow(blur, 3.0);
+\tblur *= 0.05;
+\t// reduce blur towards center
+\tblur *= d;
+
+    float myTime = iTime * 1.0;
+
+   //fragColor = texture( iChannel0, vec2(uv.x + sin( (uv.y + sin(myTime)) * abs(sin(myTime) + sin(2.0 * myTime) + sin(0.3 * myTime) + sin(1.4 * myTime) + cos(0.7 * myTime) + cos(1.3 * myTime)) * 4.0 ) * 0.02,uv.y) );
+
+    vec2 myuv =  vec2(uv.x + sin( (uv.y + sin(myTime)) * abs(sin(myTime) + sin(2.0 * myTime) + sin(0.3 * myTime) + sin(1.4 * myTime) + cos(0.7 * myTime) + cos(1.3 * myTime)) * 4.0 ) * 0.02,uv.y) ;
+
+\t// final color
+    vec3 col;
+    col.r = texture( iChannel0, vec2(myuv.x+blur,myuv.y) ).r;
+    col.g = texture( iChannel0, myuv ).g;
+    col.b = texture( iChannel0, vec2(myuv.x-blur,myuv.y) ).b;
+
+\t// scanline
+\tfloat scanline = sin(fragCoord.y * iResolution.y / 4.) * 0.08;
+\tcol -= scanline;
+
+\t// vignette
+\tcol *= 1.0 - d * 0.5;
+
+    fragColor = vec4(col, texture( iChannel0, myuv ).a + max(max(col.r, col.g),col.b));
+}`)
+    }
+</script>
+</body>
+</html>

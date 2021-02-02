@@ -1,10 +1,3 @@
-/*
- * GLObserver is a part of HTML GL library listening for DOM / styles changes and transitions on HTML element
- * Copyright (c) 2016 http://pixelscommander.com
- * Distributed under MIT license
- * http://htmlgl.com
- */
-
 import GLMutationObserver from './observers/GLMutationObserver';
 import GLStyleObserver from './observers/GLStyleObserver';
 import * as helpers from './helpers';

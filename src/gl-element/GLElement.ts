@@ -144,8 +144,8 @@ export class GLElement {
     updateTexture = debounce((): Promise<ImageData | void> => {
         if (!this.rasterizing) {
             console.log('Updating texture', this.node);
+            this.markAsChanged();
             this.update('boundingRect');
-            this.update('updateStyles');
             this.rasterizing = true;
             return new Promise(resolve => this.context.rasterizer(this).then(this.onTextureRendered).then(resolve));
         } else {
@@ -155,6 +155,7 @@ export class GLElement {
 
     onTextureRendered = (imageData?: ImageData) => {
         if (imageData) {
+            this.update('updateStyles');
             this.rasterizing = false;
             this.context.renderer.setTexture(this, imageData);
             console.log('Finished rendering', this.node);
@@ -168,7 +169,6 @@ export class GLElement {
         } else {
             this.shader = shaderCode;
             this.context.renderer.setShader(this, shaderCode);
-            //this.updateTimeInShader();
         }
     }
 
@@ -221,7 +221,7 @@ class GLHTMLElement extends HTMLElement {
     }
 
     connectedCallback() {
-        this.style.display = "block";
+        this.style.display = "inline-block";
         new GLElement(this, {
             heavyDiff: false,
         });

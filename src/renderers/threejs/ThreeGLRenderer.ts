@@ -23,20 +23,12 @@ export class ThreeGLRenderer implements IGLRenderer {
 
         //Creating plane
         var geometry = new THREE.PlaneGeometry(0, 0);
-        var material = new THREE.MeshPhongMaterial({
-            color: 0xffffff,
-            specular: 0xffffff,
-        });
-        material.transparent = true;
-        material.depthTest = false;
-
+        var material = createDefaultMaterial();
 
         glElement.sprite = new THREE.Mesh(geometry, material);
         glElement.sprite.glElement = glElement;
         glElement.displayObject.add(glElement.sprite);
         glElement.sprite.castShadow = false;
-
-
 
         this.sprites.push(glElement.sprite);
 
@@ -59,7 +51,16 @@ export class ThreeGLRenderer implements IGLRenderer {
     }
 
     // imageData is a HTMLCanvas instance or HTMLImage
-    setTexture(glElement, imageData) {
+    setTexture(glElement, imageData?) {
+        let texture = glElement.sprite.material.map;
+
+        if (imageData) {
+            texture = new THREE.Texture(imageData);
+            texture.needsUpdate = true;
+            texture.minFilter = THREE.LinearMipMapNearestFilter;
+            texture.anisotropy = 16;
+        }
+
         glElement.sprite.geometry.dispose();
         glElement.sprite.material.dispose();
 
@@ -69,15 +70,9 @@ export class ThreeGLRenderer implements IGLRenderer {
         geometry.translate(width / 2, -height / 2, 0);
 
         glElement.sprite.geometry = geometry;
-
-        var texture = new THREE.Texture(imageData);
-        texture.needsUpdate = true;
-        texture.minFilter = THREE.LinearMipMapNearestFilter;
-        texture.anisotropy = 16;
-
         glElement.sprite.material.map = texture;
 
-        if (glElement.shader) {
+        if (glElement.shader && !(glElement.sprite.material instanceof ShaderToyMaterial)) {
             glElement.sprite.material?.dispose();
             glElement.sprite.material = new ShaderToyMaterial(glElement.shader, {
                 map: texture,
@@ -85,7 +80,11 @@ export class ThreeGLRenderer implements IGLRenderer {
                 height,
                 transparentize: glElement.settings.transparentize,
             });
+            glElement.sprite.material.map = texture;
             glElement.sprite.material.transparent = true;
+        } else if (!glElement.shader && glElement.sprite.material instanceof ShaderToyMaterial) {
+            glElement.sprite.material = createDefaultMaterial();
+            glElement.sprite.material.map = texture;
         }
     }
 
@@ -109,7 +108,8 @@ export class ThreeGLRenderer implements IGLRenderer {
 
     setShader(glElement, shaderCode) {
         //this.createDisplayObject(glElement);
-        glElement.updateTexture();
+        //glElement.updateTexture();
+        this.setTexture(glElement);
         console.log('SET SHADER');
     }
 
@@ -184,3 +184,13 @@ export class ThreeGLRenderer implements IGLRenderer {
 }
 
 export default ThreeGLRenderer;
+
+function createDefaultMaterial() {
+    var material = new THREE.MeshPhongMaterial({
+        color: 0xffffff,
+        specular: 0xffffff,
+    });
+    material.transparent = true;
+    material.depthTest = false;
+    return material;
+}

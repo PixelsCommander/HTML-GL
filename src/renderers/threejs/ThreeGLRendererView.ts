@@ -157,9 +157,11 @@ class ThreeGLRendererView implements IGLRendererView {
 
     updateElementsPositions() {
         getCurrentContext().elements.forEach(function (element) {
-            element.update('boundingRect');
-            //element.updatePivot();
-            element.update('transform');
+            if (element.ready) {
+                element.update('boundingRect');
+                //element.updatePivot();
+                element.update('transform');
+            }
         });
     }
 }
