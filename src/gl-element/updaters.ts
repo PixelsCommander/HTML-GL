@@ -1,6 +1,5 @@
 import * as helpers from './helpers';
 import { getCurrentContext } from '../GLContext';
-import { diff } from 'deep-object-diff';
 import GLElement from "./GLElement";
 
 module.exports = {
@@ -41,8 +40,8 @@ module.exports = {
         };
 
         if (this.parent && this.parent.boundingRect) {
-            this.boundingRect.left -= this.parent.boundingRect.left;
-            this.boundingRect.top -= this.parent.boundingRect.top;
+            this.boundingRect.left -= this.parent.boundingRect.left + this.parent.transformObject.translateX;
+            this.boundingRect.top -= this.parent.boundingRect.top + this.parent.transformObject.translateY;
         }
 
         if (Object.keys(this.transformObject).length) {

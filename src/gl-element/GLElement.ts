@@ -142,7 +142,7 @@ export class GLElement {
     }
 
     updateTexture = debounce((): Promise<ImageData | void> => {
-        if (!this.rasterizing) {
+        if (!this.rasterizing && !this.ready) {
             console.log('Updating texture', this.node);
             this.markAsChanged();
             this.update('boundingRect');

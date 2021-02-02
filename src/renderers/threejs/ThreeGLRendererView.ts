@@ -82,7 +82,7 @@ class ThreeGLRendererView implements IGLRendererView {
             this.updateTextures();
         }
 
-        this.updateElementsPositions();
+        //this.updateElementsPositions();
         this.renderer.markStageAsChanged();
     }
 
@@ -158,9 +158,11 @@ class ThreeGLRendererView implements IGLRendererView {
     updateElementsPositions() {
         getCurrentContext().elements.forEach(function (element) {
             if (element.ready) {
-                element.update('boundingRect');
+
                 //element.updatePivot();
+                element.update('boundingRect');
                 element.update('transform');
+                element.markAsChanged();
             }
         });
     }

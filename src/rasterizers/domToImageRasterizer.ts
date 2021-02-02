@@ -9,14 +9,6 @@ export function rasterize(glElement) {
             style: {
                 transform: null,
                 opacity: 1,
-                //display: 'block'
-            },
-            filter: node => {
-                /*if (node.tagName === 'HTML-GL') {
-                    node.style.visibility = 'hidden';
-                }
-                setTimeout(() => node.style.visibility = 'visible', 0);*/
-                return true;
             }
         }).then(texture => {
             const endTime = Date.now();
