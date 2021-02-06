@@ -54,6 +54,11 @@ export function getGLRoot(glElement) {
     return result;
 }
 
+export function getGLChildren(glElement: GLElement): Array<GLElement> {
+    // @ts-ignore
+    return Array.from(glElement.node.querySelectorAll('html-gl')).map(element => element.GLElement);
+}
+
 export function getTransformObject(glElement) {
     if (glElement.settings && glElement.settings.heavyDiff) {
         return utils.getTransformObjectFromString(glElement.styleObject.transform);

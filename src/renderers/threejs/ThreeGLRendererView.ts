@@ -89,7 +89,10 @@ class ThreeGLRendererView implements IGLRendererView {
     initListeners() {
         document.addEventListener('scroll', this.updateScrollPosition.bind(this));
         window.addEventListener('resize', debounce(this.resize, 500));
-        window.addEventListener('resize', this.updateElementsPositions.bind(this));
+        window.addEventListener('resize', () => {
+            this.updateElementsPositions();
+            this.renderer.redrawStage();
+        });
     }
 
     updateScrollPosition() {

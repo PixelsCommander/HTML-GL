@@ -6,7 +6,7 @@ import * as helpers from './helpers';
 import * as utils from '../utils/';
 import GLAttributesProcessor from './GLAttributesProcessor';
 import * as ImagesLoaded from '../utils/images-loaded';
-import {getGLParent, isGLNode} from "./helpers";
+import {getGLChildren, getGLParent, isGLNode} from "./helpers";
 import {
     GL_ELEMENT_PROPERTY_NAME,
     GL_RENDERER_ATTRIBUTE_NAME,
@@ -31,6 +31,7 @@ export class GLElement {
     private updaters = updaters;
     private attributesProcessor: GLAttributesProcessor;
     private shader: string;
+    private initializationPromise: Promise<void>;
 
     constructor(node, settings: any) {
         if (!node) throw('HTML node is not specified for GLElement');
@@ -48,26 +49,27 @@ export class GLElement {
     }
 
     init = () => {
-        // @ts-ignore
-        new ImagesLoaded(this.node).then(() => {
-                //Children should be processed before rendering to know which nodes to igonre when rasterizing
-                var children = utils.getNodeChildren(this.node);
-                children.forEach((child) => {
-                    GLElement.processChildren(child, this);
+        this.initializationPromise = new Promise(resolve => {
+            // @ts-ignore
+            new ImagesLoaded(this.node).then(() => {
+                    //Children should be processed before rendering to know which nodes to igonre when rasterizing
+                    var children = utils.getNodeChildren(this.node);
+                    children.forEach((child) => {
+                        GLElement.processChildren(child, this);
+                    });
+                }
+            )
+                .then(() => {
+                    return this.updateTexture().then(() => {
+                        this.hideDOM();
+                        this.ready = true;
+                        if (this.settings.oninitialized && this.settings.oninitialized instanceof Function) {
+                            this.settings.oninitialized.apply(this);
+                        }
+                        resolve();
+                    });
                 });
-
-                //this.update('updateStyles');
-                //this.update('boundingRect');
-
-                this.updateTexture().then(() => {
-                    this.hideDOM();
-                    this.ready = true;
-                    if (this.settings.oninitialized && this.settings.oninitialized instanceof Function) {
-                        this.settings.oninitialized.apply(this);
-                    }
-                });
-            }
-        );
+        })
     }
 
     addChild(glElement) {
@@ -86,7 +88,9 @@ export class GLElement {
     }
 
     hideDOM() {
-        this.node.style.opacity = "0";
+        const glChildren = getGLChildren(this);
+        const promises = glChildren.map(child => child.initializationPromise);
+        Promise.all(promises).then(() => setTimeout(() => this.node.style.opacity = "0", 0));
     }
 
     initParent() {
@@ -165,10 +169,10 @@ export class GLElement {
     setShader(shaderCode: string) {
         if (!shaderCode || !shaderCode.length) {
             this.shader = null;
-            this.context.renderer.setShader(this, null);
+            this.ready && this.context.renderer.setShader(this, null);
         } else {
             this.shader = shaderCode;
-            this.context.renderer.setShader(this, shaderCode);
+            this.ready && this.context.renderer.setShader(this, shaderCode);
         }
     }
 
