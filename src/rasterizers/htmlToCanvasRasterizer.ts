@@ -8,6 +8,10 @@ export function rasterize(glElement) {
             width: glElement.boundingRect.width,
             height: glElement.boundingRect.height,
             backgroundColor: null,
+            onclone: (document, element) => {
+                Array.from(document.querySelectorAll('html-gl')).forEach((node: HTMLElement) => node.style.visibility = 'hidden');
+                glElement.node.style.visibility = 'visible';
+            }
         }).then(texture => {
             const endTime = Date.now();
             const interval = endTime - startTime;

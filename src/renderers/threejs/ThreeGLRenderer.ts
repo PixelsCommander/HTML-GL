@@ -110,7 +110,6 @@ export class ThreeGLRenderer implements IGLRenderer {
         //this.createDisplayObject(glElement);
         //glElement.updateTexture();
         this.setTexture(glElement);
-        console.log('SET SHADER');
     }
 
     updateUniform(glElement, uniformName, uniformValue) {

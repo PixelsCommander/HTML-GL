@@ -103,54 +103,41 @@
     }
 
     function onOver(e) {
-        e.target.setAttribute('shader', `const float range = 0.05;
-const float noiseQuality = 250.0;
-const float noiseIntensity = 0.0088;
-const float offsetIntensity = 0.02;
-const float colorOffsetIntensity = 1.3;
-
-float rand(vec2 co)
+        e.target.setAttribute('shader', `void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-}
-
-float verticalBar(float pos, float uvY, float offset)
-{
-    float edge0 = (pos - range);
-    float edge1 = (pos + range);
-
-    float x = smoothstep(edge0, pos, uvY) * offset;
-    x -= smoothstep(pos, edge1, uvY) * offset;
-    return x;
-}
-
-void mainImage( out vec4 fragColor, in vec2 fragCoord )
-{
+\t// distance from center of image, used to adjust blur
 \tvec2 uv = fragCoord.xy / iResolution.xy;
+\tfloat d = length(uv - vec2(0.5,0.5));
 
-    for (float i = 0.0; i < 0.71; i += 0.1313)
-    {
-        float d = mod(iTime * i, 1.7);
-        float o = sin(1.0 - tan(iTime * 0.24 * i));
-    \to *= offsetIntensity;
-        uv.x += verticalBar(d, uv.y, o);
-    }
+\t// blur amount
+\tfloat blur = 0.02;
+\tblur = (1.0 + sin(iTime*6.0)) * 0.5;
+\tblur *= 1.0 + sin(iTime*16.0) * 0.5;
+\tblur = pow(blur, 3.0);
+\tblur *= 0.05;
+\t// reduce blur towards center
+\tblur *= d;
 
-    float uvY = uv.y;
-    uvY *= noiseQuality;
-    uvY = float(int(uvY)) * (1.0 / noiseQuality);
-    float noise = rand(vec2(iTime * 0.00001, uvY));
-    uv.x += noise * noiseIntensity;
+    float myTime = iTime * 1.0;
 
-    vec2 offsetR = vec2(0.006 * sin(iTime), 0.0) * colorOffsetIntensity;
-    vec2 offsetG = vec2(0.0073 * (cos(iTime * 0.97)), 0.0) * colorOffsetIntensity;
+   //fragColor = texture( iChannel0, vec2(uv.x + sin( (uv.y + sin(myTime)) * abs(sin(myTime) + sin(2.0 * myTime) + sin(0.3 * myTime) + sin(1.4 * myTime) + cos(0.7 * myTime) + cos(1.3 * myTime)) * 4.0 ) * 0.02,uv.y) );
 
-    float r = texture(iChannel0, uv + offsetR).r;
-    float g = texture(iChannel0, uv - offsetG).g;
-    float b = texture(iChannel0, uv).b;
+    vec2 myuv =  vec2(uv.x + sin( (uv.y + sin(myTime)) * abs(sin(myTime) + sin(2.0 * myTime) + sin(0.3 * myTime) + sin(1.4 * myTime) + cos(0.7 * myTime) + cos(1.3 * myTime)) * 4.0 ) * 0.02,uv.y) ;
 
-    vec4 tex = vec4(r, g, b, texture(iChannel0, uv).a + max(r, max(g, b)));
-    fragColor = tex;
+\t// final color
+    vec3 col;
+    col.r = texture( iChannel0, vec2(myuv.x+blur,myuv.y) ).r;
+    col.g = texture( iChannel0, myuv ).g;
+    col.b = texture( iChannel0, vec2(myuv.x-blur,myuv.y) ).b;
+
+\t// scanline
+\tfloat scanline = sin(fragCoord.y * iResolution.y / 4.) * 0.08;
+\tcol -= scanline;
+
+\t// vignette
+\tcol *= 1.0 - d * 0.5;
+
+    fragColor = vec4(col, texture( iChannel0, myuv ).a + max(max(col.r, col.g),col.b));
 }`)
     }
 </script>

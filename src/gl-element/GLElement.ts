@@ -14,6 +14,8 @@ import {
 } from "../constants";
 import * as debounce from 'debounce-promise';
 
+const debounceTime = 500;
+
 export class GLElement {
     public settings: any = {};
     public context: GLContext;
@@ -36,6 +38,15 @@ export class GLElement {
     constructor(node, settings: any) {
         if (!node) throw('HTML node is not specified for GLElement');
 
+        if (isGLNode(node)) {
+            throw('The node is already GL rendered');
+            return;
+        }
+
+        if (!node.isConnected) {
+            return;
+        }
+
         this.setNode(node);
         this.context = getCurrentContext();
         this.context.elements.push(this);
@@ -45,7 +56,6 @@ export class GLElement {
 
         this.initParent();
         this.init();
-        //this.updateTexture = utils.debounce(this.updateTexture, 500, false);
     }
 
     init = () => {
@@ -61,12 +71,11 @@ export class GLElement {
             )
                 .then(() => {
                     return this.updateTexture().then(() => {
-                        this.hideDOM();
+                        this.hideDOM(resolve);
                         this.ready = true;
                         if (this.settings.oninitialized && this.settings.oninitialized instanceof Function) {
                             this.settings.oninitialized.apply(this);
                         }
-                        resolve();
                     });
                 });
         })
@@ -87,10 +96,16 @@ export class GLElement {
         node.setAttribute(GL_RENDERER_ATTRIBUTE_NAME, GL_RENDERER_ATTRIBUTE_VALUE);
     }
 
-    hideDOM() {
+    hideDOM(callback?: () => void) {
         const glChildren = getGLChildren(this);
         const promises = glChildren.map(child => child.initializationPromise);
-        Promise.all(promises).then(() => setTimeout(() => this.node.style.opacity = "0", 0));
+        Promise.all(promises).then(() => setTimeout(() => {
+            //console.log("Hide", this.node.className);
+            this.node.style.opacity = "0";
+            if (callback) {
+                callback();
+            }
+        }, debounceTime));
     }
 
     initParent() {
@@ -147,22 +162,24 @@ export class GLElement {
 
     updateTexture = debounce((): Promise<ImageData | void> => {
         if (!this.rasterizing && !this.ready) {
-            console.log('Updating texture', this.node);
+            //console.log('Updating texture', this.node);
             this.markAsChanged();
-            this.update('boundingRect');
+            const promise = new Promise(resolve => this.context.rasterizer(this).then(this.onTextureRendered).then(resolve));
             this.rasterizing = true;
-            return new Promise(resolve => this.context.rasterizer(this).then(this.onTextureRendered).then(resolve));
+            this.update('boundingRect');
+            return promise as Promise<ImageData | void>;
         } else {
             return Promise.resolve();
         }
-    }, 500)
+    }, debounceTime)
 
     onTextureRendered = (imageData?: ImageData) => {
         if (imageData) {
             this.update('updateStyles');
             this.rasterizing = false;
+            this.markAsChanged();
             this.context.renderer.setTexture(this, imageData);
-            console.log('Finished rendering', this.node);
+            //console.log('Finished rendering', this.node);
         }
     }
 
@@ -175,13 +192,6 @@ export class GLElement {
             this.ready && this.context.renderer.setShader(this, shaderCode);
         }
     }
-
-    /*updateTimeInShader() {
-        if (this.shader) {
-            requestAnimationFrame(this.updateTimeInShader);
-            this.context.renderer.updateUniform(this, 'uTime', performance.now());
-        }
-    }*/
 
     static processChildren(node, rootGLElement) {
         if (!utils.isHTMLNode(node)) {
