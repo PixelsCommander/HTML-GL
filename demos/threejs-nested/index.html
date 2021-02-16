@@ -2,176 +2,92 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="./assets/css/style.css">
-    <title>HTML GL nested content</title>
+    <title>HTML GL top paid TV actors</title>
     <meta name="viewport" content="width=1024 maximum-scale=1.0 minimum-scale=1.0 initial-scale=1.0, user-scalable=no"/>
-    <script>
-        window.devicePixelRatio = 2;
-    </script>
     <script src="../../node_modules/three/build/three.min.js"></script>
     <script src="../../dist/html-gl.js"></script>
 </head>
 <body>
+<img class="back" src="./assets/img/oscars.jpg">
 <div class="content_wrapper">
-    <h1>MENU RENDERED IN DOM</h1>
-    <nav class="top_nav">
-        <ul class="menu expanded">
-            <li><a target="_blank"
-                   href="http://pixelscommander.com/en/web-applications-performance/render-html-css-in-webgl-to-get-highest-performance-possibl/">ABOUT
-                HTML-GL</a></li>
-            <li><a target="_blank" href="https://github.com/PixelsCommander/HTML-GL">GITHUB REPO</a></li>
-            <li><a target="_blank" href="https://github.com/PixelsCommander/HTML-GL/archive/master.zip">DOWNLOAD</a>
-            </li>
-        </ul>
-        <html-gl>
-            <ul class="submenu">
-                <html-gl>
-                    <li>MOVIES</li>
-                </html-gl>
-                <html-gl>
-                    <li>TV</li>
-                </html-gl>
-                <html-gl>
-                    <li>KIDS</li>
-                </html-gl>
-            </ul>
-        </html-gl>
-
-    </nav>
+    <h1>Top paid TV actress</h1>
+    <p>This is a sample HTML-GL application.
+        It demonstrates how shaders from Shadertoy.com could be applied to web content.
+        Essentially you set shadertoy code as <i>shader</i> attribute on <i>html-gl</i> tag.</p>
     <section class="broadcasts_list">
-        <h1>SLIDER BELOW IS RENDERED IN WEBGL, DRAG IT</h1>
         <html-gl id="slider" class="horizontal_carusel">
             <html-gl class="item">
-                <li class="broadcast" onclick="alert('Clicked Argo')">
+                <li class="broadcast" onclick="alert('Clicked Roberts')">
                     <div class="image_background"></div>
-                    <img src="./pic/boxes/box_argo.png" width="186px" height="270px">
-
-                    <p>
-                        Select me with DevTools
-                    </p>
-
-                    <p>
-                        <img src="./assets/img/imdb.png" width="52px" height="24px">
-                        <span>7.8<span>/10</span></span>
-                    </p>
+                    <img src="./pic/roberts.jpg" width="186px" height="270px">
+                    <p>Julia Roberts</p>
+                    <p><span>$250 million</span></p>
                 </li>
             </html-gl>
-            <li class="broadcast" onclick="alert('Clicked Avatar')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_avatar.png" width="186px" height="270px">
-
-                <p>
-                    Change me in DevTools
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>8.0<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Clicked Breaking Bad')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_breaking_bad.png" width="186px" height="270px">
-
-                <p>
-                    Breaking bad
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>9.6<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Quantum of solace')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
-
-                <p>
-                    Quantum of solace
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>6.7<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Quantum of solace')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
-
-                <p>
-                    Quantum of solace
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>7.4<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Quantum of solace')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
-
-                <p>
-                    Quantum of solace
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>7.4<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Quantum of solace')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
-
-                <p>
-                    Quantum of solace
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>7.4<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Quantum of solace')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
-
-                <p>
-                    Quantum of solace
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>7.4<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Quantum of solace')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
-
-                <p>
-                    Quantum of solace
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>7.4<span>/10</span></span>
-                </p>
-            </li>
-            <li class="broadcast" onclick="alert('Quantum of solace')">
-                <div class="image_background"></div>
-                <img src="./pic/boxes/box_quantum_of_solace.png" width="186px" height="270px">
-
-                <p>
-                    Quantum of solace
-                </p>
-
-                <p>
-                    <img src="./assets/img/imdb.png" width="52px" height="24px">
-                    <span>7.4<span>/10</span></span>
-                </p>
-            </li>
+            <html-gl class="item">
+                <li class="broadcast" onclick="alert('Clicked Johansson')">
+                    <div class="image_background"></div>
+                    <img src="./pic/johansson.jpg" width="186px" height="270px">
+                    <p>Scarlett Johansson</p>
+                    <p><span>$165 million</span></p>
+                </li>
+            </html-gl>
+            <html-gl class="item">
+                <li class="broadcast" onclick="alert('Clicked Vergara')">
+                    <div class="image_background"></div>
+                    <img src="./pic/vergara.jpg" width="186px" height="270px">
+                    <p>Sofia Vergara</p>
+                    <p><span>180 million</span></p>
+                </li>
+            </html-gl>
+            <html-gl class="item">
+                <li class="broadcast" onclick="alert('Clicked Jolie')">
+                    <div class="image_background"></div>
+                    <img src="./pic/jolie.jpg" width="186px" height="270px">
+                    <p>Angelina Jolie</p>
+                    <p><span>$120 million</span></p>
+                </li>
+            </html-gl>
+            <html-gl class="item">
+                <li class="broadcast" onclick="alert('Clicked Gadot')">
+                    <div class="image_background"></div>
+                    <img src="./pic/gadot.jpg" width="186px" height="270px">
+                    <p>Gal Gadot</p>
+                    <p><span>$31.5 million</span></p>
+                </li>
+            </html-gl>
+            <html-gl class="item">
+                <li class="broadcast" onclick="alert('Clicked McCarthy')">
+                    <div class="image_background"></div>
+                    <img src="./pic/mccarthy.jpg" width="186px" height="270px">
+                    <p>Melissa McCarthy</p>
+                    <p><span>$25 million</span></p>
+                </li>
+            </html-gl>
+            <html-gl class="item">
+                <li class="broadcast" onclick="alert('Clicked Streep')">
+                    <div class="image_background"></div>
+                    <img src="./pic/streep.jpg" width="186px" height="270px">
+                    <p>Meryl Streep</p>
+                    <p><span>$24 million</span></p>
+                </li>
+            </html-gl>
+            <html-gl class="item">
+                <li class="broadcast" onclick="alert('Clicked Johansson')">
+                    <div class="image_background"></div>
+                    <img src="./pic/johansson.jpg" width="186px" height="270px">
+                    <p>Emily Blunt</p>
+                    <p><span>$22.5 million</span></p>
+                </li>
+            </html-gl>
+            <html-gl class="item">
+                <li class="broadcast" onclick="alert('Clicked Kidman')">
+                    <div class="image_background"></div>
+                    <img src="./pic/kidman.jpg" width="186px" height="270px">
+                    <p>Nicole Kidman</p>
+                    <p><span>$22 million</span></p>
+                </li>
+            </html-gl>
         </html-gl>
     </section>
 </div>
@@ -187,41 +103,54 @@
     }
 
     function onOver(e) {
-        e.target.setAttribute('shader', `void mainImage( out vec4 fragColor, in vec2 fragCoord )
+        e.target.setAttribute('shader', `const float range = 0.05;
+const float noiseQuality = 250.0;
+const float noiseIntensity = 0.0088;
+const float offsetIntensity = 0.02;
+const float colorOffsetIntensity = 1.3;
+
+float rand(vec2 co)
 {
-\t// distance from center of image, used to adjust blur
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+float verticalBar(float pos, float uvY, float offset)
+{
+    float edge0 = (pos - range);
+    float edge1 = (pos + range);
+
+    float x = smoothstep(edge0, pos, uvY) * offset;
+    x -= smoothstep(pos, edge1, uvY) * offset;
+    return x;
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
 \tvec2 uv = fragCoord.xy / iResolution.xy;
-\tfloat d = length(uv - vec2(0.5,0.5));
 
-\t// blur amount
-\tfloat blur = 0.02;
-\tblur = (1.0 + sin(iTime*6.0)) * 0.5;
-\tblur *= 1.0 + sin(iTime*16.0) * 0.5;
-\tblur = pow(blur, 3.0);
-\tblur *= 0.05;
-\t// reduce blur towards center
-\tblur *= d;
+    for (float i = 0.0; i < 0.71; i += 0.1313)
+    {
+        float d = mod(iTime * i, 1.7);
+        float o = sin(1.0 - tan(iTime * 0.24 * i));
+    \to *= offsetIntensity;
+        uv.x += verticalBar(d, uv.y, o);
+    }
 
-    float myTime = iTime * 1.0;
+    float uvY = uv.y;
+    uvY *= noiseQuality;
+    uvY = float(int(uvY)) * (1.0 / noiseQuality);
+    float noise = rand(vec2(iTime * 0.00001, uvY));
+    uv.x += noise * noiseIntensity;
 
-   //fragColor = texture( iChannel0, vec2(uv.x + sin( (uv.y + sin(myTime)) * abs(sin(myTime) + sin(2.0 * myTime) + sin(0.3 * myTime) + sin(1.4 * myTime) + cos(0.7 * myTime) + cos(1.3 * myTime)) * 4.0 ) * 0.02,uv.y) );
+    vec2 offsetR = vec2(0.006 * sin(iTime), 0.0) * colorOffsetIntensity;
+    vec2 offsetG = vec2(0.0073 * (cos(iTime * 0.97)), 0.0) * colorOffsetIntensity;
 
-    vec2 myuv =  vec2(uv.x + sin( (uv.y + sin(myTime)) * abs(sin(myTime) + sin(2.0 * myTime) + sin(0.3 * myTime) + sin(1.4 * myTime) + cos(0.7 * myTime) + cos(1.3 * myTime)) * 4.0 ) * 0.02,uv.y) ;
+    float r = texture(iChannel0, uv + offsetR).r;
+    float g = texture(iChannel0, uv - offsetG).g;
+    float b = texture(iChannel0, uv).b;
 
-\t// final color
-    vec3 col;
-    col.r = texture( iChannel0, vec2(myuv.x+blur,myuv.y) ).r;
-    col.g = texture( iChannel0, myuv ).g;
-    col.b = texture( iChannel0, vec2(myuv.x-blur,myuv.y) ).b;
-
-\t// scanline
-\tfloat scanline = sin(fragCoord.y * iResolution.y / 4.) * 0.08;
-\tcol -= scanline;
-
-\t// vignette
-\tcol *= 1.0 - d * 0.5;
-
-    fragColor = vec4(col, texture( iChannel0, myuv ).a + max(max(col.r, col.g),col.b));
+    vec4 tex = vec4(r, g, b, texture(iChannel0, uv).a + max(r, max(g, b)));
+    fragColor = tex;
 }`)
     }
 </script>
