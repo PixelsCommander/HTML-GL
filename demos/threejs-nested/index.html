@@ -16,7 +16,7 @@
         Essentially you set shadertoy code as <i>shader</i> attribute on <i>html-gl</i> tag.</p>
     <section class="broadcasts_list">
         <html-gl id="slider" class="horizontal_carusel">
-            <html-gl class="item">
+            <html-gl class="item" transparentize="true">
                 <li class="broadcast" onclick="alert('Clicked Roberts')">
                     <div class="image_background"></div>
                     <img src="./pic/roberts.jpg" width="186px" height="270px">
@@ -24,7 +24,7 @@
                     <p><span>$250 million</span></p>
                 </li>
             </html-gl>
-            <html-gl class="item">
+            <html-gl class="item" transparentize="true">
                 <li class="broadcast" onclick="alert('Clicked Johansson')">
                     <div class="image_background"></div>
                     <img src="./pic/johansson.jpg" width="186px" height="270px">
@@ -32,7 +32,7 @@
                     <p><span>$165 million</span></p>
                 </li>
             </html-gl>
-            <html-gl class="item">
+            <html-gl class="item" transparentize="true">
                 <li class="broadcast" onclick="alert('Clicked Vergara')">
                     <div class="image_background"></div>
                     <img src="./pic/vergara.jpg" width="186px" height="270px">
@@ -40,7 +40,7 @@
                     <p><span>180 million</span></p>
                 </li>
             </html-gl>
-            <html-gl class="item">
+            <html-gl class="item" transparentize="true">
                 <li class="broadcast" onclick="alert('Clicked Jolie')">
                     <div class="image_background"></div>
                     <img src="./pic/jolie.jpg" width="186px" height="270px">
@@ -137,7 +137,7 @@
 \t// vignette
 \tcol *= 1.0 - d * 0.5;
 
-    fragColor = vec4(col, texture( iChannel0, myuv ).a + max(max(col.r, col.g),col.b));
+    fragColor = vec4(col, 1.);
 }`)
     }
 </script>

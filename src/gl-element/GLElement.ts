@@ -16,8 +16,19 @@ import * as debounce from 'debounce-promise';
 
 const debounceTime = 500;
 
+interface GLElementSettings {
+    transparentize: boolean;
+    styleObserverDisabled: boolean;
+    heavyDiff: boolean;
+    onInitialized?: () => void;
+}
+
 export class GLElement {
-    public settings: any = {};
+    public settings: GLElementSettings = {
+        transparentize: false,
+        styleObserverDisabled: false,
+        heavyDiff: false,
+    };
     public context: GLContext;
     public node: HTMLElement;
     public parent: GLElement;
@@ -73,8 +84,8 @@ export class GLElement {
                     return this.updateTexture().then(() => {
                         this.hideDOM(resolve);
                         this.ready = true;
-                        if (this.settings.oninitialized && this.settings.oninitialized instanceof Function) {
-                            this.settings.oninitialized.apply(this);
+                        if (this.settings.onInitialized && this.settings.onInitialized instanceof Function) {
+                            this.settings.onInitialized.apply(this);
                         }
                     });
                 });

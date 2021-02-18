@@ -2473,12 +2473,12 @@ tapable@^0.2.7:
 
 "three-shadertoy-material@https://github.com/PixelsCommander/three-shadertoy-material.git":
   version "1.3.9"
-  resolved "https://github.com/PixelsCommander/three-shadertoy-material.git#5e2d0cecfd189db2bf8109d3ba2c11068d91672a"
+  resolved "https://github.com/PixelsCommander/three-shadertoy-material.git#e6d03ee2936ba49ea1280be30fa9f2511fb9c470"
 
-three@^0.87.1:
-  version "0.87.1"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.87.1.tgz#466a34edc4543459ced9b9d7d276b65216fe2ba8"
-  integrity sha1-Rmo07cRUNFnO2bnX0na2Uhb+K6g=
+three@^0.93.0:
+  version "0.93.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.93.0.tgz#3fd6c367ef4554abbb6e16ad69936283e895c123"
+  integrity sha1-P9bDZ+9FVKu7bhataZNig+iVwSM=
 
 through@~2.3.4:
   version "2.3.8"

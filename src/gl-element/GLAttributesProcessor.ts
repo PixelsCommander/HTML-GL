@@ -13,11 +13,15 @@ export class GLAttributesProcessor {
 
     constructor(glElement) {
         this.glElement = glElement;
+        const attributes = this.glElement.node.getAttributeNames();
+        attributes.forEach(attributeName => this.process(attributeName, this.glElement.node.getAttribute(attributeName)));
     }
 
     process(name, value) {
         if (this[name]) {
             this[name](value);
+        } else {
+            this.glElement.settings[name] = value;
         }
     }
 
