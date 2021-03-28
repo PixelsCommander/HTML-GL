@@ -99,10 +99,14 @@
     });
 
     function onLeave(e) {
-        e.target.setAttribute('shader', ``);
+        console.log('Leave...', e.target.className);
+        if (e.target.className === 'item') {
+            e.target.setAttribute('shader', ``);
+        }
     }
 
     function onOver(e) {
+        console.log('Over...', e.target.className);
         e.target.setAttribute('shader', `void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
 \t// distance from center of image, used to adjust blur
