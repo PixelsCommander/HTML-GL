@@ -1,0 +1,34 @@
+body, html {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    font-family: "Andale Mono";
+    font-size: 24px;
+}
+
+body {
+    padding-top: 80px;
+    box-sizing: border-box;
+}
+
+h1 {
+    padding: 0px 80px 0 80px;
+    box-sizing: border-box;
+    font-size: 60px;
+}
+
+img {
+    width: 100%;
+    padding: 20px 80px 20px 80px;
+    box-sizing: border-box;
+}
+
+p {
+    padding: 0px 80px 40px 80px;
+    box-sizing: border-box;
+}
+
+a {
+    padding: 0px 80px 40px 80px;
+    box-sizing: border-box;
+}

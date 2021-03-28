@@ -48371,6 +48371,20 @@
 	                //console.log('Finished rendering', this.node);
 	            }
 	        };
+	        this.onMouseMove = (e) => {
+	            this.mouseX = e.clientX;
+	            this.mouseY = e.clientY;
+	            this.context.renderer.onMouseMove(this, this.mouseX, this.mouseY);
+	        };
+	        this.onMouseDown = (e) => {
+	            this.context.renderer.onMouseDown(this, this.mouseX, this.mouseY);
+	        };
+	        this.onMouseUp = (e) => {
+	            this.context.renderer.onMouseDown(this, this.mouseX, this.mouseY);
+	        };
+	        this.onMouseClick = (e) => {
+	            this.context.renderer.onMouseClick(this, this.mouseX, this.mouseY);
+	        };
 	        if (!node)
 	            throw ('HTML node is not specified for GLElement');
 	        if (isGLNode(node)) {
@@ -48387,6 +48401,10 @@
 	        this.initParent();
 	        this.init();
 	        this.attributesProcessor = new GLAttributesProcessor(this);
+	        this.node.addEventListener('mousemove', this.onMouseMove);
+	        this.node.addEventListener('mousedown', this.onMouseDown);
+	        this.node.addEventListener('mouseup', this.onMouseUp);
+	        this.node.addEventListener('click', this.onMouseClick);
 	    }
 	    addChild(glElement) {
 	        this.context.renderer.addTo(this, glElement);
@@ -49180,6 +49198,18 @@
 	            this.setTexture(glElement);
 	        }
 	    }
+	    onMouseMove(glElement, x, y) {
+	        updateMouseUniforms(glElement, x, y, 1, 1);
+	    }
+	    onMouseDown(glElement, x, y) {
+	        updateMouseUniforms(glElement, x, y, 1, 1);
+	    }
+	    onMouseUp(glElement, x, y) {
+	        updateMouseUniforms(glElement, x, y, 0, 0);
+	    }
+	    onMouseClick(glElement, x, y) {
+	        updateMouseUniforms(glElement, x, y, 1, 1);
+	    }
 	    updateUniform(glElement, uniformName, uniformValue) {
 	        // TODO
 	    }
@@ -49246,6 +49276,17 @@
 	    });
 	    glElement.sprite.material.map = texture;
 	    glElement.sprite.material.transparent = true;
+	}
+	function updateMouseUniforms(glElement, x, y, z, w) {
+	    if (glElement.shader && glElement.sprite.material instanceof ShaderToyMaterial$1) {
+	        const material = glElement.sprite.material;
+	        const zToSet = z === undefined ? material.uniforms.iMouse.z : z;
+	        const wToSet = w === undefined ? material.uniforms.iMouse.w : w;
+	        material.uniforms.iMouse = {
+	            value: new THREE$1.Vector4(x, y, zToSet, wToSet),
+	        };
+	        //material.uniformsNeedUpdate = true;
+	    }
 	}
 
 	new GLContext(ThreeGLRenderer, rasterize, true);

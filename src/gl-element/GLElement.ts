@@ -44,6 +44,8 @@ export class GLElement {
     private attributesProcessor: GLAttributesProcessor;
     private shader: string;
     private initializationPromise: Promise<void>;
+    private mouseX: number;
+    private mouseY: number;
 
     constructor(node, settings: any) {
         if (!node) throw('HTML node is not specified for GLElement');
@@ -67,6 +69,10 @@ export class GLElement {
         this.init();
 
         this.attributesProcessor = new GLAttributesProcessor(this);
+        this.node.addEventListener('mousemove', this.onMouseMove);
+        this.node.addEventListener('mousedown', this.onMouseDown);
+        this.node.addEventListener('mouseup', this.onMouseUp);
+        this.node.addEventListener('click', this.onMouseClick);
     }
 
     init = () => {
@@ -204,6 +210,24 @@ export class GLElement {
                 this.initializationPromise.then(() => this.context.renderer.setShader(this, shaderCode));
             }
         }
+    }
+
+    onMouseMove = (e:MouseEvent) => {
+        this.mouseX = e.clientX;
+        this.mouseY = e.clientY;
+        this.context.renderer.onMouseMove(this, this.mouseX, this.mouseY);
+    }
+
+    onMouseDown = (e:MouseEvent) => {
+        this.context.renderer.onMouseDown(this, this.mouseX, this.mouseY);
+    }
+
+    onMouseUp = (e:MouseEvent) => {
+        this.context.renderer.onMouseDown(this, this.mouseX, this.mouseY);
+    }
+
+    onMouseClick = (e:MouseEvent) => {
+        this.context.renderer.onMouseClick(this, this.mouseX, this.mouseY);
     }
 
     static processChildren(node, rootGLElement) {

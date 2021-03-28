@@ -14,6 +14,10 @@ export interface IGLRenderer {
     addTo(parentGLElement: GLElement, glElement: GLElement);
     removeFrom(parentGLElement: GLElement, glElement: GLElement);
     nodesAtPoint(x: number, y: number);
+    onMouseMove(glElement: GLElement, x: number, y: number);
+    onMouseDown(glElement: GLElement, x: number, y: number);
+    onMouseUp(glElement: GLElement, x: number, y: number);
+    onMouseClick(glElement: GLElement, x: number, y: number);
     registerScene(sceneArg: any, cameraArg: any);
     redrawLoop();
     redrawStage();

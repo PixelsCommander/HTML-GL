@@ -110,6 +110,22 @@ export class ThreeGLRenderer implements IGLRenderer {
         }
     }
 
+    onMouseMove(glElement, x, y) {
+        updateMouseUniforms(glElement, x, y, 1, 1);
+    }
+
+    onMouseDown(glElement, x, y) {
+        updateMouseUniforms(glElement, x, y, 1, 1);
+    }
+
+    onMouseUp(glElement, x, y) {
+        updateMouseUniforms(glElement, x, y, 0, 0);
+    }
+
+    onMouseClick(glElement, x, y) {
+        updateMouseUniforms(glElement, x, y, 1, 1);
+    }
+
     updateUniform(glElement, uniformName, uniformValue) {
         // TODO
     }
@@ -202,4 +218,18 @@ function setElementShader(glElement, texture, width, height, shader) {
     });
     glElement.sprite.material.map = texture;
     glElement.sprite.material.transparent = true;
+}
+
+function updateMouseUniforms(glElement, x, y, z?, w?) {
+    if (glElement.shader && glElement.sprite.material instanceof ShaderToyMaterial) {
+        const material = glElement.sprite.material as ShaderToyMaterial;
+
+        const zToSet = z === undefined ? material.uniforms.iMouse.z : z;
+        const wToSet = w === undefined ? material.uniforms.iMouse.w : w;
+
+        material.uniforms.iMouse = {
+            value: new THREE.Vector4(x, y, zToSet, wToSet),
+        };
+        //material.uniformsNeedUpdate = true;
+    }
 }
