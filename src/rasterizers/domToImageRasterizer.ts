@@ -1,4 +1,4 @@
-import * as domToImage from 'dom-to-image';
+import  domToImage from 'dom-to-image';
 
 export function rasterize(glElement) {
     return new Promise(resolve => {

@@ -1,4 +1,4 @@
-import * as utils from './utils';
+import { dispatchEvent } from './utils';
 import { getCurrentContext } from './GLContext';
 
 export class GLInteractionController {
@@ -33,7 +33,7 @@ export class GLInteractionController {
             //If it was not there but now is then mouseover
             nodes.forEach((node) => {
                     if (this.oldNodes.indexOf(node) == -1) {
-                    utils.dispatchEvent(node, {
+                    dispatchEvent(node, {
                         type: 'mouseover'
                     });
                 }
@@ -42,14 +42,14 @@ export class GLInteractionController {
             //If it was there but now is not then mouseleave
             this.oldNodes.forEach((node) => {
                     if (nodes.indexOf(node) == -1) {
-                    utils.dispatchEvent(node, {
+                    dispatchEvent(node, {
                         type: 'mouseleave'
                     });
                 }
             });
         } else {
             this.oldNodes.forEach((node) => {
-                utils.dispatchEvent(node, {
+                dispatchEvent(node, {
                     type: 'mouseleave'
                 });
             });
@@ -68,10 +68,10 @@ export class GLInteractionController {
 
         //Emit action event if there is an element under mouse position
         if (nodes.length) {
-            utils.dispatchEvent(nodes[0], event);
+            dispatchEvent(nodes[0], event);
 
             /* nodes.forEach((node) => {
-                utils.dispatchEvent(node, event);
+                dispatchEvent(node, event);
             }); */
         }
 

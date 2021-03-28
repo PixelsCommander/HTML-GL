@@ -6,8 +6,8 @@
  * http://htmlgl.com
  */
 
-import * as utils from '../../utils/index';
-import * as helpers from '../helpers';
+import { } from '../../utils/index';
+import { isGLNode, getGLParent } from '../helpers';
 import GLElement from '../GLElement';
 
 export class GLMutationObserver {
@@ -55,8 +55,8 @@ export class GLMutationObserver {
             }*/
 
             var isMe = mutatedNode == self.node;
-            var isNotGLNode = !helpers.isGLNode(mutatedNode);
-            var iAmGLParent = helpers.getGLParent(mutatedNode) === self.glElement;
+            var isNotGLNode = !isGLNode(mutatedNode);
+            var iAmGLParent = getGLParent(mutatedNode) === self.glElement;
 
             return isMe || (iAmGLParent && isNotGLNode);
         });

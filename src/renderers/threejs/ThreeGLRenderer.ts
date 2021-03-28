@@ -1,9 +1,10 @@
-import * as THREE from 'three';
+import THREE from 'three';
 import IGLRenderer from '../IGLRenderer';
 import {getCurrentContext} from '../../GLContext';
 import ThreeGLRendererView from './ThreeGLRendererView';
-import * as utils from '../../utils';
-import * as ShaderToyMaterial from 'three-shadertoy-material';
+import { isChildOf } from '../../utils';
+
+import  ShaderToyMaterial from 'three-shadertoy-material';
 
 export class ThreeGLRenderer implements IGLRenderer {
     public sprites = [];
@@ -72,19 +73,11 @@ export class ThreeGLRenderer implements IGLRenderer {
         glElement.sprite.geometry = geometry;
         glElement.sprite.material.map = texture;
 
-        if (glElement.shader && !(glElement.sprite.material instanceof ShaderToyMaterial)) {
-            glElement.sprite.material?.dispose();
-            glElement.sprite.material = new ShaderToyMaterial(glElement.shader, {
-                map: texture,
-                width,
-                height,
-                transparentize: glElement.settings.transparentize,
-            });
-            glElement.sprite.material.map = texture;
-            glElement.sprite.material.transparent = true;
-        } else if (!glElement.shader && glElement.sprite.material instanceof ShaderToyMaterial) {
+        if (!glElement.shader && glElement.sprite.material instanceof ShaderToyMaterial) {
             glElement.sprite.material = createDefaultMaterial();
             glElement.sprite.material.map = texture;
+        } else if (glElement.shader && !(glElement.sprite.material instanceof ShaderToyMaterial)) {
+            setElementShader(glElement, texture, width, height, glElement.shader);
         }
     }
 
@@ -107,9 +100,14 @@ export class ThreeGLRenderer implements IGLRenderer {
     }
 
     setShader(glElement, shaderCode) {
-        //this.createDisplayObject(glElement);
-        //glElement.updateTexture();
-        this.setTexture(glElement);
+        let texture = glElement.sprite.material.map;
+        var width = glElement.boundingRect.width;
+        var height = glElement.boundingRect.height;
+        if (shaderCode) {
+            setElementShader(glElement, texture, width, height, shaderCode);
+        } else {
+            this.setTexture(glElement);
+        }
     }
 
     updateUniform(glElement, uniformName, uniformValue) {
@@ -135,7 +133,7 @@ export class ThreeGLRenderer implements IGLRenderer {
 
         getCurrentContext().elements.forEach(function (glelement) {
             node = document.elementFromPoint(x - (glelement.transformObject.translateX || 0), y - (glelement.transformObject.translateY || 0))
-            if (utils.isChildOf(node, glelement)) {
+            if (isChildOf(node, glelement)) {
                 result.push(node);
             }
         });
@@ -192,4 +190,16 @@ function createDefaultMaterial() {
     material.transparent = true;
     material.depthTest = false;
     return material;
+}
+
+function setElementShader(glElement, texture, width, height, shader) {
+    glElement.sprite.material?.dispose();
+    glElement.sprite.material = new ShaderToyMaterial(glElement.shader, {
+        map: texture,
+        width,
+        height,
+        transparentize: glElement.settings.transparentize,
+    });
+    glElement.sprite.material.map = texture;
+    glElement.sprite.material.transparent = true;
 }

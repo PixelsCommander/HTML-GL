@@ -10,7 +10,7 @@
  */
 
 
-var ImagesLoaded = function (element) {
+export var ImagesLoaded = function (element) {
     return new Promise((resolve, reject) => {
         this.resolve = resolve;
         this.element = element;
@@ -60,5 +60,3 @@ p.onImageLoaded = function () {
         setTimeout(this.resolve, 1);
     }
 }
-
-module.exports = ImagesLoaded;

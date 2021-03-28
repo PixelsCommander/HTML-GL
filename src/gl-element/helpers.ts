@@ -1,4 +1,4 @@
-import * as utils from '../utils/index';
+import { getTransformObjectFromString, getTransformObjectFromPropertiesString } from '../utils/index';
 import {GL_ELEMENT_PROPERTY_NAME} from "../constants";
 import GLElement from "./GLElement";
 
@@ -61,8 +61,8 @@ export function getGLChildren(glElement: GLElement): Array<GLElement> {
 
 export function getTransformObject(glElement) {
     if (glElement.settings && glElement.settings.heavyDiff) {
-        return utils.getTransformObjectFromString(glElement.styleObject.transform);
+        return getTransformObjectFromString(glElement.styleObject.transform);
     } else {
-        return utils.getTransformObjectFromPropertiesString(glElement.styleObject.transform);
+        return getTransformObjectFromPropertiesString(glElement.styleObject.transform);
     }
 }

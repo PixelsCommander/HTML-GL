@@ -1,10 +1,10 @@
-import * as THREE from 'three';
-import * as utils from '../../utils';
+import THREE from 'three';
+import {waitForDocumentLoaded} from '../../utils';
 import {getCurrentContext} from '../../GLContext';
 import {IGLRenderer} from '../IGLRenderer';
 import {IGLRendererView} from '../IGLRendererView';
 import {Vec2} from '../../types';
-import {debounce} from "debounce";
+import {debounce} from "../../utils/index";
 
 class ThreeGLRendererView implements IGLRendererView {
 
@@ -20,7 +20,7 @@ class ThreeGLRendererView implements IGLRendererView {
         this.createDocument();
 
         // @ts-ignore
-        utils.waitForDocumentLoaded()
+        waitForDocumentLoaded()
             .then(this.init.bind(this));
     }
 
@@ -88,7 +88,7 @@ class ThreeGLRendererView implements IGLRendererView {
 
     initListeners() {
         document.addEventListener('scroll', this.updateScrollPosition.bind(this));
-        window.addEventListener('resize', debounce(this.resize, 500));
+        window.addEventListener('resize', debounce(this.resize, 500, false));
         window.addEventListener('resize', () => {
             this.updateElementsPositions();
             this.renderer.redrawStage();

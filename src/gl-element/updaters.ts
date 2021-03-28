@@ -1,11 +1,11 @@
-import * as helpers from './helpers';
+import { getTransformObject } from './helpers';
 import { getCurrentContext } from '../GLContext';
 import GLElement from "./GLElement";
 
-module.exports = {
+const exportModule = {
     transform: function() {
         //Retreiving transformations data from styles object, usually filled by StyleObserver
-        this.transformObject = helpers.getTransformObject(this);
+        this.transformObject = getTransformObject(this);
 
         //Fixing defaults
         this.transformObject.translateX = parseFloat(this.transformObject.translateX) || 0;
@@ -64,3 +64,5 @@ module.exports = {
         this.update('opacity');
     }
 };
+
+export default exportModule;

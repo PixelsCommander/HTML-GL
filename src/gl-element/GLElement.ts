@@ -1,18 +1,17 @@
 import {GLContext, getCurrentContext} from '../GLContext';
 import {BoundingRect, TransformObject} from '../types';
 import GLObserver from './GLObserver';
-import * as updaters from './updaters';
-import * as helpers from './helpers';
-import * as utils from '../utils/';
+import  updaters from './updaters';
+import { isHTMLNode, getNodeChildren } from '../utils/';
 import GLAttributesProcessor from './GLAttributesProcessor';
-import * as ImagesLoaded from '../utils/images-loaded';
-import {getGLChildren, getGLParent, isGLNode} from "./helpers";
+import { ImagesLoaded} from '../utils/images-loaded';
+import {getGLChildren, getGLParent, isGLNode, shouldBeGLNode} from "./helpers";
 import {
     GL_ELEMENT_PROPERTY_NAME,
     GL_RENDERER_ATTRIBUTE_NAME,
     GL_RENDERER_ATTRIBUTE_VALUE,
 } from "../constants";
-import * as debounce from 'debounce-promise';
+import debounce from 'debounce-promise';
 
 const debounceTime = 500;
 
@@ -62,11 +61,12 @@ export class GLElement {
         this.context = getCurrentContext();
         this.context.elements.push(this);
         this.observer = new GLObserver(this);
-        this.attributesProcessor = new GLAttributesProcessor(this);
         this.displayObject = this.context.renderer.createDisplayObject(this);
 
         this.initParent();
         this.init();
+
+        this.attributesProcessor = new GLAttributesProcessor(this);
     }
 
     init = () => {
@@ -74,7 +74,7 @@ export class GLElement {
             // @ts-ignore
             new ImagesLoaded(this.node).then(() => {
                     //Children should be processed before rendering to know which nodes to igonre when rasterizing
-                    var children = utils.getNodeChildren(this.node);
+                    var children = getNodeChildren(this.node);
                     children.forEach((child) => {
                         GLElement.processChildren(child, this);
                     });
@@ -197,23 +197,25 @@ export class GLElement {
     setShader(shaderCode: string) {
         if (!shaderCode || !shaderCode.length) {
             this.shader = null;
-            this.ready && this.context.renderer.setShader(this, null);
+            this.initializationPromise.then(() => this.context.renderer.setShader(this, null));
         } else {
-            this.shader = shaderCode;
-            this.ready && this.context.renderer.setShader(this, shaderCode);
+            if (shaderCode !== this.shader){
+                this.shader = shaderCode;
+                this.initializationPromise.then(() => this.context.renderer.setShader(this, shaderCode));
+            }
         }
     }
 
     static processChildren(node, rootGLElement) {
-        if (!utils.isHTMLNode(node)) {
+        if (!isHTMLNode(node)) {
             return;
         }
 
         var createdElement = false;
 
         //Iterate and create glNodes if should be created
-        if (helpers.shouldBeGLNode(node)) {
-            if (!helpers.isGLNode(node)) {
+        if (shouldBeGLNode(node)) {
+            if (!isGLNode(node)) {
                 new GLElement(node, rootGLElement.settings);
                 createdElement = true;
             } else {
@@ -224,7 +226,7 @@ export class GLElement {
 
         if (!createdElement && (node.children.length > 0 || node.tagName === 'IFRAME')) {
 
-            var children = utils.getNodeChildren(node);
+            var children = getNodeChildren(node);
             children.forEach((child) => {
                 GLElement.processChildren(child, rootGLElement);
             });

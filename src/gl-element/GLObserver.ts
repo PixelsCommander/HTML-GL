@@ -1,6 +1,6 @@
 import GLMutationObserver from './observers/GLMutationObserver';
 import GLStyleObserver from './observers/GLStyleObserver';
-import * as helpers from './helpers';
+import { isStyleMutation, getGLElement, getGLRoot, isGLNode } from './helpers';
 import GLElement from './GLElement';
 
 export class GLObserver {
@@ -27,7 +27,7 @@ export class GLObserver {
         }
 
         //If there are style mutations
-        if (mutations.filter(helpers.isStyleMutation).length) {
+        if (mutations.filter(isStyleMutation).length) {
 
             //If style observer update on RAF disabled we update it from style mutation
             if (this.glElement.settings.styleObserverDisabled) {
@@ -55,17 +55,17 @@ export class GLObserver {
 
     processRemovedNodes(removedNodes) {
         for (var i = 0; i < removedNodes.length; i++) {
-            if (helpers.isGLNode(removedNodes[i])) {
+            if (isGLNode(removedNodes[i])) {
                 console.log('Processing node removal ' + removedNodes[i]);
 
                 //TODO Move to delayed queue executed after the loop to avoid duplication of updates
 
                 //Reflow from the root
-                var GLRootToReflow = helpers.getGLRoot(this.glElement);
+                var GLRootToReflow = getGLRoot(this.glElement);
                 GLRootToReflow.update('children');
 
                 //Actual removal
-                var nodeGLElement = helpers.getGLElement(removedNodes[i]);
+                var nodeGLElement = getGLElement(removedNodes[i]);
                 this.glElement.removeChild(nodeGLElement);
             }
         }

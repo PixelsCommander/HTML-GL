@@ -2,7 +2,7 @@
 import GLElement from './gl-element/GLElement';
 import IGLRenderer from './renderers/IGLRenderer';
 import GLInteractionController from './GLInteractionController';
-import * as utils from './utils/index';
+import {waitForDocumentLoaded} from './utils/index';
 
 export function getCurrentContext(): GLContext {
     return (<any>window).HTMLGL;
@@ -33,7 +33,7 @@ export class GLContext {
         this.rasterizer = rasterizer;
 
         // @ts-ignore
-        utils.waitForDocumentLoaded()
+        waitForDocumentLoaded()
             .then(this.initInteraction.bind(this));
     }
 

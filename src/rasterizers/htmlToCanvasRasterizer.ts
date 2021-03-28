@@ -1,4 +1,4 @@
-import * as html2canvas from 'html2canvas';
+import  html2canvas from 'html2canvas';
 
 export function rasterize(glElement) {
     return new Promise(resolve => {
