@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="../../dist/html-gl.js"></script>
+</head>
+<body>
+<h1>Pixels Research Institute</h1>
+<html-gl shader="// Copy of https://www.shadertoy.com/view/llS3RK
+
+
+#define DISPLACE .125
+
+//Calculate the squared length of a vector
+float length2(vec2 p){
+    return dot(p,p);
+}
+
+//Generate some noise to scatter points.
+float noise(vec2 p){
+	return fract(sin(fract(sin(p.x) * (43.13311)) + p.y) * 31.0011);
+}
+
+float worley(vec2 p) {
+    //Set our distance to infinity
+	float d = 1e30;
+    //For the 9 surrounding grid points
+	for (int xo = -1; xo <= 1; ++xo) {
+		for (int yo = -1; yo <= 1; ++yo) {
+            //Floor our vec2 and add an offset to create our point
+			vec2 tp = floor(p) + vec2(xo, yo);
+            //Calculate the minimum distance for this grid point
+            //Mix in the noise value too!
+			d = min(d, length2(p - tp - noise(tp)));
+		}
+	}
+	return 3.0*exp(-4.0*abs(2.5*d - 1.0));
+}
+
+float fworley(vec2 p) {
+    //Stack noise layers
+	return sqrt(sqrt(sqrt(
+		worley(p*5.0 + 0.05*iTime) *
+		sqrt(worley(p * 50.0 + 0.12 + -0.1*iTime)) *
+		sqrt(sqrt(worley(p * -10.0 + 0.03*iTime))))));
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+	vec2 uv = fragCoord.xy / iResolution.xy;
+    //Calculate an intensity
+    float t = fworley(uv * iResolution.xy / 1500.0);
+    //Add some gradient
+    t*=exp(-length2(abs(0.7*uv - 1.0)));
+    //Make it blue!
+//    fragColor = vec4(t * vec3(0.1, 1.1*t, pow(t, 0.5-t)), 1.0);
+
+    // please keep in mind that i have no idea of maths.
+    // i am sorry. but at least it looks nice.
+    vec2 of1 = vec2(DISPLACE*t);
+    vec2 of2 = vec2(DISPLACE)/iResolution.xy;
+    uv += of1-of2;
+    uv.y -=DISPLACE*.25;
+
+    vec4 color = texture(iChannel0, uv);
+    fragColor = color;
+}
+
+">
+    <img src="img/trotr_site.png"/>
+</html-gl>
+<p>Every element on the page wrapped into html-gl tag gets rendered in WebGL. A shader can be added to the element by changing html-gl tag shader attribute.</p>
+<a href="https://github.com/PixelsCommander/HTML-GL">Project on GitHub</a>
+</body>
+</html>

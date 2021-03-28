@@ -116,7 +116,7 @@ export class GLElement {
             if (callback) {
                 callback();
             }
-        }, debounceTime));
+        }, 20));
     }
 
     initParent() {
@@ -172,7 +172,7 @@ export class GLElement {
     }
 
     updateTexture = debounce((): Promise<ImageData | void> => {
-        if (!this.rasterizing && !this.ready) {
+        if (!this.rasterizing) {
             //console.log('Updating texture', this.node);
             this.markAsChanged();
             const promise = new Promise(resolve => this.context.rasterizer(this).then(this.onTextureRendered).then(resolve));
